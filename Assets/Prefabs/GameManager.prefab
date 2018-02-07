@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1923644242967652}
+  m_IsPrefabParent: 1
+--- !u!1 &1923644242967652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4573291739199218}
+  - component: {fileID: 114995736251086500}
+  - component: {fileID: 114902411889872976}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4573291739199218
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1923644242967652}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114902411889872976
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1923644242967652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a15db80a4a45476a9c4aa45c4c6a7ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadows:
+  - {fileID: 1361387906834558, guid: 6e25bdb027e5841899d605418534626d, type: 2}
+  - {fileID: 1208299472990894, guid: 01edd118329ce4fa880f51c80ae792b4, type: 2}
+  - {fileID: 1141122552549820, guid: c394c816d4efa46bfa07b876e55be6f5, type: 2}
+  - {fileID: 1483452992456794, guid: 52c6e71bfebb94c83b446b35e3675f7c, type: 2}
+  - {fileID: 1949882580977674, guid: 6f002180383c743558ca0de435c4b871, type: 2}
+  - {fileID: 1386322136885536, guid: e5ffa683dbf724953b78b538882a6f33, type: 2}
+  grassTiles:
+  - {fileID: 1458063055503368, guid: 3ea51f71eb99b47a2b8677a5edea3075, type: 2}
+  - {fileID: 1485647261531594, guid: ef074f763adae406ab47f7122a05b2a8, type: 2}
+  roadTiles:
+  - {fileID: 1728298098564712, guid: e5e2add197ea544acac2ba4950488988, type: 2}
+  - {fileID: 1663915018378374, guid: afd4ede7ea49f421ab75b74500140191, type: 2}
+  floorTiles:
+  - {fileID: 1902854782006268, guid: 97d5926905a3d4f5ba612443f4201ab4, type: 2}
+  sidewalkTiles:
+  - {fileID: 1559114394078186, guid: d52574062b7f44aa5ad371cebef0127f, type: 2}
+  - {fileID: 1885989471144002, guid: e9fa2d13cbac54d74adf8a95bb6585e0, type: 2}
+  treeTiles:
+  - {fileID: 1578452335808352, guid: ddd4d54e831fd44deb4b14fdc044050a, type: 2}
+  - {fileID: 1317533298312918, guid: cbdf217a79ec24de9b6a67e5147adbc8, type: 2}
+  yellowLineHorizontal: {fileID: 1157624842066292, guid: afda57ac6893647e38d59348892e6051,
+    type: 2}
+  yellowLineVertical: {fileID: 1277914780899784, guid: 73963257b5ffd48b08e0e18b9ac115e9,
+    type: 2}
+  brickWalls:
+  - {fileID: 1965569615555818, guid: 19ecde6f2f2f14d69b6e9beee4479b3b, type: 2}
+  - {fileID: 1064321552222042, guid: 26ad6701018d046eba6df57ee5624827, type: 2}
+  - {fileID: 1314497436705494, guid: 48bc8085904754372916c9ab6119a35d, type: 2}
+  - {fileID: 1744180023578518, guid: bb4646ff80280471ba26f6fec0170eb1, type: 2}
+  - {fileID: 1303677725008940, guid: bb06db393d9424e7887cd08d1f35d4be, type: 2}
+  - {fileID: 1253408092895790, guid: 33764f3d0f77145a7bac4975d631724e, type: 2}
+  - {fileID: 1633261458438680, guid: 28733e3d800cd4ee48e5ee6b890af66c, type: 2}
+  - {fileID: 1121087025812994, guid: 7943e7c65be23479986f37b01138ae63, type: 2}
+  - {fileID: 1420790689643036, guid: 67d5274de9c3e49adaf1b36812328ce3, type: 2}
+  - {fileID: 1748658725222252, guid: 2fa3e23e6c50b45aba39851cfc95a837, type: 2}
+  - {fileID: 1453251489994866, guid: 3628be9d416bc462e907f543139876ae, type: 2}
+  - {fileID: 1619605288047496, guid: 35abc13fe4ec04b97b1e8f72581eb45c, type: 2}
+  - {fileID: 1515764737898678, guid: 44e924eef48764bf9b078422ea63443e, type: 2}
+  - {fileID: 1664220985149574, guid: 090696003d9394c0aa096ef325a89d0a, type: 2}
+  - {fileID: 1596128291849844, guid: 28c663ef4529f44ccb1c1c5b7d66d7e6, type: 2}
+  doors:
+  - {fileID: 1978699569618290, guid: bd6370969bbe74144b231f94f05f5ce2, type: 2}
+  mapPath: Maps/map1
+  mapNumber: 1
+--- !u!114 &114995736251086500
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1923644242967652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94edc6001a1844177ba3c1eab47e860e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
