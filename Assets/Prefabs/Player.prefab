@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 212475150828949476}
   - component: {fileID: 95265632022462176}
   - component: {fileID: 114049451046784306}
-  - component: {fileID: 61987001891034830}
   - component: {fileID: 61377362640275188}
   m_Layer: 8
   m_Name: Player
@@ -90,31 +89,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.68, y: 1}
   m_EdgeRadius: 0
---- !u!61 &61987001891034830
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1202737420108178}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.68, y: 1}
-  m_EdgeRadius: 0
 --- !u!95 &95265632022462176
 Animator:
   serializedVersion: 3
@@ -146,6 +120,8 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 256
+  doorTilemapGameObj: {fileID: 0}
+  emptyTile: {fileID: 11400000, guid: f09fab9a5526241f5a1b474c5a453e14, type: 2}
   moveSpeed: 5
 --- !u!212 &212475150828949476
 SpriteRenderer:
