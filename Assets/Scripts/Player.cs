@@ -7,7 +7,6 @@ using UnityStandardAssets.CrossPlatformInput;
 public class Player : MovingObject {
 
 	public float moveSpeed;
-	private float MovementRange = 25f;
 
 	private const string FORWARD = "PlayerForwardAnim";
 	private const string LEFT = "PlayerLeftAnim";
@@ -29,7 +28,7 @@ public class Player : MovingObject {
 
 		moveHorizontal = Input.GetAxis ("Horizontal");
 		moveVertical = Input.GetAxis ("Vertical");
-		movement = Vector3.ClampMagnitude(new Vector3(moveHorizontal, moveVertical, 0f), MovementRange);
+		movement = new Vector3(moveHorizontal, moveVertical, 0f);
 		
 		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 
@@ -38,10 +37,8 @@ public class Player : MovingObject {
 		movement = new Vector3(moveHorizontal, moveVertical, 0f);
 
 		#endif
-		
-		movement *= moveSpeed;
 
-		base.Move(movement);
+		base.Move(movement.normalized, moveSpeed);
 
 		if (movement.sqrMagnitude == 0) {
 			return;

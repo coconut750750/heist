@@ -4,12 +4,12 @@ using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 using System.IO;
+using UnityEngine.Tilemaps;
 
 public class BoardManager : MonoBehaviour {
 
 	public GameObject[] doors;
 
-	public String mapPath;
 	public int mapNumber;
 
 	private Dictionary<Vector3, string> items;
@@ -17,6 +17,8 @@ public class BoardManager : MonoBehaviour {
 	private Transform boardHolder;
 
 	private const string DOOR = "d";
+
+	public Tilemap wallTileMap;
 
 	#if UNITY_ANDROID
 	IEnumerator DownloadFiles (string itemsUrl) {
@@ -94,6 +96,10 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public void SetupScene() {
+//		wallTileMap.GetComponent<TilemapRenderer> ().receiveShadows = true;
+//		wallTileMap.GetComponent<TilemapRenderer> ().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+
+
 		boardHolder = new GameObject ("Board").transform;
 		MapSetup ();
 	}

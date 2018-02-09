@@ -53,3 +53,6 @@ TagManager:
   - name: Shadow
     uniqueID: 1696145125
     locked: 0
+  - name: Elevated
+    uniqueID: 1568317233
+    locked: 0
