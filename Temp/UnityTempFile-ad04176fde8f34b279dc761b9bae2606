@@ -186,6 +186,7 @@
 'Assets/Scripts/GameManager.cs'
 'Assets/Scripts/MovingObject.cs'
 'Assets/Scripts/Player.cs'
+'Assets/Scripts/PrefabBrush.cs'
 'Assets/Scripts/TileScripts/RandomGroundTile.cs'
 'Assets/Scripts/TileScripts/RoadMarkerTile.cs'
 'Assets/Scripts/TileScripts/ShadowTile.cs'

@@ -15,10 +15,7 @@ public class ShadowTile : Tile {
 		for (int y = -1; y <= 1; y++) {
 			for (int x = -1; x <= 1; x++) {
 				Vector3Int nPos = new Vector3Int (position.x + x, position.y + y, position.z);
-
-				if (isWall (tilemap, nPos)) {
-					tilemap.RefreshTile (nPos);
-				}
+				tilemap.RefreshTile (nPos);
 			}
 		}
 	}

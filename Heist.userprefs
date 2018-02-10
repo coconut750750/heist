@@ -1,13 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/BoardManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/TileScripts/WallTile.cs">
     <Files>
+      <File FileName="Assets/Scripts/TileScripts/WallTile.cs" Line="59" Column="19" />
+      <File FileName="Assets/Scripts/TileScripts/ShadowTile.cs" Line="23" Column="45" />
       <File FileName="Assets/Scripts/TileScripts/RandomGroundTile.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Player.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/MovingObject.cs" Line="19" Column="2" />
-      <File FileName="Assets/Scripts/TileScripts/ShadowTile.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/BoardManager.cs" Line="101" Column="1" />
-      <File FileName="Assets/Scripts/TileScripts/WallTile.cs" Line="24" Column="3" />
+      <File FileName="Assets/Scripts/MovingObject.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/BoardManager.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -56,6 +56,7 @@
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MovingObject.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\PrefabBrush.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RoadMarkerTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\ShadowTile.cs" />

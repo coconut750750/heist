@@ -121,8 +121,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   doorTilemapGameObj: {fileID: 0}
-  emptyTile: {fileID: 11400000, guid: f09fab9a5526241f5a1b474c5a453e14, type: 2}
-  moveSpeed: 5
+  moveSpeed: 6
 --- !u!212 &212475150828949476
 SpriteRenderer:
   m_ObjectHideFlags: 1

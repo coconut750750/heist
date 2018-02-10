@@ -39,8 +39,6 @@ public abstract class MovingObject : MonoBehaviour {
 	protected abstract void FixedUpdate ();
 
 	protected void Move(Vector3 movement, float moveSpeed) {
-		Debug.Log (rb2D.velocity.magnitude);
-
 		if (!paused) {
 			rb2D.velocity = movement * moveSpeed;
 		} else {

@@ -70,7 +70,7 @@ public class WallTile : Tile {
 		} else if (l && u && r && d) {
 			return sprites [14];
 		} else {
-			return null;
+			return sprites[0];
 		}
 	}
 

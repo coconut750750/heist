@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef14af9f3be1c4d76b527639c6b7ade6, type: 3}
+  m_Name: DoorBrush
+  m_EditorClassIdentifier: 
+  m_Prefabs:
+  - {fileID: 1978699569618290, guid: bd6370969bbe74144b231f94f05f5ce2, type: 2}
+  m_PerlinScale: 0.5
+  m_Z: 0

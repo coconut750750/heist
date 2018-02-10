@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 3e7e344d07f3b4f509545cf1caf519c4
-timeCreated: 1517263963
+timeCreated: 1518245502
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -98,7 +98,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
+        y: 96
         width: 32
         height: 32
       alignment: 0
@@ -112,7 +112,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 32
+        y: 96
         width: 32
         height: 32
       alignment: 0
@@ -125,8 +125,8 @@ TextureImporter:
       name: terrain_sprites_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 64
+        y: 96
         width: 32
         height: 32
       alignment: 0
@@ -139,8 +139,8 @@ TextureImporter:
       name: terrain_sprites_3
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
+        x: 96
+        y: 96
         width: 32
         height: 32
       alignment: 0

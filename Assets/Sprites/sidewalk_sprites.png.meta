@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: c250d7db404a846ada417f53df43259d
-timeCreated: 1517179508
+timeCreated: 1518209264
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -96,20 +96,6 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: sidewalk_sprites_1
-      rect:
-        serializedVersion: 2
-        x: 32
         y: 96
         width: 32
         height: 32
