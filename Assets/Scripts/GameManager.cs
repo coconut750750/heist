@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void InitGame() {
+		Physics2D.IgnoreLayerCollision (8, 9, true);
 		boardScript.SetupScene ();
 	}
 }

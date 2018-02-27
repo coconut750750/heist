@@ -3,7 +3,7 @@ SceneListBegin?
 Assets/_Scenes/MainScene.unity
 SceneListEnd?
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.GameManager
-eb0e62cce88716cc4e68889feb79ecec Assembly-CSharp.dll:.BoardManager
+e400bf86c6c1506109a023f89c5a090e Assembly-CSharp.dll:.BoardManager
 5ad117d057b9798aebdf5cb18d295786 Assembly-CSharp.dll:.RandomGroundTile
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 970a95104359198fe1a98ef48655de8c UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
@@ -126,7 +126,6 @@ a7d3c6c6948d99dd4116e659ddcf5ac4 Assembly-CSharp-firstpass.dll:UnityStandardAsse
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Advertisements.dll:UnityEngine.Advertisements.CallbackExecutor
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Advertisements.dll:UnityEngine.Advertisements.Editor.Placeholder
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.MobileControlRig
-e77ee4fecaefed1fb1bc89e1d0e70589 Assembly-CSharp.dll:.Loader
 fc1e0f4d8439d9928083474691511a13 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
 60b2bb652410a5867a5ab9a01cd38461 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkDiscovery
@@ -154,4 +153,5 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 a8796ecdc9d5c260bbe32f30c4b10708 Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.TouchPad
 5ad117d057b9798aebdf5cb18d295786 Assembly-CSharp.dll:.RoadMarkerTile
+9f4ad23246a727f8e76a4c523a2f7301 Assembly-CSharp.dll:UnityEditor.PrefabBrush
 110f1a1c4b3479e6b702f055300140c5 Assembly-CSharp.dll:.Player

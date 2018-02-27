@@ -17,6 +17,11 @@ public abstract class MovingObject : MonoBehaviour {
 	private const float DOOR_DELAY_SECONDS = 0.02f;
 	private Sprite currentDoorSprite;
 
+	private const string STAIRS_TAG = "Stairs";
+	private int onStairs = 0;
+
+	private int floor = 0;
+
 	IEnumerator doorDelay(Collider2D door) {
 		paused = true;
 		yield return new WaitForSeconds(DOOR_DELAY_SECONDS);
@@ -47,15 +52,27 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.CompareTag(DOOR_TAG)) {
-			StartCoroutine(doorDelay(other));
-			currentDoorSprite = other.gameObject.GetComponent<SpriteRenderer> ().sprite;
+		if (other.gameObject.CompareTag (DOOR_TAG)) {
+			StartCoroutine (doorDelay (other));
+			currentDoorSprite = other.gameObject.GetComponent<SpriteRenderer> ().sprite; 
+		} else if (other.gameObject.CompareTag (STAIRS_TAG)) {
+			if (onStairs == 0) {
+				floor = 1 - floor;
+				rb2D.transform.position = new Vector3 (rb2D.transform.position.x, rb2D.transform.position.y, 
+					0 - floor);
+				gameObject.layer = 17 - gameObject.layer;
+				onStairs += 2;
+				Debug.Log (onStairs);
+			}
 		}
 	}
 
 	protected void OnTriggerExit2D(Collider2D other) {
-		if (other.gameObject.CompareTag(DOOR_TAG)) {
+		if (other.gameObject.CompareTag (DOOR_TAG)) {
 			other.gameObject.GetComponent<SpriteRenderer> ().sprite = currentDoorSprite;
+		} else if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
+			onStairs -= 1;
+			Debug.Log (onStairs);
 		}
 	}
 }

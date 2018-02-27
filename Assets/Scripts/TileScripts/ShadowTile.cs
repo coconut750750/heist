@@ -12,12 +12,7 @@ public class ShadowTile : Tile {
 	private Sprite[] sprites;
 
 	public override void RefreshTile(Vector3Int position, ITilemap tilemap) {
-		for (int y = -1; y <= 1; y++) {
-			for (int x = -1; x <= 1; x++) {
-				Vector3Int nPos = new Vector3Int (position.x + x, position.y + y, position.z);
-				tilemap.RefreshTile (nPos);
-			}
-		}
+		tilemap.RefreshTile (position);
 	}
 
 	public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {

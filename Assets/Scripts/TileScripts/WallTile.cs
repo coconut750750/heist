@@ -12,16 +12,18 @@ public class WallTile : Tile {
 	private Sprite[] sprites;
 
 	public override void RefreshTile(Vector3Int position, ITilemap tilemap) {
-		for (int y = -1; y <= 1; y++) {
-			for (int x = -1; x <= 1; x++) {
-				Vector3Int nPos = new Vector3Int (position.x + x, position.y + y, position.z);
+		tilemap.RefreshTile (position);
 
-				if (isWall (tilemap, nPos)) {
-					tilemap.RefreshTile (nPos);
-				}
+		for (int x = -1; x <= 1; x += 2) {
+			Vector3Int nPos = new Vector3Int (position.x + x, position.y, position.z);
+			if (isWall (tilemap, nPos)) {
+				tilemap.RefreshTile (nPos);
+			}
+			nPos = new Vector3Int (position.x, position.y + x, position.z);
+			if (isWall (tilemap, nPos)) {
+				tilemap.RefreshTile (nPos);
 			}
 		}
-		
 	}
 
 	public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {

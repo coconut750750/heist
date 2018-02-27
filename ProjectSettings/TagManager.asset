@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Door
   - Wall
-  - Greens
+  - Stairs
   layers:
   - Default
   - TransparentFX
@@ -16,8 +16,8 @@ TagManager:
   - UI
   - 
   - 
-  - BlockingLayer
-  - 
+  - Ground
+  - Floor2
   - 
   - 
   - 
