@@ -6,9 +6,10 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public abstract class MovingObject : MonoBehaviour {
 
-	public LayerMask blockingLayer;
 	public GameObject doorTilemapGameObj;
 
+	public SortingLayer ground;
+	public SortingLayer floor2;
 
 	private Rigidbody2D rb2D;
 	private bool paused = false;
@@ -61,6 +62,7 @@ public abstract class MovingObject : MonoBehaviour {
 				rb2D.transform.position = new Vector3 (rb2D.transform.position.x, rb2D.transform.position.y, 
 					0 - floor);
 				gameObject.layer = 17 - gameObject.layer;
+				gameObject.GetComponent<SpriteRenderer> ().sortingLayerName = floor2;
 				onStairs += 2;
 				Debug.Log (onStairs);
 			}

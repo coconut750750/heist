@@ -44,15 +44,27 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Floor
+  - name: Floor1
     uniqueID: 758041329
     locked: 0
-  - name: Items
+  - name: Items1
     uniqueID: 2753399701
     locked: 0
-  - name: Shadow
+  - name: Shadow1
     uniqueID: 1696145125
     locked: 0
-  - name: Elevated
+  - name: Elevated1
     uniqueID: 1568317233
+    locked: 0
+  - name: Floor2
+    uniqueID: 2211672759
+    locked: 0
+  - name: Items2
+    uniqueID: 1006899447
+    locked: 0
+  - name: Shadow2
+    uniqueID: 4281483661
+    locked: 0
+  - name: Elevated2
+    uniqueID: 3299031213
     locked: 0
