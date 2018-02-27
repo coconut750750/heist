@@ -6,10 +6,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public abstract class MovingObject : MonoBehaviour {
 
-	public GameObject doorTilemapGameObj;
-
-	public SortingLayer ground;
-	public SortingLayer floor2;
+	private GameObject doorTilemapGameObj;
 
 	private Rigidbody2D rb2D;
 	private bool paused = false;
@@ -59,12 +56,11 @@ public abstract class MovingObject : MonoBehaviour {
 		} else if (other.gameObject.CompareTag (STAIRS_TAG)) {
 			if (onStairs == 0) {
 				floor = 1 - floor;
+
 				rb2D.transform.position = new Vector3 (rb2D.transform.position.x, rb2D.transform.position.y, 
-					0 - floor);
+					0 - (float)floor / 10);
 				gameObject.layer = 17 - gameObject.layer;
-				gameObject.GetComponent<SpriteRenderer> ().sortingLayerName = floor2;
 				onStairs += 2;
-				Debug.Log (onStairs);
 			}
 		}
 	}
@@ -74,7 +70,6 @@ public abstract class MovingObject : MonoBehaviour {
 			other.gameObject.GetComponent<SpriteRenderer> ().sprite = currentDoorSprite;
 		} else if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
 			onStairs -= 1;
-			Debug.Log (onStairs);
 		}
 	}
 }
