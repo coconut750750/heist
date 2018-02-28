@@ -154,4 +154,4 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 a8796ecdc9d5c260bbe32f30c4b10708 Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.TouchPad
 5ad117d057b9798aebdf5cb18d295786 Assembly-CSharp.dll:.RoadMarkerTile
 9f4ad23246a727f8e76a4c523a2f7301 Assembly-CSharp.dll:UnityEditor.PrefabBrush
-110f1a1c4b3479e6b702f055300140c5 Assembly-CSharp.dll:.Player
+3cdf68ad5524aa0f4472087d8e43ddac Assembly-CSharp.dll:.Player

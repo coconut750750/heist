@@ -17,7 +17,7 @@ public class Player : MovingObject {
 	protected override void Start (){
 	}
 
-	protected void OnTriggerEnter2D(Collider2D other) {
+	protected new void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (GetFloor () == 1) {
 			floor2.SetActive (false);
@@ -26,7 +26,7 @@ public class Player : MovingObject {
 		}
 	}
 
-	protected void OnTriggerExit2D(Collider2D other) {
+	protected new void OnTriggerExit2D(Collider2D other) {
 		base.OnTriggerExit2D (other);
 	}
 }
