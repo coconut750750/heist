@@ -1,11 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heist", "Assembly-CSharp.csproj", "{85CAAFAE-AE57-F188-3D61-C1C067CA069D}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio for Mac
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heist", "Heist.csproj", "{0E3690C7-5C1C-2D3B-B89E-28803B068B4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heist", "Assembly-CSharp-firstpass.csproj", "{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heist.Plugins", "Heist.Plugins.csproj", "{31777AF0-72F4-02AC-BD05-3F941E438984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heist", "Assembly-CSharp-Editor-firstpass.csproj", "{5F1A5DED-6D43-207E-81A2-EC9CF79329F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heist.Editor.Plugins", "Heist.Editor.Plugins.csproj", "{4EA7DF29-1A0E-2FA5-D3F9-AF86AB2E058B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,23 +13,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{85CAAFAE-AE57-F188-3D61-C1C067CA069D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85CAAFAE-AE57-F188-3D61-C1C067CA069D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85CAAFAE-AE57-F188-3D61-C1C067CA069D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85CAAFAE-AE57-F188-3D61-C1C067CA069D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F1A5DED-6D43-207E-81A2-EC9CF79329F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F1A5DED-6D43-207E-81A2-EC9CF79329F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F1A5DED-6D43-207E-81A2-EC9CF79329F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F1A5DED-6D43-207E-81A2-EC9CF79329F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E3690C7-5C1C-2D3B-B89E-28803B068B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E3690C7-5C1C-2D3B-B89E-28803B068B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E3690C7-5C1C-2D3B-B89E-28803B068B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E3690C7-5C1C-2D3B-B89E-28803B068B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31777AF0-72F4-02AC-BD05-3F941E438984}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31777AF0-72F4-02AC-BD05-3F941E438984}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31777AF0-72F4-02AC-BD05-3F941E438984}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31777AF0-72F4-02AC-BD05-3F941E438984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EA7DF29-1A0E-2FA5-D3F9-AF86AB2E058B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA7DF29-1A0E-2FA5-D3F9-AF86AB2E058B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA7DF29-1A0E-2FA5-D3F9-AF86AB2E058B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA7DF29-1A0E-2FA5-D3F9-AF86AB2E058B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
