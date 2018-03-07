@@ -9,11 +9,7 @@ public class Desk : Interactable {
 
 	// Use this for initialization
 	void Start () {
-        Debug.Log("player restart");
-        call = delegate {
-            Interact();
-        };
-		
+        Debug.Log("player restart");		
 	}
 	
 	// Update is called once per frame
@@ -21,18 +17,20 @@ public class Desk : Interactable {
 		
 	}
 
-    public override void PlayerInteract() {
-        base.button.onClick.AddListener(call);
-
+    public override void PlayerInteract(Player player) {        
+        //base.button.RemoveAllListeners();
+        call = delegate {
+            Interact(player);
+        };
+        base.button.AddListener(call);
     }
 
-    public override void PlayerLeave() {
-        Debug.Log("Player leave desk");
-        base.button.onClick.RemoveListener(call);
-
+    public override void PlayerLeave(Player player) {
+        base.button.RemoveListener(call);
+        call = null;
     }
 
-    public void Interact() {
-        Debug.Log("Player interacted with desk");
+    public void Interact(Player player) {
+        Debug.Log(player.getName() + " interacted with " + gameObject.name + " " + base.button.getListeners());
     }
 }

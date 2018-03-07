@@ -1,10 +1,11 @@
 ﻿<Properties StartupConfiguration="{0E3690C7-5C1C-2D3B-B89E-28803B068B4B}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Interactables/Desk.cs">
     <Files>
-      <File FileName="Assets/Scripts/Interactable.cs" Line="35" Column="5" />
-      <File FileName="Assets/Scripts/Interactables/Desk.cs" Line="3" Column="19" />
-      <File FileName="Assets/Scripts/MovingObject.cs" Line="72" Column="9" />
-      <File FileName="Assets/Scripts/Player.cs" Line="29" Column="16" />
+      <File FileName="Assets/Scripts/Interactable.cs" Line="17" Column="5" />
+      <File FileName="Assets/Scripts/Interactables/Desk.cs" Line="36" Column="1" />
+      <File FileName="Assets/Scripts/MovingObject.cs" Line="120" Column="24" />
+      <File FileName="Assets/Scripts/Player.cs" Line="29" Column="21" />
+      <File FileName="Assets/Scripts/PrefabBrush.cs" Line="93" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

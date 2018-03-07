@@ -6,13 +6,14 @@ using UnityEngine.UI;
 public abstract class Interactable : MonoBehaviour {
 
     public GameObject buttonObj;
-    protected Button button;
+    public Player player;
+    protected ButtonA button;
 
     private const string PLAYER_TAG = "Player";
 
 	// Use this for initialization
 	void Awake () {
-        button = buttonObj.GetComponent<Button>();
+        button = buttonObj.GetComponent<ButtonA>();
 	}
 
 	// Update is called once per frame
@@ -24,7 +25,10 @@ public abstract class Interactable : MonoBehaviour {
     {
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
-            PlayerInteract();
+            if (!buttonObj.activeSelf) {
+                buttonObj.SetActive(true);
+            }
+            PlayerInteract(player);
         }
     }
 
@@ -32,11 +36,14 @@ public abstract class Interactable : MonoBehaviour {
     {
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
-            PlayerLeave();
+            PlayerLeave(player);
+            if (buttonObj.activeSelf && button.getListeners() == 0) {
+                buttonObj.SetActive(false);
+            }
         }
     }
 
-    public abstract void PlayerInteract();
+    public abstract void PlayerInteract(Player player);
 
-    public abstract void PlayerLeave();
+    public abstract void PlayerLeave(Player player);
 }

@@ -29,4 +29,8 @@ public class Player : MovingObject {
 	protected override void OnTriggerExit2D(Collider2D other) {
 		base.OnTriggerExit2D (other);
 	}
+
+	public string getName() {
+		return "Player 1";
+	}
 }
