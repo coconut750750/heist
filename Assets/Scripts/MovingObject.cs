@@ -70,7 +70,7 @@ public abstract class MovingObject : MonoBehaviour {
 
 		Move(movement.normalized, moveSpeed);
 
-		if (movement.sqrMagnitude == 0) {
+        if (movement.sqrMagnitude == float.Epsilon) {
 			return;
 		}
 
@@ -108,7 +108,7 @@ public abstract class MovingObject : MonoBehaviour {
 		}
 	}
 
-	protected void OnTriggerEnter2D(Collider2D other) {
+	protected virtual void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.CompareTag (DOOR_TAG)) {
 			StartCoroutine (doorDelay (other));
 			currentDoorSprite = other.gameObject.GetComponent<SpriteRenderer> ().sprite; 
@@ -124,7 +124,7 @@ public abstract class MovingObject : MonoBehaviour {
 		}
 	}
 
-	protected void OnTriggerExit2D(Collider2D other) {
+	protected virtual void OnTriggerExit2D(Collider2D other) {
 		if (other.gameObject.CompareTag (DOOR_TAG)) {
 			other.gameObject.GetComponent<SpriteRenderer> ().sprite = currentDoorSprite;
 		} else if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
