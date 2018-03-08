@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class Desk : Interactable {
 
     private UnityAction call;
+    private List<Item> items;
 
 	// Use this for initialization
 	void Start () {

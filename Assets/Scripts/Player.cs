@@ -14,6 +14,8 @@ public class Player : MovingObject {
 	public GameObject floor1;
 	public GameObject floor2;
 
+	private List<Item> items;
+
 	protected override void Start (){
 	}
 
