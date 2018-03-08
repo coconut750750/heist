@@ -14,9 +14,11 @@ public class Player : MovingObject {
 	public GameObject floor1;
 	public GameObject floor2;
 
-	private List<Item> items;
+	private Inventory mainItems;
+	//private List<Item> items;
 
 	protected override void Start (){
+		mainItems = new Inventory();
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
@@ -32,7 +34,15 @@ public class Player : MovingObject {
 		base.OnTriggerExit2D (other);
 	}
 
-	public string getName() {
+	public string GetName() {
 		return "Player 1";
+	}
+
+	public void AddItem(Item item) {
+		mainItems.AddItem(item);
+	}
+
+	public void RemoveItem(Item item) {
+		mainItems.RemoveItem(item);
 	}
 }

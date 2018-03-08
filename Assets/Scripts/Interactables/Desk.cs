@@ -32,6 +32,6 @@ public class Desk : Interactable {
     }
 
     public void Interact(Player player) {
-        Debug.Log(player.getName() + " interacted with " + gameObject.name + " " + base.button.getListeners());
+        Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + base.button.getListeners());
     }
 }
