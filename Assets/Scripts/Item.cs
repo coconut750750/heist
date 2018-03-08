@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Item : ScriptableObject {
 
-	public string name;
+	public string itemName;
 	public Sprite sprite;
 
 }
