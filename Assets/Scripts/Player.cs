@@ -18,7 +18,7 @@ public class Player : MovingObject {
 	//private List<Item> items;
 
 	protected override void Start (){
-		mainItems = new Inventory();
+		mainItems = FindObjectOfType<Inventory>();
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {

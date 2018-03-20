@@ -6,6 +6,8 @@ using UnityEngine.Events;
 public class Desk : Interactable {
 
     private UnityAction call;
+
+    [SerializeField]
     private List<Item> items;
 
 	// Use this for initialization
@@ -33,5 +35,10 @@ public class Desk : Interactable {
 
     public void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + base.button.getListeners());
+        if (items.Count > 0) {
+            Item item = items[0];
+            player.AddItem(item);
+            items.Remove(item);
+        }
     }
 }
