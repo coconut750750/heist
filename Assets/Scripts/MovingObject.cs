@@ -70,7 +70,7 @@ public abstract class MovingObject : MonoBehaviour {
 
 		Move(movement.normalized, moveSpeed);
 
-        if (movement.sqrMagnitude == float.Epsilon) {
+        if (moveHorizontal == 0 && moveVertical == 0) {
 			return;
 		}
 
