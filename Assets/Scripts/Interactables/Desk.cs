@@ -39,6 +39,9 @@ public class Desk : Interactable {
             Item item = items[0];
             player.AddItem(item);
             items.Remove(item);
+        } else {
+            Item item = player.RemoveItemAtIndex(0);
+            items.Add(item);
         }
     }
 }

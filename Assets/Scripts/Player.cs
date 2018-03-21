@@ -42,6 +42,15 @@ public class Player : MovingObject {
 		mainItems.AddItem(item);
 	}
 
+	public Item RemoveItemAtIndex(int index) {
+		if (index >= 0 || index < mainItems.GetNumItems()) {
+			Item itemToRemove = mainItems.GetItem(index);
+			mainItems.RemoveItem(itemToRemove);
+			return itemToRemove;
+		}
+		return null;
+	}
+
 	public void RemoveItem(Item item) {
 		mainItems.RemoveItem(item);
 	}

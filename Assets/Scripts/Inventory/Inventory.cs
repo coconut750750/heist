@@ -10,25 +10,40 @@ public class Inventory : MonoBehaviour {
 	public Image[] itemImages = new Image[NUM_ITEMS];
 	public Item[] items = new Item[NUM_ITEMS];
 
+	private int count = 0;
+
 	public void AddItem(Item itemToAdd) {
-		for (int i = 0; i < NUM_ITEMS; i++) {
-			if (items[i] == null) {
-				items[i] = itemToAdd;
-				itemImages[i].sprite = itemToAdd.sprite;
-				itemImages[i].enabled = true;
-				return;
-			}
+		if (count == NUM_ITEMS) {
+			return;
 		}
+		items[count] = itemToAdd;
+		itemImages[count].sprite = itemToAdd.sprite;
+		itemImages[count].enabled = true;
+		count++;
+	}
+
+	public Item GetItem(int index) {
+		if (index >= 0 || index < count) {
+			return items[index];
+		}
+		return null;
 	}
 
 	public void RemoveItem(Item itemToRemove) {
-		for (int i = 0; i < NUM_ITEMS; i++) {
-			if (items[i] == itemToRemove) {
-				itemImages[i] = null;
-				itemImages[i].sprite = null;
-				itemImages[i].enabled = false;
-				return;
-			}
+		if (count == 0) {
+			return;
 		}
+		count--;
+		items[count] = null;
+		itemImages[count].sprite = null;
+		itemImages[count].enabled = false;
+	}
+
+	public int GetCapacity() {
+		return NUM_ITEMS;
+	}
+
+	public int GetNumItems() {
+		return count;
 	}
 }
