@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 public class GameManager : MonoBehaviour {
 
 	public static GameManager instance = null;
-	private BoardManager boardScript;
 
 	void Awake () {
 		if (instance == null) {
@@ -16,12 +15,10 @@ public class GameManager : MonoBehaviour {
 		}
 
 		DontDestroyOnLoad (gameObject);
-		boardScript = GetComponent<BoardManager> ();
 		InitGame ();
 	}
 
 	void InitGame() {
 		Physics2D.IgnoreLayerCollision (8, 9, true);
-		boardScript.SetupScene ();
 	}
 }
