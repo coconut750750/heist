@@ -5,15 +5,22 @@ using UnityEngine.UI;
 
 public abstract class Interactable : MonoBehaviour {
 
-    public GameObject buttonObj;
-    public Player player;
-    protected ButtonA button;
+    protected static GameObject buttonObj;
+    protected static ButtonA button;
+    private const string BUTTON_A_TAG = "ButtonA";
 
+    protected static Player player;
     private const string PLAYER_TAG = "Player";
 
 	// Use this for initialization
 	void Awake () {
-        button = buttonObj.GetComponent<ButtonA>();
+        if (buttonObj == null) {
+            buttonObj = GameObject.Find(BUTTON_A_TAG);
+            button = buttonObj.GetComponent<ButtonA>();
+        }
+        if (player == null) {
+            player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
+        }
 	}
 
 	// Update is called once per frame
