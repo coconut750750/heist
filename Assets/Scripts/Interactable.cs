@@ -17,6 +17,7 @@ public abstract class Interactable : MonoBehaviour {
         if (buttonObj == null) {
             buttonObj = GameObject.Find(BUTTON_A_TAG);
             button = buttonObj.GetComponent<ButtonA>();
+            buttonObj.SetActive(false);
         }
         if (player == null) {
             player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
