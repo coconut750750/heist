@@ -8,15 +8,18 @@ using UnityEditor;
 public class InventoryEditor : Editor {
 	private SerializedProperty itemImagesProperty;
     private SerializedProperty itemsProperty;
+    private SerializedProperty itemButtonsProperty;
 
     private bool[] showItemSlots = new bool[Inventory.NUM_ITEMS];
 
     private const string inventoryPropItemImagesName = "itemImages";
     private const string inventoryPropItemsName = "items";
+    private const string inventoryPropItemButton = "itemButtons";
 
     private void OnEnable() {
         itemImagesProperty = serializedObject.FindProperty(inventoryPropItemImagesName);
         itemsProperty = serializedObject.FindProperty(inventoryPropItemsName);
+        itemButtonsProperty = serializedObject.FindProperty(inventoryPropItemButton);
     }
 
     public override void OnInspectorGUI() {
@@ -38,6 +41,7 @@ public class InventoryEditor : Editor {
         if (showItemSlots[index]) {
             EditorGUILayout.PropertyField(itemImagesProperty.GetArrayElementAtIndex(index));
             EditorGUILayout.PropertyField(itemsProperty.GetArrayElementAtIndex(index));
+            EditorGUILayout.PropertyField(itemButtonsProperty.GetArrayElementAtIndex(index));
         }
 
         EditorGUI.indentLevel--;

@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour {
 
 	public Image[] itemImages = new Image[NUM_ITEMS];
 	public Item[] items = new Item[NUM_ITEMS];
+	public ItemButton[] itemButtons = new ItemButton[NUM_ITEMS];
 
 	private int count = 0;
 
@@ -19,6 +20,7 @@ public class Inventory : MonoBehaviour {
 		items[count] = itemToAdd;
 		itemImages[count].sprite = itemToAdd.sprite;
 		itemImages[count].enabled = true;
+		itemButtons[count].SetItem(itemToAdd);
 		count++;
 	}
 
@@ -37,6 +39,7 @@ public class Inventory : MonoBehaviour {
 		items[count] = null;
 		itemImages[count].sprite = null;
 		itemImages[count].enabled = false;
+		itemButtons[count].Reset();
 	}
 
 	public int GetCapacity() {
