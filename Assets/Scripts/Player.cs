@@ -15,7 +15,6 @@ public class Player : MovingObject {
 	public GameObject floor2;
 
 	private Inventory mainItems;
-	//private List<Item> items;
 
 	protected override void Start (){
 		mainItems = FindObjectOfType<Inventory>();
@@ -36,6 +35,10 @@ public class Player : MovingObject {
 
 	public string GetName() {
 		return "Player 1";
+	}
+
+	public Inventory GetInventory() {
+		return mainItems;
 	}
 
 	public void AddItem(Item item) {

@@ -28,6 +28,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler {
 			itemDragOld.SetSelected(false);
 			itemDragNew.SetSelected(true);
 			itemDragOld.Reset();
+
+			GameManager.mainPlayer.GetInventory().SwapItemPositions(itemDragOld.index, itemDragNew.index);
 		}
     }
 }

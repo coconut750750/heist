@@ -22,7 +22,6 @@ public class Desk : Interactable {
 	}
 
     public override void PlayerInteract(Player player) {      
-        Debug.Log(Interactable.button == null);  
         call = delegate {
             Interact(player);
         };
@@ -37,13 +36,12 @@ public class Desk : Interactable {
 
     public void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
+        GameManager.mainPlayer.GetInventory().Log();
         if (items.Count > 0) {
             Item item = items[0];
             player.AddItem(item);
             items.Remove(item);
-        } else {
-            Item item = player.RemoveItemAtIndex(0);
-            items.Add(item);
         }
+        GameManager.mainPlayer.GetInventory().Log();
     }
 }

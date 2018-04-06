@@ -6,12 +6,17 @@ using UnityEngine.Tilemaps;
 public class GameManager : MonoBehaviour {
 
 	public static GameManager instance = null;
+	public static Player mainPlayer = null;
 
 	void Awake () {
 		if (instance == null) {
 			instance = this;
 		} else if (instance != this) {
 			Destroy (gameObject);
+		}
+
+		if (mainPlayer == null) {
+			mainPlayer = GameObject.Find("Player").gameObject.GetComponent<Player>();
 		}
 
 		DontDestroyOnLoad (gameObject);

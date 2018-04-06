@@ -10,6 +10,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public Item item;
 	public bool selected;
 	public Image itemBack;
+	public int index;
 
 	public static Text text = null;
 	private static Color SELECTED_COLOR = new Color(255/255f, 147/255f, 76/255f);
@@ -41,6 +42,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		this.selected = selected;
 		if (item != null) {
 			if (selected) {
+				GameManager.mainPlayer.GetInventory().DeselectAll();
 				text.text = item.name;
 				itemBack.color = SELECTED_COLOR;
 			} else {

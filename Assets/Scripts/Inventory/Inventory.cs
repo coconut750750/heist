@@ -12,15 +12,32 @@ public class Inventory : MonoBehaviour {
 
 	private int count = 0;
 
+	void Awake() {
+		SetDraggerIndices();
+	}
+
+	void SetDraggerIndices() {
+		for (int i = 0; i < NUM_ITEMS; i++) {
+			itemImages[i].gameObject.GetComponent<ItemDragger>().index = i;
+		}
+	}
+
 	public void AddItem(Item itemToAdd) {
 		if (count == NUM_ITEMS) {
 			return;
 		}
-		items[count] = itemToAdd;
-		itemImages[count].sprite = itemToAdd.sprite;
-		itemImages[count].enabled = true;
-		itemImages[count].gameObject.GetComponent<ItemDragger>().SetItem(itemToAdd);
-		count++;
+
+		for (int i = 0; i < NUM_ITEMS; i++) {
+			if (items[i] == null) {
+				Debug.Log("added at index: " + i);
+				items[i] = itemToAdd;
+				itemImages[i].sprite = itemToAdd.sprite;
+				itemImages[i].enabled = true;
+				itemImages[i].gameObject.GetComponent<ItemDragger>().SetItem(itemToAdd);
+				count++;
+				return;
+			}
+		}
 	}
 
 	public Item GetItem(int index) {
@@ -30,15 +47,43 @@ public class Inventory : MonoBehaviour {
 		return null;
 	}
 
+	public void RemoveItemAtIndex(int index) {
+		if (count == 0) {
+			return;
+		}
+
+		if (items[index] != null) {
+			count--;
+			items[index] = null;
+			itemImages[index].sprite = null;
+			itemImages[index].enabled = false;
+			itemImages[index].gameObject.GetComponent<ItemDragger>().Reset();
+		}
+	}
+
 	public void RemoveItem(Item itemToRemove) {
 		if (count == 0) {
 			return;
 		}
-		count--;
-		items[count] = null;
-		itemImages[count].sprite = null;
-		itemImages[count].enabled = false;
-		itemImages[count].gameObject.GetComponent<ItemDragger>().Reset();
+
+		for (int i = 0; i < NUM_ITEMS; i++) {
+			if (items[i] != null && items[i] == itemToRemove) {
+				RemoveItemAtIndex(i);
+				return;
+			}
+		}
+	}
+
+	public void SwapItemPositions(int index1, int index2) {
+		Item temp = items[index1];
+		items[index1] = items[index2];
+		items[index2] = temp;
+	}
+
+	public void DeselectAll() {
+		for (int i = 0; i < NUM_ITEMS; i++) {
+			itemImages[i].gameObject.GetComponent<ItemDragger>().SetSelected(false);
+		}
 	}
 
 	public int GetCapacity() {
@@ -47,5 +92,17 @@ public class Inventory : MonoBehaviour {
 
 	public int GetNumItems() {
 		return count;
+	}
+
+	public void Log() {
+		string log = "Items: ";
+		for (int i = 0; i < NUM_ITEMS; i++) {
+			if (items[i] == null) {
+				log = log + "null ";
+			} else {
+				log = log + items[i].name + " ";
+			}
+		}
+		Debug.Log(log);
 	}
 }
