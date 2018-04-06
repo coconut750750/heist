@@ -9,7 +9,6 @@ public class Inventory : MonoBehaviour {
 
 	public Image[] itemImages = new Image[NUM_ITEMS];
 	public Item[] items = new Item[NUM_ITEMS];
-	public ItemButton[] itemButtons = new ItemButton[NUM_ITEMS];
 
 	private int count = 0;
 
@@ -20,12 +19,12 @@ public class Inventory : MonoBehaviour {
 		items[count] = itemToAdd;
 		itemImages[count].sprite = itemToAdd.sprite;
 		itemImages[count].enabled = true;
-		itemButtons[count].SetItem(itemToAdd);
+		itemImages[count].gameObject.GetComponent<ItemDragger>().SetItem(itemToAdd);
 		count++;
 	}
 
 	public Item GetItem(int index) {
-		if (index >= 0 || index < count) {
+		if (index >= 0 && index < count) {
 			return items[index];
 		}
 		return null;
@@ -39,7 +38,7 @@ public class Inventory : MonoBehaviour {
 		items[count] = null;
 		itemImages[count].sprite = null;
 		itemImages[count].enabled = false;
-		itemButtons[count].Reset();
+		itemImages[count].gameObject.GetComponent<ItemDragger>().Reset();
 	}
 
 	public int GetCapacity() {

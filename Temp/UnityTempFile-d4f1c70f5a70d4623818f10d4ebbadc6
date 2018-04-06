@@ -4,7 +4,6 @@
 -langversion:4
 -out:'Temp/Assembly-CSharp.dll'
 -unsafe
--r:'Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.CoreModule.dll'
@@ -53,6 +52,7 @@
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.VideoModule.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.WindModule.dll'
+-r:'Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll'
 -r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll'
 -r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll'
 -r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll'
@@ -189,6 +189,8 @@
 'Assets/Scripts/Interactables/Desk.cs'
 'Assets/Scripts/Inventory/Inventory.cs'
 'Assets/Scripts/Inventory/InventoryEditor.cs'
+'Assets/Scripts/Inventory/InventorySlot.cs'
+'Assets/Scripts/Inventory/ItemDragger.cs'
 'Assets/Scripts/Item.cs'
 'Assets/Scripts/MovingObject.cs'
 'Assets/Scripts/Player.cs'

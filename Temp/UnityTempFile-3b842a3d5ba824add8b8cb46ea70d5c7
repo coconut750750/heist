@@ -189,6 +189,8 @@
 'Assets/Scripts/Interactables/Desk.cs'
 'Assets/Scripts/Inventory/Inventory.cs'
 'Assets/Scripts/Inventory/InventoryEditor.cs'
+'Assets/Scripts/Inventory/InventorySlot.cs'
+'Assets/Scripts/Inventory/ItemDragger.cs'
 'Assets/Scripts/Item.cs'
 'Assets/Scripts/MovingObject.cs'
 'Assets/Scripts/Player.cs'
