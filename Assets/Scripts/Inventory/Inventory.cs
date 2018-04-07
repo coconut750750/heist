@@ -3,47 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour {
+public class Inventory : ItemStash {
 
-	public const int NUM_ITEMS = 7;
+	public const int NUM_ITEMS = 24;
 
-	public Image[] itemImages = new Image[NUM_ITEMS];
-	public Item[] items = new Item[NUM_ITEMS];
+	private bool isDisplaying;
 
-	private int count = 0;
+	public Inventory() : base(NUM_ITEMS) {
+		isDisplaying = false;
+	}
 
-	public void AddItem(Item itemToAdd) {
-		if (count == NUM_ITEMS) {
-			return;
+	void Awake () {
+		
+	}
+
+    public override void SetDisplaying(bool isDisplaying) {
+        this.isDisplaying = isDisplaying;
+    }
+
+    public override bool IsDisplaying() {
+        return isDisplaying;
+    }
+
+    public override void DeselectAll() {
+        if (isDisplaying) {
+			GameManager.stashDisplayer.DeselectAll();
 		}
-		items[count] = itemToAdd;
-		itemImages[count].sprite = itemToAdd.sprite;
-		itemImages[count].enabled = true;
-		count++;
-	}
-
-	public Item GetItem(int index) {
-		if (index >= 0 || index < count) {
-			return items[index];
-		}
-		return null;
-	}
-
-	public void RemoveItem(Item itemToRemove) {
-		if (count == 0) {
-			return;
-		}
-		count--;
-		items[count] = null;
-		itemImages[count].sprite = null;
-		itemImages[count].enabled = false;
-	}
-
-	public int GetCapacity() {
-		return NUM_ITEMS;
-	}
-
-	public int GetNumItems() {
-		return count;
-	}
+    }
 }

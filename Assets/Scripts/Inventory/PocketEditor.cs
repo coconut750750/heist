@@ -4,25 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor (typeof(Inventory))]
-public class InventoryEditor : Editor {
+[CustomEditor (typeof(Pocket))]
+public class PocketEditor : Editor {
 	private SerializedProperty itemImagesProperty;
     private SerializedProperty itemsProperty;
 
-    private bool[] showItemSlots = new bool[Inventory.NUM_ITEMS];
+    private bool[] showItemSlots = new bool[Pocket.NUM_ITEMS];
 
-    private const string inventoryPropItemImagesName = "itemImages";
-    private const string inventoryPropItemsName = "items";
+    private const string pocketPropItemImagesName = "itemImages";
+    private const string pocketPropItemsName = "items";
 
     private void OnEnable() {
-        itemImagesProperty = serializedObject.FindProperty(inventoryPropItemImagesName);
-        itemsProperty = serializedObject.FindProperty(inventoryPropItemsName);
+        itemImagesProperty = serializedObject.FindProperty(pocketPropItemImagesName);
+        itemsProperty = serializedObject.FindProperty(pocketPropItemsName);
     }
 
     public override void OnInspectorGUI() {
         serializedObject.Update();
 
-        for (int i = 0; i < Inventory.NUM_ITEMS; i++) {
+        for (int i = 0; i < Pocket.NUM_ITEMS; i++) {
             ItemSlotGUI(i);
         }
 
