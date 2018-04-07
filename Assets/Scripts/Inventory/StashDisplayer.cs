@@ -18,6 +18,7 @@ public class StashDisplayer : MonoBehaviour {
 
     public static void SetInventory(Inventory displayInventory) {
         StashDisplayer.displayInventory = displayInventory;
+        displayInventory.SetDisplaying(true);
     }
 
     void OnEnable() {
@@ -25,7 +26,7 @@ public class StashDisplayer : MonoBehaviour {
             return;
         }        
 
-        for (int i = 0; i < displayInventory.GetCapacity(); i++) {
+        for (int i = 0; i < capacity; i++) {
             itemSlots[i].Refresh();
             if (displayInventory.GetItem(i) != null) {
                 itemSlots[i].SetItem(displayInventory.GetItem(i));
@@ -44,8 +45,15 @@ public class StashDisplayer : MonoBehaviour {
         }
     }
 
+    public void DeselectAll() {
+        for (int i = 0; i < capacity; i++) {
+            itemSlots[i].Deselect();
+        }
+    }
+
     public void Close() {
         GameManager.HideStash();
+        displayInventory.SetDisplaying(false);
         StashDisplayer.displayInventory = null;
     }
 }

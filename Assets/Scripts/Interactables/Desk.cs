@@ -40,7 +40,6 @@ public class Desk : Interactable {
 
     public void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
-        items.Log();
 
         StashDisplayer.SetInventory(items);
         GameManager.DisplayStash();
