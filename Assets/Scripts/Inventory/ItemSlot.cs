@@ -23,10 +23,13 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string INVENTORY_ITEM_TEXT = "SelectedInventoryItemText";
 
 	void Awake() {
+		Refresh();
+	}
+
+	public void Refresh() {
 		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
 		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
-
-		parentStash = transform.parent.gameObject.GetComponent<ItemStash>();
+		Reset();
 	}
 
 	void Start() {
@@ -43,11 +46,21 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return index;
 	}
 
+	public void SetParentStash(ItemStash parent) {
+		parentStash = parent;
+	}
+
 	public ItemStash GetParentStash() {
 		return parentStash;
 	}
 
 	public void SetItem(Item item) {
+		if (item == null) {
+			Reset();
+			return;
+		}
+		itemImage.sprite = item.sprite;
+		itemImage.enabled = true;
 		this.item = item;
 	}
 
@@ -56,11 +69,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	public void Select() {
-
-		// TODO: 
-		if (parentStash == GameManager.mainPlayer.GetPocket()) {
-			GameManager.mainPlayer.GetPocket().DeselectAll();
-		}
+		parentStash.DeselectAll();
 		
 		text.text = item.name;
 		itemBack.color = SELECTED_COLOR;
@@ -72,6 +81,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	public void Reset() {
+		itemImage.sprite = null;
+		itemImage.enabled = false;
 		this.item = null;
 	}
 
@@ -90,16 +101,25 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		imageDragged.sprite = tempSprite;
 		imageDragged.enabled = tempEnabled;
 
-		ItemSlot itemSlotOld = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
+		ItemSlot itemSlotOther = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
 
 		Item tempItem = GetItem();
-		SetItem(itemSlotOld.item);
-		itemSlotOld.Deselect();
+		SetItem(itemSlotOther.item);
+		itemSlotOther.Deselect();
 		Select();
-		itemSlotOld.SetItem(tempItem);
+		itemSlotOther.SetItem(tempItem);
 
-		Debug.Log(parentStash == itemSlotOld.GetParentStash());
+		int indexOther = itemSlotOther.GetIndex();
+		if (parentStash == itemSlotOther.GetParentStash()) {
+			parentStash.SwapItemPositions(indexOther, index);
+		} else {
+			itemSlotOther.GetParentStash().RemoveItemAtIndex(indexOther);
+			itemSlotOther.GetParentStash().AddItemAtIndex(tempItem, indexOther);
 
-		GameManager.mainPlayer.GetPocket().SwapItemPositions(itemSlotOld.GetIndex(), index);
+			parentStash.RemoveItemAtIndex(index);
+			parentStash.AddItemAtIndex(GetItem(), index);
+		}
+
+		parentStash.Log();
     }
 }

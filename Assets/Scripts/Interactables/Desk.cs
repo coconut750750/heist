@@ -7,13 +7,17 @@ public class Desk : Interactable {
 
     private UnityAction call;
 
-    [SerializeField]
-    private List<Item> items;
+    private Inventory items;
+
+    public Item[] itemsToAdd = new Item[4];
 
 	// Use this for initialization
 	void Start () {
         Debug.Log("player restart");
-        		
+        items = gameObject.GetComponent<Inventory>();
+        for (int i = 0; i < 4; i++) {
+            items.AddItem(itemsToAdd[i]);
+        }
 	}
 	
 	// Update is called once per frame
@@ -36,11 +40,14 @@ public class Desk : Interactable {
 
     public void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
-        GameManager.mainPlayer.GetPocket().Log();
-        if (items.Count > 0) {
-            Item item = items[0];
-            player.AddItem(item);
-            items.Remove(item);
-        }
+        items.Log();
+
+        StashDisplayer.SetInventory(items);
+        GameManager.stashDisplayer.gameObject.SetActive(true);
+        // if (items.GetNumItems() > 0) {
+        //     Item item = items.GetItem(0);
+        //     player.AddItem(item);
+        //     items.RemoveItem(item);
+        // }
     }
 }

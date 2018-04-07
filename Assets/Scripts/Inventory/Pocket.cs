@@ -14,21 +14,20 @@ public class Pocket : ItemStash {
 	}
 
 	void Awake() {
-		SetDraggerIndices();
+		SetItemSlots();
 	}
 
-	protected void SetDraggerIndices() {
+	protected void SetItemSlots() {
 		for (int i = 0; i < capacity; i++) {
 			itemImages[i].transform.parent.GetComponent<ItemSlot>().SetIndex(i);
+			itemImages[i].transform.parent.GetComponent<ItemSlot>().SetParentStash(this);
 		}
 	}
-
+	
 	public override bool AddItemAtIndex(Item itemToAdd, int index) {
 		bool success = base.AddItemAtIndex(itemToAdd, index);
 
 		if (success) {
-			itemImages[index].sprite = itemToAdd.sprite;
-			itemImages[index].enabled = true;
 			itemImages[index].transform.parent.GetComponent<ItemSlot>().SetItem(itemToAdd);
 		}
 
@@ -39,17 +38,23 @@ public class Pocket : ItemStash {
 		bool success = base.RemoveItemAtIndex(index);
 
 		if (success) {
-			itemImages[index].sprite = null;
-			itemImages[index].enabled = false;
 			itemImages[index].transform.parent.GetComponent<ItemSlot>().Reset();
 		}
 			
 		return success;
 	}
 
-	public void DeselectAll() {
+	public override void DeselectAll() {
 		for (int i = 0; i < capacity; i++) {
 			itemImages[i].transform.parent.GetComponent<ItemSlot>().Deselect();
 		}
 	}
+
+	public override void SetDisplaying(bool isDisplaying) {
+		// do nothing, its always displaying
+	}
+
+    public override bool IsDisplaying() {
+        return true;
+    }
 }

@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour {
 
 		if (stashDisplayer == null) {
 			stashDisplayer = GameObject.FindObjectOfType<StashDisplayer>();
+			//GameObject.Find("InventoryCanvas").gameObject.SetActive(false);
+			stashDisplayer.gameObject.SetActive(false);
 		}
 
 		DontDestroyOnLoad (gameObject);

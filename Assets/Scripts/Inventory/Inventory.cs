@@ -16,6 +16,16 @@ public class Inventory : ItemStash {
 	void Awake () {
 		
 	}
-	
-	
+
+    public override void SetDisplaying(bool isDisplaying) {
+        this.isDisplaying = isDisplaying;
+    }
+
+    public override bool IsDisplaying() {
+        return isDisplaying;
+    }
+
+    public override void DeselectAll() {
+        
+    }
 }

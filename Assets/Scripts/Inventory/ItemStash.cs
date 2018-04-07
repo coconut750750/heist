@@ -87,6 +87,12 @@ public abstract class ItemStash : MonoBehaviour {
 		return count;
 	}
 
+	public abstract void SetDisplaying(bool isDisplaying);
+
+	public abstract bool IsDisplaying();
+
+	public abstract void DeselectAll();
+
 	public void Log() {
 		string log = "Items: ";
 		for (int i = 0; i < capacity; i++) {
