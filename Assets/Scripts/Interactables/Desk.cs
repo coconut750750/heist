@@ -36,12 +36,11 @@ public class Desk : Interactable {
 
     public void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
-        GameManager.mainPlayer.GetInventory().Log();
+        GameManager.mainPlayer.GetPocket().Log();
         if (items.Count > 0) {
             Item item = items[0];
             player.AddItem(item);
             items.Remove(item);
         }
-        GameManager.mainPlayer.GetInventory().Log();
     }
 }

@@ -14,10 +14,10 @@ public class Player : MovingObject {
 	public GameObject floor1;
 	public GameObject floor2;
 
-	private Inventory mainItems;
+	private Pocket mainItems;
 
 	protected override void Start (){
-		mainItems = FindObjectOfType<Inventory>();
+		mainItems = FindObjectOfType<Pocket>();
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
@@ -37,7 +37,7 @@ public class Player : MovingObject {
 		return "Player 1";
 	}
 
-	public Inventory GetInventory() {
+	public Pocket GetPocket() {
 		return mainItems;
 	}
 

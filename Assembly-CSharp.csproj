@@ -52,15 +52,17 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Buttons\ButtonA.cs" />
-     <Compile Include="Assets\Scripts\Buttons\ItemButton.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\Interactables\Desk.cs" />
      <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
-     <Compile Include="Assets\Scripts\Inventory\InventoryEditor.cs" />
-     <Compile Include="Assets\Scripts\Inventory\InventorySlot.cs" />
      <Compile Include="Assets\Scripts\Inventory\ItemDragger.cs" />
+     <Compile Include="Assets\Scripts\Inventory\ItemSlot.cs" />
+     <Compile Include="Assets\Scripts\Inventory\ItemStash.cs" />
+     <Compile Include="Assets\Scripts\Inventory\Pocket.cs" />
+     <Compile Include="Assets\Scripts\Inventory\PocketEditor.cs" />
+     <Compile Include="Assets\Scripts\Inventory\StashDisplayer.cs" />
      <Compile Include="Assets\Scripts\Item.cs" />
      <Compile Include="Assets\Scripts\MovingObject.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
