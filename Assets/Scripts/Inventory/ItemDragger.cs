@@ -32,7 +32,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 			return;
 		}
 		
-        parentSlot.Select();
+        parentSlot.ToggleSelect();
     }
 
 	public void OnBeginDrag(PointerEventData eventData)

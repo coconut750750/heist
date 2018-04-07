@@ -23,7 +23,7 @@ public class StashDisplayer : MonoBehaviour {
     void OnEnable() {
         if (displayInventory == null) {
             return;
-        }
+        }        
 
         for (int i = 0; i < displayInventory.GetCapacity(); i++) {
             itemSlots[i].Refresh();
@@ -32,5 +32,20 @@ public class StashDisplayer : MonoBehaviour {
             }
             itemSlots[i].SetParentStash(displayInventory);
         }
+    }
+
+    void OnDisable() {
+        if (displayInventory == null) {
+            return;
+        }
+
+        for (int i = 0; i < displayInventory.GetCapacity(); i++) {
+            itemSlots[i].Reset();
+        }
+    }
+
+    public void Close() {
+        GameManager.HideStash();
+        StashDisplayer.displayInventory = null;
     }
 }

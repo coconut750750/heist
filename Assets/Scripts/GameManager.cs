@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour {
 
 		if (stashDisplayer == null) {
 			stashDisplayer = GameObject.FindObjectOfType<StashDisplayer>();
-			//GameObject.Find("InventoryCanvas").gameObject.SetActive(false);
+			stashDisplayer.transform.parent.gameObject.SetActive(false);
 			stashDisplayer.gameObject.SetActive(false);
 		}
 
@@ -32,5 +32,15 @@ public class GameManager : MonoBehaviour {
 
 	void InitGame() {
 		Physics2D.IgnoreLayerCollision (8, 9, true);
+	}
+
+	public static void DisplayStash() {
+		stashDisplayer.transform.parent.gameObject.SetActive(true);
+		stashDisplayer.gameObject.SetActive(true);
+	}
+
+	public static void HideStash() {
+		stashDisplayer.gameObject.SetActive(false);
+		stashDisplayer.transform.parent.gameObject.SetActive(false);
 	}
 }

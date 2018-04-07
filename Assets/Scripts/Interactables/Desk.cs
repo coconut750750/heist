@@ -43,7 +43,7 @@ public class Desk : Interactable {
         items.Log();
 
         StashDisplayer.SetInventory(items);
-        GameManager.stashDisplayer.gameObject.SetActive(true);
+        GameManager.DisplayStash();
         // if (items.GetNumItems() > 0) {
         //     Item item = items.GetItem(0);
         //     player.AddItem(item);

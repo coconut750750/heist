@@ -14,6 +14,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private ItemStash parentStash;
 	[SerializeField]
 	private int index;
+	private bool selected;
 
 	private static Color SELECTED_COLOR = new Color(255/255f, 147/255f, 76/255f);
 	private static Color DEFAULT_COLOR = new Color(1, 1, 1);
@@ -27,15 +28,12 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	public void Refresh() {
-		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
-		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
-		Reset();
-	}
-
-	void Start() {
 		if (text == null) {
 			text = GameObject.Find(INVENTORY_ITEM_TEXT).GetComponent<Text>();
 		}
+		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
+		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
+		Reset();
 	}
 
 	public void SetIndex(int i) {
@@ -73,9 +71,20 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		
 		text.text = item.name;
 		itemBack.color = SELECTED_COLOR;
+
+		selected = true;
+	}
+
+	public void ToggleSelect() {
+		if (selected) {
+			Deselect();
+		} else {
+			Select();
+		}
 	}
 
 	public void Deselect() {
+		selected = false;
 		text.text = "";
 		itemBack.color = DEFAULT_COLOR;
 	}
@@ -84,6 +93,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
 		this.item = null;
+		Deselect();
 	}
 
 	public bool IsEmpty() {
@@ -106,7 +116,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		Item tempItem = GetItem();
 		SetItem(itemSlotOther.item);
 		itemSlotOther.Deselect();
-		Select();
 		itemSlotOther.SetItem(tempItem);
 
 		int indexOther = itemSlotOther.GetIndex();
@@ -119,6 +128,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			parentStash.RemoveItemAtIndex(index);
 			parentStash.AddItemAtIndex(GetItem(), index);
 		}
+		Select();
 
 		parentStash.Log();
     }

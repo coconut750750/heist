@@ -44,7 +44,7 @@ public abstract class ItemStash : MonoBehaviour {
 	}
 
 	public Item GetItem(int index) {
-		if (index >= 0 && index < count) {
+		if (index >= 0 && index < capacity) {
 			return items[index];
 		}
 		return null;
