@@ -27,7 +27,7 @@ public class Inventory : ItemStash {
 
     public override void DeselectAll() {
         if (isDisplaying) {
-			GameManager.stashDisplayer.DeselectAll();
+			GameManager.instance.stashDisplayer.DeselectAll();
 		}
     }
 }

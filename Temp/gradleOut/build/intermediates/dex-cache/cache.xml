@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/Brandon/Desktop/Computer Science/Heist - Unity/Heist/Temp/gradleOut/libs/unity-classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="27.0.2"
+        sha1="2d302418aa3482b8db770278260340aed47dd37a">
+        <dex dex="/Users/Brandon/Desktop/Computer Science/Heist - Unity/Heist/Temp/gradleOut/build/intermediates/pre-dexed/release/unity-classes_4f659c48c6cca65256ec05cb90e726b07083fcbf.jar" />
+    </item>
+
+</items>

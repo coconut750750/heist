@@ -52,14 +52,20 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return parentStash;
 	}
 
+	public void InsertItem(Item item, ItemStash parent) {
+		SetParentStash(parent);
+		SetItem(item);
+	}
+
 	public void SetItem(Item item) {
 		if (item == null) {
-			Reset();
 			return;
 		}
+		
 		itemImage.sprite = item.sprite;
 		itemImage.enabled = true;
 		this.item = item;
+		
 	}
 
 	public Item GetItem() {
@@ -67,11 +73,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	public void Select() {
-		if (parentStash != GameManager.stashDisplayer) {
-			GameManager.stashDisplayer.DeselectAll();
+		if (parentStash != GameManager.instance.stashDisplayer) {
+			GameManager.instance.stashDisplayer.DeselectAll();
 		}
-		if (parentStash != GameManager.mainPlayer.GetPocket()) {
-			GameManager.mainPlayer.GetPocket().DeselectAll();
+		if (parentStash != GameManager.instance.mainPlayer.GetPocket()) {
+			GameManager.instance.mainPlayer.GetPocket().DeselectAll();
 		}
 		parentStash.DeselectAll();
 		
@@ -90,9 +96,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	public void Deselect() {
-		selected = false;
-		text.text = "";
-		itemBack.color = DEFAULT_COLOR;
+		if (selected) {
+			selected = false;
+			text.text = "";
+			itemBack.color = DEFAULT_COLOR;
+		}
 	}
 
 	public void Reset() {

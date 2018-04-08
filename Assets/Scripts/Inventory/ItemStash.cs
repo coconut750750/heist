@@ -16,8 +16,12 @@ public abstract class ItemStash : MonoBehaviour {
 		capacity = numItems;
 	}
 
-	void Awake() {
-		
+	void Start() {
+		for (int i = 0; i < capacity; i++) {
+			if (items[i] != null) {
+				count++;
+			}
+		}
 	}
 
 	public virtual bool AddItemAtIndex(Item itemToAdd, int index) {
@@ -94,7 +98,11 @@ public abstract class ItemStash : MonoBehaviour {
 	public abstract void DeselectAll();
 
 	public void Log() {
-		string log = "Items: ";
+		Debug.Log(ToString());
+	}
+
+	public override string ToString() {
+		string log = "" + count + " items: ";
 		for (int i = 0; i < capacity; i++) {
 			if (items[i] == null) {
 				log = log + "null ";
@@ -102,6 +110,6 @@ public abstract class ItemStash : MonoBehaviour {
 				log = log + items[i].name + " ";
 			}
 		}
-		Debug.Log(log);
+		return log;
 	}
 }

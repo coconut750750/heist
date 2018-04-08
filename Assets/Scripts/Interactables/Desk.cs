@@ -9,15 +9,10 @@ public class Desk : Interactable {
 
     private Inventory items;
 
-    public Item[] itemsToAdd = new Item[4];
-
 	// Use this for initialization
 	void Start () {
         Debug.Log("player restart");
         items = gameObject.GetComponent<Inventory>();
-        for (int i = 0; i < 4; i++) {
-            items.AddItem(itemsToAdd[i]);
-        }
 	}
 	
 	// Update is called once per frame
@@ -41,8 +36,7 @@ public class Desk : Interactable {
     public void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
 
-        StashDisplayer.SetInventory(items);
-        GameManager.DisplayStash();
+        GameManager.instance.DisplayInventory(items);
         // if (items.GetNumItems() > 0) {
         //     Item item = items.GetItem(0);
         //     player.AddItem(item);

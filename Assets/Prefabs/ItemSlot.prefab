@@ -146,7 +146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 962f6b4cee18748b2972cf180155b0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemImage: {fileID: 0}
+  item: {fileID: 0}
+  index: 0
 --- !u!114 &114960459293905502
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -158,10 +159,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4226047587f4629a02e0a4be4f0a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  selected: 0
-  itemBack: {fileID: 0}
-  index: 0
 --- !u!222 &222562239523564918
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -192,7 +189,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!224 &224579886999812240
 RectTransform:
