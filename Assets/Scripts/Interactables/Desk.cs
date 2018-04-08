@@ -11,7 +11,6 @@ public class Desk : Interactable {
 
 	// Use this for initialization
 	void Start () {
-        Debug.Log("player restart");
         items = gameObject.GetComponent<Inventory>();
 	}
 	
@@ -19,15 +18,10 @@ public class Desk : Interactable {
 	void Update () {
 		
 	}
-    
+
     public override void Interact(Player player) {
-        Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
+        Debug.Log(Interactable.player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
 
         GameManager.instance.DisplayInventory(items);
-        // if (items.GetNumItems() > 0) {
-        //     Item item = items.GetItem(0);
-        //     player.AddItem(item);
-        //     items.RemoveItem(item);
-        // }
     }
 }

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class Pocket : ItemStash {
 
@@ -56,5 +59,31 @@ public class Pocket : ItemStash {
 
     public override bool IsDisplaying() {
         return true;
+    }
+
+    public override void Save() {
+		ItemStashData data = new ItemStashData(base.items, base.count, base.capacity);
+
+		BinaryFormatter bf = new BinaryFormatter();
+		FileStream file = File.Create(base.filename);
+		Debug.Log(File.Exists(base.filename));
+
+		bf.Serialize(file, data);
+		file.Close();
+    }
+
+    public override void Load() {
+        if (File.Exists(base.filename)) {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(base.filename, FileMode.Open);
+
+            ItemStashData data = bf.Deserialize(file) as ItemStashData;
+            file.Close();
+
+            base.LoadFromData(data);
+			for (int i = 0; i < base.capacity; i++) {
+				itemImages[i].transform.parent.GetComponent<ItemSlot>().SetItem(base.items[i]);
+			}
+        }
     }
 }
