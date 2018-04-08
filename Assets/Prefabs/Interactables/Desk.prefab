@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114743041512414398}
   - component: {fileID: 61633632998288888}
   - component: {fileID: 61364569338923510}
+  - component: {fileID: 114203457084886688}
   m_Layer: 0
   m_Name: Desk
   m_TagString: Untagged
@@ -37,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1978706156693270}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -91,8 +92,44 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 1.2, y: 1.2}
   m_EdgeRadius: 0
+--- !u!114 &114203457084886688
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1978706156693270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd3dea029b374c8ba167f5520bc18ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114743041512414398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -104,10 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5203a2a90b9c943f4a4d05ec6154ba4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonObj: {fileID: 1461771214743076, guid: 7ae26663b073b4a3a84a9f39af8db663, type: 2}
-  player: {fileID: 114049451046784306, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
-  items:
-  - {fileID: 11400000, guid: b15f66c197dcd45e8972135c16b7fef8, type: 2}
 --- !u!212 &212307958694554898
 SpriteRenderer:
   m_ObjectHideFlags: 1

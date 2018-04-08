@@ -9,15 +9,9 @@ public class Desk : Interactable {
 
     private Inventory items;
 
-    public Item[] itemsToAdd = new Item[4];
-
 	// Use this for initialization
 	void Start () {
-        Debug.Log("player restart");
         items = gameObject.GetComponent<Inventory>();
-        for (int i = 0; i < 4; i++) {
-            items.AddItem(itemsToAdd[i]);
-        }
 	}
 	
 	// Update is called once per frame
@@ -25,28 +19,9 @@ public class Desk : Interactable {
 		
 	}
 
-    public override void PlayerInteract(Player player) {      
-        call = delegate {
-            Interact(player);
-        };
-        Interactable.button.RemoveAllListeners();
-        Interactable.button.AddListener(call);
-    }
+    public override void Interact(Player player) {
+        Debug.Log(Interactable.player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
 
-    public override void PlayerLeave(Player player) {
-        Interactable.button.RemoveListener(call);
-        call = null;
-    }
-
-    public void Interact(Player player) {
-        Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
-
-        StashDisplayer.SetInventory(items);
-        GameManager.DisplayStash();
-        // if (items.GetNumItems() > 0) {
-        //     Item item = items.GetItem(0);
-        //     player.AddItem(item);
-        //     items.RemoveItem(item);
-        // }
+        GameManager.instance.DisplayInventory(items);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StashDisplayer : MonoBehaviour {
     private static Inventory displayInventory;
     private static ItemSlot[] itemSlots;
-    private int capacity;
+    private static int capacity;
 
     void Awake() {
         capacity = transform.childCount;
@@ -19,30 +20,20 @@ public class StashDisplayer : MonoBehaviour {
     public static void SetInventory(Inventory displayInventory) {
         StashDisplayer.displayInventory = displayInventory;
         displayInventory.SetDisplaying(true);
-    }
-
-    void OnEnable() {
-        if (displayInventory == null) {
-            return;
-        }        
 
         for (int i = 0; i < capacity; i++) {
             itemSlots[i].Refresh();
-            if (displayInventory.GetItem(i) != null) {
-                itemSlots[i].SetItem(displayInventory.GetItem(i));
-            }
-            itemSlots[i].SetParentStash(displayInventory);
+            itemSlots[i].InsertItem(displayInventory.GetItem(i), displayInventory);
         }
     }
 
-    void OnDisable() {
-        if (displayInventory == null) {
-            return;
-        }
-
+    public static void ClearInventory() {
         for (int i = 0; i < displayInventory.GetCapacity(); i++) {
             itemSlots[i].Reset();
         }
+
+        displayInventory.SetDisplaying(false);
+        StashDisplayer.displayInventory = null;
     }
 
     public void DeselectAll() {
@@ -52,8 +43,7 @@ public class StashDisplayer : MonoBehaviour {
     }
 
     public void Close() {
-        GameManager.HideStash();
-        displayInventory.SetDisplaying(false);
-        StashDisplayer.displayInventory = null;
+        GameManager.instance.HideInventory();
+        ClearInventory();
     }
 }
