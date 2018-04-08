@@ -59,6 +59,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void SetItem(Item item) {
 		if (item == null) {
+			Reset();
 			return;
 		}
 		
@@ -130,6 +131,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		ItemSlot itemSlotOther = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
 
 		Item tempItem1 = GetItem();
+		Debug.Log("temp item 1 " + (tempItem1 == null));
 		Item tempItem2 = itemSlotOther.GetItem();
 		
 		SetItem(tempItem2);
@@ -147,5 +149,9 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			parentStash.AddItemAtIndex(tempItem2, index);
 		}
 		Select();
+
+		parentStash.Log();
+		itemSlotOther.GetParentStash().Log();
+		Debug.Log("temp item 1 " + (tempItem1 == null));
     }
 }

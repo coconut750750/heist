@@ -18,7 +18,6 @@ public class StashDisplayer : MonoBehaviour {
     }
 
     public static void SetInventory(Inventory displayInventory) {
-        Debug.Log("set inventory-ed");
         StashDisplayer.displayInventory = displayInventory;
         displayInventory.SetDisplaying(true);
 

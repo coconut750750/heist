@@ -25,6 +25,10 @@ public abstract class ItemStash : MonoBehaviour {
 	}
 
 	public virtual bool AddItemAtIndex(Item itemToAdd, int index) {
+		if (itemToAdd == null) {
+			return false;
+		}
+		
 		if (count != capacity && items[index] == null) {
 			items[index] = itemToAdd;
 			count++;
