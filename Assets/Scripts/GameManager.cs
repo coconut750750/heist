@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void InitGame() {
+		Debug.Log("Game Started");
 		Physics2D.IgnoreLayerCollision (8, 9, true);
 	}
 
