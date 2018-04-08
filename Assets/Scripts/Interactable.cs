@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
+
+    protected static bool alreadyRemoved;
 
     protected static GameObject buttonObj;
     protected static ButtonA button;
@@ -11,6 +14,8 @@ public abstract class Interactable : MonoBehaviour {
 
     protected static Player player;
     private const string PLAYER_TAG = "Player";
+
+    private UnityAction call = null;
 
 	// Use this for initialization
 	void Awake () {
@@ -22,6 +27,7 @@ public abstract class Interactable : MonoBehaviour {
         if (player == null) {
             player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
         }
+        alreadyRemoved = false;
 	}
 
 	// Update is called once per frame
@@ -33,6 +39,7 @@ public abstract class Interactable : MonoBehaviour {
     {
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
+            Debug.Log(button.getListeners());
             if (!buttonObj.activeSelf) {
                 buttonObj.SetActive(true);
             }
@@ -45,13 +52,35 @@ public abstract class Interactable : MonoBehaviour {
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
             PlayerLeave(player);
+            
             if (buttonObj.activeSelf && button.getListeners() == 0) {
                 buttonObj.SetActive(false);
             }
         }
     }
 
-    public abstract void PlayerInteract(Player player);
+    public void PlayerInteract(Player player) {
+        call = delegate {
+            Interact(player);
+        };
 
-    public abstract void PlayerLeave(Player player);
+        if (button.getListeners() > 0) {
+            alreadyRemoved = true;
+            Interactable.button.RemoveAllListeners();
+        }
+        
+        Interactable.button.AddListener(call);
+    }
+
+    public void PlayerLeave(Player player) {
+        if (!alreadyRemoved) {
+            Interactable.button.RemoveListener(call);
+        } else {
+            alreadyRemoved = false;
+        }
+        
+        call = null;
+    }
+
+    public abstract void Interact(Player player);
 }

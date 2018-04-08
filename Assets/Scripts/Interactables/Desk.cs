@@ -19,21 +19,8 @@ public class Desk : Interactable {
 	void Update () {
 		
 	}
-
-    public override void PlayerInteract(Player player) {      
-        call = delegate {
-            Interact(player);
-        };
-        Interactable.button.RemoveAllListeners();
-        Interactable.button.AddListener(call);
-    }
-
-    public override void PlayerLeave(Player player) {
-        Interactable.button.RemoveListener(call);
-        call = null;
-    }
-
-    public void Interact(Player player) {
+    
+    public override void Interact(Player player) {
         Debug.Log(player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
 
         GameManager.instance.DisplayInventory(items);
