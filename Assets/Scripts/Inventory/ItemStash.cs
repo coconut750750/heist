@@ -29,22 +29,22 @@ public abstract class ItemStash : MonoBehaviour {
 		}
 
 		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
-				
-		Debug.Log("loading from: " + filename);
 		Load();
 	}
 
-	#if UNITY_STANDALONE
 	protected void OnApplicationQuit() {
-		Debug.Log("saving to: " + filename);
 		Save();
 	}
-	#elif UNITY_ANDROID || UNITY_IOS
-	protected void OnApplicationPause() {
-		Debug.Log("saving to: " + filename);
-		Save();
-	}
-	#endif
+
+	// #if UNITY_STANDALONE
+	// protected void OnApplicationQuit() {
+	// 	Save();
+	// }
+	// #elif UNITY_ANDROID || UNITY_IOS
+	// protected void OnApplicationPause() {
+	// 	Save();
+	// }
+	// #endif
 
 	public virtual bool AddItemAtIndex(Item itemToAdd, int index) {
 		if (itemToAdd == null) {
@@ -159,7 +159,7 @@ public abstract class ItemStash : MonoBehaviour {
 }
 
 [Serializable]
-public class ItemStashData {
+public class ItemStashData : GameData {
 	public string[] itemNames;
 	public int count = 0;
 	public int capacity = 0;

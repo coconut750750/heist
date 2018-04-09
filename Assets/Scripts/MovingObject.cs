@@ -6,9 +6,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public abstract class MovingObject : MonoBehaviour {
 
-	private GameObject doorTilemapGameObj;
-
-	private Rigidbody2D rb2D;
+	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
 	private const string DOOR_TAG = "Door";
@@ -16,9 +14,9 @@ public abstract class MovingObject : MonoBehaviour {
 	private Sprite currentDoorSprite;
 
 	private const string STAIRS_TAG = "Stairs";
-	private int onStairs = 0;
+	protected int onStairs = 0;
 
-	private int floor = 0;
+	protected int floor = 0;
 
 	public float moveSpeed;
 
@@ -27,6 +25,8 @@ public abstract class MovingObject : MonoBehaviour {
 	private const string BACK = "PlayerBackAnim";
 	private const string RIGHT = "PlayerRightAnim";
 	private Animator animator;
+
+	protected string filename;
 
 	IEnumerator doorDelay(Collider2D door) {
 		paused = true;
@@ -42,12 +42,26 @@ public abstract class MovingObject : MonoBehaviour {
 		rb2D.freezeRotation = true;
 
 		animator = GetComponent<Animator> ();
-
 	}
 
-	// Use this for initialization
 	protected virtual void Start () {
+		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
+		Load();
 	}
+
+	protected void OnApplicationQuit() {
+		Save();
+	}
+
+	// #if UNITY_STANDALONE
+	// protected void OnApplicationQuit() {
+	// 	Save();
+	// }
+	// #elif UNITY_ANDROID || UNITY_IOS
+	// protected void OnApplicationPause() {
+	// 	Save();
+	// }
+	// #endif
 
 	protected void FixedUpdate() {
 		float moveHorizontal = 0;
@@ -134,5 +148,36 @@ public abstract class MovingObject : MonoBehaviour {
 
 	protected int GetFloor() {
 		return floor + 1;
+	}
+
+	public abstract void Save();
+
+	public abstract void Load();
+
+	protected void LoadFromData(MovingObjectData data) {
+		this.onStairs = data.onStairs;
+		this.floor = data.floor;
+		rb2D.transform.position = data.getPosition();
+	}
+}
+
+[System.Serializable]
+public class MovingObjectData : GameData{
+	public int onStairs;
+	public int floor;
+	public float xPos;
+	public float yPos;
+	public float zPos;
+
+	public MovingObjectData(int onStairs, int floor, Vector3 position) {
+		this.onStairs = onStairs;
+		this.floor = floor;
+		this.xPos = position.x;
+		this.yPos = position.y;
+		this.zPos = position.z;
+	}
+
+	public Vector3 getPosition() {
+		return new Vector3(xPos, yPos, zPos);
 	}
 }

@@ -36,24 +36,15 @@ public class Inventory : ItemStash {
 
     public override void Save() {
         ItemStashData data = new ItemStashData(base.items, base.count, base.capacity);
-
-		BinaryFormatter bf = new BinaryFormatter();
-		FileStream file = File.Create(base.filename);
-
-		bf.Serialize(file, data);
-		file.Close();
+        GameManager.Save(data, base.filename);
     }
 
     public override void Load() {
-        if (File.Exists(base.filename)) {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(base.filename, FileMode.Open);
+        ItemStashData data = GameManager.Load<ItemStashData>(base.filename);
 
-            ItemStashData data = bf.Deserialize(file) as ItemStashData;
-            file.Close();
-
-            base.LoadFromData(data);
+		if (data != null) {
+			base.LoadFromData(data);
             this.isDisplaying = false;
-        }
+		}
     }
 }

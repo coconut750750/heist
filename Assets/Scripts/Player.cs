@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class Player : MovingObject {
 
@@ -16,7 +19,8 @@ public class Player : MovingObject {
 
 	private Pocket mainItems;
 
-	protected override void Start (){
+	protected override void Start () {
+		base.Start();
 		mainItems = FindObjectOfType<Pocket>();
 	}
 
@@ -57,4 +61,20 @@ public class Player : MovingObject {
 	public void RemoveItem(Item item) {
 		mainItems.RemoveItem(item);
 	}
+
+    public override void Save() {
+        MovingObjectData data = new MovingObjectData(base.onStairs, base.floor, base.rb2D.transform.position);
+		GameManager.Save(data, base.filename);
+    }
+
+    public override void Load() {
+		MovingObjectData data = GameManager.Load<MovingObjectData>(base.filename);
+        if (data != null) {
+			base.LoadFromData(data);
+			if (GetFloor () == 2) {
+				floor2.SetActive (true);
+				gameObject.layer = 17 - gameObject.layer;
+			}
+		}
+    }
 }
