@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class GameManager : MonoBehaviour {
 
@@ -42,4 +45,33 @@ public class GameManager : MonoBehaviour {
 		stashDisplayer.gameObject.SetActive(false);
 		stashDisplayer.transform.parent.gameObject.SetActive(false);
 	}
+
+	public static void Save(GameData data, string filename) {
+		if (data != null && filename != null) {
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Create(filename);
+
+			bf.Serialize(file, data);
+			file.Close();
+		}
+	}
+
+	public static T Load<T>(string filename) where T : GameData{
+		if (File.Exists(filename)) {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(filename, FileMode.Open);
+
+            T data = bf.Deserialize(file) as T;
+            file.Close();
+
+			return data;
+        }
+
+		return null;
+	}
+}
+
+[System.Serializable]
+public class GameData {
+
 }
