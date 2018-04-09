@@ -34,14 +34,13 @@ public abstract class ItemStash : MonoBehaviour {
 		Load();
 	}
 
-	#if UNITY_STANDALONE
+	#if UNITY_EDITOR || UNITY_STANDALONE
 	protected void OnApplicationQuit() {
 		Debug.Log("saving to: " + filename);
 		Save();
 	}
 	#elif UNITY_ANDROID || UNITY_IOS
 	protected void OnApplicationPause() {
-		Debug.Log("saving to: " + filename);
 		Save();
 	}
 	#endif

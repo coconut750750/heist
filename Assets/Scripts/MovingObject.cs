@@ -49,6 +49,16 @@ public abstract class MovingObject : MonoBehaviour {
 	protected virtual void Start () {
 	}
 
+	#if UNITY_EDITOR || UNITY_STANDALONE
+	protected void OnApplicationQuit() {
+		Save();
+	}
+	#elif UNITY_ANDROID || UNITY_IOS
+	protected void OnApplicationPause() {
+		Save();
+	}
+	#endif
+
 	protected void FixedUpdate() {
 		float moveHorizontal = 0;
 		float moveVertical = 0;
