@@ -14,22 +14,26 @@ public class Player : MovingObject {
 	private const string BACK = "PlayerBackAnim";
 	private const string RIGHT = "PlayerRightAnim";
 
+	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
+
 	public GameObject floor1;
 	public GameObject floor2;
 
 	private Pocket mainItems;
+	private Inventory mainInventory;
+	private string inventoryFileName;
 
 	protected int money = 0;
-	public GameObject moneyInfo;
-	protected Text moneyText;
+	public Text moneyText;
 	protected int health = 0;
+	public Text healthText;
 	protected int exp = 0;
 
 	protected override void Start () {
 		base.Start();
 		mainItems = FindObjectOfType<Pocket>();
+		mainInventory = GetComponent<Inventory>();
 
-		moneyText = moneyInfo.GetComponent<Text>();
 		UpdateInfo();
 	}
 
@@ -50,11 +54,15 @@ public class Player : MovingObject {
 	}
 
 	public string GetName() {
-		return "Player 1";
+		return gameObject.name;
 	}
 
 	public Pocket GetPocket() {
 		return mainItems;
+	}
+
+	public Inventory GetInventory() {
+		return mainInventory;
 	}
 
 	public void AddItem(Item item) {
@@ -78,6 +86,10 @@ public class Player : MovingObject {
 		if (moneyText != null) {
 			moneyText.text = "" + money;
 		}
+
+		if (healthText != null) {
+			healthText.text = "" + health;
+		}
 	}
 
     public override void Save() {
@@ -87,6 +99,7 @@ public class Player : MovingObject {
 
     public override void Load() {
 		PlayerData data = GameManager.Load<PlayerData>(base.filename);
+		
         if (data != null) {
 			base.LoadFromData(data);
 			if (GetFloor () == 2) {
@@ -96,6 +109,15 @@ public class Player : MovingObject {
 			this.money = data.money;
 			this.health = data.health;
 			this.exp = data.exp;
+
+			//this.mainInventory.LoadFromData(data.inventoryData);
+		} else {
+			base.LoadFromData(new PlayerData(
+				0, 0, START_POS, 0, 0, 0
+			));
+			this.money = 0;
+			this.health = 100;
+			this.exp = 0;
 		}
     }
 }
@@ -105,11 +127,17 @@ public class PlayerData : MovingObjectData {
 	public int money;
 	public int health;
 	public int exp;
+	public ItemStashData inventoryData;
 
-	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp) : 
+	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp): 
 		base(onStairs, floor, position) {
 		this.money = money;
 		this.health = health;
 		this.exp = exp;
+		// if (inventory != null) {
+		// 	this.inventoryData = new ItemStashData(inventory.items, inventory.GetNumItems(), inventory.GetCapacity());
+		// } else {
+		// 	this.inventoryData = null;
+		// }
 	}
 }

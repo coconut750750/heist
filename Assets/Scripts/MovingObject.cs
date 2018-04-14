@@ -6,6 +6,8 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public abstract class MovingObject : MonoBehaviour {
 
+	private const string CLASS_NAME = "movingobj";
+
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
@@ -45,7 +47,7 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected virtual void Start () {
-		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
+		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
 		Load();
 	}
 

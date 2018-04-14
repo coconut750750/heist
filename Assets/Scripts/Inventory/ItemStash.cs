@@ -8,6 +8,8 @@ using System.IO;
 
 public abstract class ItemStash : MonoBehaviour {
 
+	private const string CLASS_NAME = "itemstash";
+
 	public Item[] items;
 
 	protected int count = 0;
@@ -28,7 +30,7 @@ public abstract class ItemStash : MonoBehaviour {
 			}
 		}
 
-		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
+		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
 		Load();
 	}
 
@@ -149,7 +151,7 @@ public abstract class ItemStash : MonoBehaviour {
 
 	public abstract void Load();
 
-	protected void LoadFromData(ItemStashData data) {
+	public void LoadFromData(ItemStashData data) {
 		this.count = data.count;
 		this.capacity = data.capacity;
 		

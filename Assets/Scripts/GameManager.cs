@@ -35,6 +35,14 @@ public class GameManager : MonoBehaviour {
 		Physics2D.IgnoreLayerCollision (8, 9, true);
 	}
 
+	public void Pause() {
+		DisplayInventory(mainPlayer.GetInventory());
+	}
+
+	// public void Unpause() {
+	// 	HideInventory();
+	// }
+
 	public void DisplayInventory(Inventory stash) {
 		stashDisplayer.transform.parent.gameObject.SetActive(true);
 		stashDisplayer.gameObject.SetActive(true);
@@ -56,7 +64,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public static T Load<T>(string filename) where T : GameData{
+	public static T Load<T>(string filename) where T : GameData {
 		if (File.Exists(filename)) {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(filename, FileMode.Open);
