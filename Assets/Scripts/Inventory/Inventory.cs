@@ -10,6 +10,9 @@ public class Inventory : ItemStash {
 
 	public const int NUM_ITEMS = 24;
 
+    [SerializeField]
+    private string inventoryName;
+
 	private bool isDisplaying;
 
 	public Inventory() : base(NUM_ITEMS) {
@@ -19,6 +22,10 @@ public class Inventory : ItemStash {
 	void Awake () {
 
 	}
+
+    public string GetName() {
+        return inventoryName;
+    }
 
     public override void SetDisplaying(bool isDisplaying) {
         this.isDisplaying = isDisplaying;
