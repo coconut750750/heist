@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		stashDisplayer.transform.parent.gameObject.SetActive(false);
 		stashDisplayer.gameObject.SetActive(false);
 
 		DontDestroyOnLoad (gameObject);
@@ -44,14 +43,13 @@ public class GameManager : MonoBehaviour {
 	// }
 
 	public void DisplayInventory(Inventory stash) {
-		stashDisplayer.transform.parent.gameObject.SetActive(true);
 		stashDisplayer.gameObject.SetActive(true);
 		StashDisplayer.SetInventory(stash);
 	}
 
 	public void HideInventory() {
 		stashDisplayer.gameObject.SetActive(false);
-		stashDisplayer.transform.parent.gameObject.SetActive(false);
+		StashDisplayer.ClearInventory();
 	}
 
 	public static void Save(GameData data, string filename) {

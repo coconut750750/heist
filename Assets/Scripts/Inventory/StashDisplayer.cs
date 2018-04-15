@@ -7,14 +7,18 @@ public class StashDisplayer : MonoBehaviour {
     private static Inventory displayInventory;
     private static ItemSlot[] itemSlots;
     private static int capacity;
+    private static Text nameText;
 
     void Awake() {
-        capacity = transform.childCount;
+        Transform inventory = transform.Find("Inventory");
+        capacity = inventory.childCount;
         itemSlots = new ItemSlot[capacity];
         for (int i = 0; i < capacity; i++) {
-            itemSlots[i] = transform.GetChild(i).gameObject.GetComponent<ItemSlot>();
+            itemSlots[i] = inventory.GetChild(i).gameObject.GetComponent<ItemSlot>();
             itemSlots[i].SetIndex(i);
         }
+
+        nameText = transform.Find("InventoryName").GetComponent<Text>();
     }
 
     public static void SetInventory(Inventory displayInventory) {
@@ -25,6 +29,8 @@ public class StashDisplayer : MonoBehaviour {
             itemSlots[i].Refresh();
             itemSlots[i].InsertItem(displayInventory.GetItem(i), displayInventory);
         }
+
+        nameText.text = displayInventory.GetName();
     }
 
     public static void ClearInventory() {
@@ -34,16 +40,13 @@ public class StashDisplayer : MonoBehaviour {
 
         displayInventory.SetDisplaying(false);
         StashDisplayer.displayInventory = null;
+
+        nameText.text = "";
     }
 
     public void DeselectAll() {
         for (int i = 0; i < capacity; i++) {
             itemSlots[i].Deselect();
         }
-    }
-
-    public void Close() {
-        GameManager.instance.HideInventory();
-        ClearInventory();
     }
 }
