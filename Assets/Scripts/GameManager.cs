@@ -34,14 +34,6 @@ public class GameManager : MonoBehaviour {
 		Physics2D.IgnoreLayerCollision (8, 9, true);
 	}
 
-	public void Pause() {
-		
-	}
-
-	// public void Unpause() {
-	// 	HideInventory();
-	// }
-
 	public void DisplayInventory(Inventory stash) {
 		stashDisplayer.gameObject.SetActive(true);
 		StashDisplayer.SetInventory(stash);
