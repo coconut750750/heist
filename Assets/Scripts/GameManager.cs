@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void Pause() {
-		DisplayInventory(mainPlayer.GetInventory());
+		
 	}
 
 	// public void Unpause() {
