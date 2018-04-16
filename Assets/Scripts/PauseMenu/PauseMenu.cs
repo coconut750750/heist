@@ -13,6 +13,9 @@ public class PauseMenu : MonoBehaviour {
 	public int craftingIndex;
 	public CraftingStash craftingStash;
 
+	public int dismantleIndex;
+	public DismantleStash dismantleStash;
+
 	void Awake () {
 		gameObject.SetActive(false);
 		for (int i = 0; i < menuButtons.Length; i++) {
@@ -33,6 +36,7 @@ public class PauseMenu : MonoBehaviour {
 	}
 
 	public void UnPause(){
+		HidePauseStashes();
 		gameObject.SetActive(false);
 	}
 
@@ -40,12 +44,24 @@ public class PauseMenu : MonoBehaviour {
 		menuContents[openedMenu].SetActive(false);
 		menuContents[index].SetActive(true);
 		openedMenu = index;
+		HidePauseStashes();
 		if (index == craftingIndex) {
 			DisplayCraftingStash();
+		} else if (index == dismantleIndex) {
+			DisplayDismantleStash();
 		}
 	}
 
 	public void DisplayCraftingStash() {
 		craftingStash.Display();
+	}
+
+	public void HidePauseStashes() {
+		craftingStash.Hide();
+		dismantleStash.Hide();
+	}
+
+	public void DisplayDismantleStash() {
+		dismantleStash.Display();
 	}
 }

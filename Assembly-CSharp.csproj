@@ -62,12 +62,15 @@
      <Compile Include="Assets\Scripts\Inventory\ItemStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\Pocket.cs" />
      <Compile Include="Assets\Scripts\Inventory\PocketEditor.cs" />
+     <Compile Include="Assets\Scripts\Inventory\SingletonStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\StashDisplayer.cs" />
      <Compile Include="Assets\Scripts\ItemManager.cs" />
      <Compile Include="Assets\Scripts\Items\Item.cs" />
      <Compile Include="Assets\Scripts\MovingObject.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\CraftingStash.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu\DismantleStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseMenu.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu\PauseStash.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PrefabBrush.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
