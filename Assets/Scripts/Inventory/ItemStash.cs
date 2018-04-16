@@ -44,16 +44,6 @@ public abstract class ItemStash : MonoBehaviour {
 	}
 	#endif
 
-	// #if UNITY_STANDALONE
-	// protected void OnApplicationQuit() {
-	// 	Save();
-	// }
-	// #elif UNITY_ANDROID || UNITY_IOS
-	// protected void OnApplicationPause() {
-	// 	Save();
-	// }
-	// #endif
-
 	public virtual bool AddItemAtIndex(Item itemToAdd, int index) {
 		if (itemToAdd == null) {
 			return false;

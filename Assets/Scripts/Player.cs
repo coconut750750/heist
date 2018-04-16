@@ -20,8 +20,6 @@ public class Player : MovingObject {
 	public GameObject floor2;
 
 	private Pocket mainItems;
-	private Inventory mainInventory;
-	private string inventoryFileName;
 
 	protected int money = 0;
 	public Text moneyText;
@@ -32,7 +30,6 @@ public class Player : MovingObject {
 	protected override void Start () {
 		base.Start();
 		mainItems = FindObjectOfType<Pocket>();
-		mainInventory = GetComponent<Inventory>();
 
 		UpdateInfo();
 	}
@@ -60,11 +57,7 @@ public class Player : MovingObject {
 	public Pocket GetPocket() {
 		return mainItems;
 	}
-
-	public Inventory GetInventory() {
-		return mainInventory;
-	}
-
+	
 	public void AddItem(Item item) {
 		mainItems.AddItem(item);
 	}
@@ -109,8 +102,6 @@ public class Player : MovingObject {
 			this.money = data.money;
 			this.health = data.health;
 			this.exp = data.exp;
-
-			//this.mainInventory.LoadFromData(data.inventoryData);
 		} else {
 			base.LoadFromData(new PlayerData(
 				0, 0, START_POS, 0, 0, 0
@@ -127,17 +118,11 @@ public class PlayerData : MovingObjectData {
 	public int money;
 	public int health;
 	public int exp;
-	public ItemStashData inventoryData;
 
 	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp): 
 		base(onStairs, floor, position) {
 		this.money = money;
 		this.health = health;
 		this.exp = exp;
-		// if (inventory != null) {
-		// 	this.inventoryData = new ItemStashData(inventory.items, inventory.GetNumItems(), inventory.GetCapacity());
-		// } else {
-		// 	this.inventoryData = null;
-		// }
 	}
 }
