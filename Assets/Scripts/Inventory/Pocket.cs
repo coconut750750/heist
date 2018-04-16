@@ -10,7 +10,8 @@ public class Pocket : ItemStash {
 
 	public const int NUM_ITEMS = 7;
 
-	public Image[] itemImages = new Image[NUM_ITEMS];
+	private Image[] itemImages = new Image[NUM_ITEMS];
+	public ItemSlot[] itemSlots = new ItemSlot[NUM_ITEMS];
 
 	public Pocket() : base(NUM_ITEMS) {
 
@@ -22,8 +23,9 @@ public class Pocket : ItemStash {
 
 	protected void SetItemSlots() {
 		for (int i = 0; i < capacity; i++) {
-			itemImages[i].transform.parent.GetComponent<ItemSlot>().SetIndex(i);
-			itemImages[i].transform.parent.GetComponent<ItemSlot>().SetParentStash(this);
+			itemImages[i] = itemSlots[i].GetItemImage();
+			itemSlots[i].SetIndex(i);
+			itemSlots[i].SetParentStash(this);
 		}
 	}
 	
@@ -31,7 +33,7 @@ public class Pocket : ItemStash {
 		bool success = base.AddItemAtIndex(itemToAdd, index);
 
 		if (success) {
-			itemImages[index].transform.parent.GetComponent<ItemSlot>().SetItem(itemToAdd);
+			itemSlots[index].SetItem(itemToAdd);
 		}
 
 		return success;
@@ -41,7 +43,7 @@ public class Pocket : ItemStash {
 		bool success = base.RemoveItemAtIndex(index);
 
 		if (success) {
-			itemImages[index].transform.parent.GetComponent<ItemSlot>().Reset();
+			itemSlots[index].Reset();
 		}
 			
 		return success;
@@ -49,7 +51,7 @@ public class Pocket : ItemStash {
 
 	public override void DeselectAll() {
 		for (int i = 0; i < capacity; i++) {
-			itemImages[i].transform.parent.GetComponent<ItemSlot>().Deselect();
+			itemSlots[i].Deselect();
 		}
 	}
 
@@ -72,7 +74,7 @@ public class Pocket : ItemStash {
 		if (data != null) {
 			base.LoadFromData(data);
 			for (int i = 0; i < base.capacity; i++) {
-				itemImages[i].transform.parent.GetComponent<ItemSlot>().SetItem(base.items[i]);
+				itemSlots[i].SetItem(base.items[i]);
 			}
 		}
     }

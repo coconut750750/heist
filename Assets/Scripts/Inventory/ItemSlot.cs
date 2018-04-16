@@ -15,6 +15,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	[SerializeField]
 	private int index;
 	private bool selected;
+	private bool inputAllowed = true; // true if player can move stuff into this slot
+	private bool outputAllowed = true; // true if player can move stuff out of this slot
 
 	private static Color SELECTED_COLOR = new Color(255/255f, 147/255f, 76/255f);
 	private static Color DEFAULT_COLOR = new Color(1, 1, 1);
@@ -73,6 +75,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return this.item;
 	}
 
+	public Image GetItemImage() {
+		return this.itemImage;
+	}
+
 	public void Select() {
 		if (parentStash != GameManager.instance.stashDisplayer) {
 			GameManager.instance.stashDisplayer.DeselectAll();
@@ -80,7 +86,9 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		if (parentStash != GameManager.instance.mainPlayer.GetPocket()) {
 			GameManager.instance.mainPlayer.GetPocket().DeselectAll();
 		}
-		parentStash.DeselectAll();
+		if (parentStash != null) {
+			parentStash.DeselectAll();
+		}
 		
 		text.text = item.name;
 		itemBack.color = SELECTED_COLOR;
@@ -104,6 +112,22 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		}
 	}
 
+	public bool InputAllowed() {
+		return this.inputAllowed;
+	}
+
+	public void SetInputAllowed(bool allowed) {
+		this.inputAllowed = allowed;
+	}
+
+	public bool OutputAllowed() {
+		return this.outputAllowed;
+	}
+
+	public void SetOutputAllowed(bool allowed) {
+		this.outputAllowed = allowed;
+	}
+
 	public void Reset() {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
@@ -117,10 +141,20 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
     public void OnDrop(PointerEventData eventData)
     {
+		Debug.Log(gameObject.name);
+		if (!inputAllowed) {
+			return;
+		}
+		Image imageDragged = ItemDragger.itemBeingDragged.GetImage();
+		ItemSlot itemSlotOther = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
+		
+		if (!itemSlotOther.outputAllowed) {
+			return;
+		}
+
 		// swap images
 		Sprite tempSprite = itemImage.sprite;
 		bool tempEnabled = itemImage.enabled;
-		Image imageDragged = ItemDragger.itemBeingDragged.GetImage();
 		itemImage.sprite = imageDragged.sprite;
 		itemImage.enabled = true;
 
@@ -128,7 +162,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		imageDragged.enabled = tempEnabled;
 
 		// swap item slot items
-		ItemSlot itemSlotOther = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
+		
 
 		Item tempItem1 = GetItem();
 		Item tempItem2 = itemSlotOther.GetItem();

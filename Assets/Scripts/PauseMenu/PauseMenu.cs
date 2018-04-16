@@ -10,6 +10,9 @@ public class PauseMenu : MonoBehaviour {
 
 	private int openedMenu;
 
+	public int craftingIndex;
+	public CraftingStash craftingStash;
+
 	void Awake () {
 		gameObject.SetActive(false);
 		for (int i = 0; i < menuButtons.Length; i++) {
@@ -34,10 +37,15 @@ public class PauseMenu : MonoBehaviour {
 	}
 
 	public void OpenContent(int index) {
-		Debug.Log("length: " + menuContents.Length);
-		Debug.Log("index: " + index);
 		menuContents[openedMenu].SetActive(false);
 		menuContents[index].SetActive(true);
 		openedMenu = index;
+		if (index == craftingIndex) {
+			DisplayCraftingStash();
+		}
+	}
+
+	public void DisplayCraftingStash() {
+		craftingStash.Display();
 	}
 }
