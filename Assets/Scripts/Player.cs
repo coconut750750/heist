@@ -26,6 +26,7 @@ public class Player : MovingObject {
 	protected int health = 0;
 	public Text healthText;
 	protected int exp = 0;
+	protected int strength = 0;
 
 	protected override void Start () {
 		base.Start();
@@ -33,6 +34,14 @@ public class Player : MovingObject {
 
 		UpdateInfo();
 	}
+
+	public int GetMoney() { return money; }
+
+	public int GetHealth() { return health; }
+
+	public int GetExperience() { return exp; }
+
+	public int GetStrength() { return strength; }
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
@@ -86,7 +95,8 @@ public class Player : MovingObject {
 	}
 
     public override void Save() {
-        PlayerData data = new PlayerData(base.onStairs, base.floor, base.rb2D.transform.position, money, health, exp);
+        PlayerData data = new PlayerData(base.onStairs, base.floor, base.rb2D.transform.position, 
+		money, health, exp, strength);
 		GameManager.Save(data, base.filename);
     }
 
@@ -102,9 +112,10 @@ public class Player : MovingObject {
 			this.money = data.money;
 			this.health = data.health;
 			this.exp = data.exp;
+			this.strength = data.strength;
 		} else {
 			base.LoadFromData(new PlayerData(
-				0, 0, START_POS, 0, 0, 0
+				0, 0, START_POS, 0, 0, 0, 0
 			));
 			this.money = 0;
 			this.health = 100;
@@ -118,11 +129,13 @@ public class PlayerData : MovingObjectData {
 	public int money;
 	public int health;
 	public int exp;
+	public int strength;
 
-	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp): 
+	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp, int strength): 
 		base(onStairs, floor, position) {
 		this.money = money;
 		this.health = health;
 		this.exp = exp;
+		this.strength = strength;
 	}
 }

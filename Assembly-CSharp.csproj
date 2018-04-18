@@ -69,6 +69,7 @@
      <Compile Include="Assets\Scripts\MovingObject.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\CraftingStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\DismantleStash.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu\OverviewContent.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\SliderControl.cs" />
