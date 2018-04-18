@@ -71,6 +71,7 @@
      <Compile Include="Assets\Scripts\PauseMenu\DismantleStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseStash.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu\SliderControl.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PrefabBrush.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
