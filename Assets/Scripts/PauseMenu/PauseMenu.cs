@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour {
 
+	public static PauseMenu instance = null;
+
 	public GameObject[] menuContents;
 	public Button[] menuButtons;
 
@@ -21,6 +23,12 @@ public class PauseMenu : MonoBehaviour {
 	private Color SELECTED = new Color(200, 200, 200);
 
 	void Awake () {
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy (gameObject);
+		}
+		
 		gameObject.SetActive(false);
 		for (int i = 0; i < menuButtons.Length; i++) {
 			int index = i;
@@ -77,5 +85,15 @@ public class PauseMenu : MonoBehaviour {
 
 	public void DisplayDismantleStash() {
 		dismantleStash.Display();
+	}
+
+	public ItemStash GetActiveStash() {
+		if (openedMenu == craftingIndex) {
+			return craftingStash;
+		} else if (openedMenu == dismantleIndex) {
+			return dismantleStash;
+		} else {
+			return null;
+		}
 	}
 }
