@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour {
 	private const float CHANGE_RATE_SECS = 0.5f; // in seconds
 	public Text timeText;
 
+	private bool isPaused;
+
 	void Awake () {
 		if (instance == null) {
 			instance = this;
@@ -45,7 +47,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (Time.time - lastChange > CHANGE_RATE_SECS) { 
+		if (Time.time - lastChange > CHANGE_RATE_SECS && !isPaused) { 
 			minute++;
 			if (minute == 60) {
 				minute = 0;
@@ -78,7 +80,7 @@ public class GameManager : MonoBehaviour {
 		if (hour % 12 == 0) {
 			hourStr = "12";
 		}
-		return "Day " + day + " " + hourStr + ":" + minuteStr + " " + ampm;
+		return "Day " + day + ". " + hourStr + ":" + minuteStr + " " + ampm;
 	}
 
 	public void DisplayInventory(Inventory stash) {
@@ -89,6 +91,18 @@ public class GameManager : MonoBehaviour {
 	public void HideInventory() {
 		stashDisplayer.gameObject.SetActive(false);
 		StashDisplayer.ClearInventory();
+	}
+
+	public void PauseGame() {
+		isPaused = true;
+	}
+
+	public void UnpauseGame() {
+		isPaused = false;
+	}
+
+	public bool IsPaused() {
+		return isPaused;
 	}
 
 	public static void Save(GameData data, string filename) {

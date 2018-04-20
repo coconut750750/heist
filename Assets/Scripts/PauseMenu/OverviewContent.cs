@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class OverviewContent : MonoBehaviour {
 
+	public Text goalText;
+	public Text timeText;
+
 	public GameObject goalPanel;
 	public GameObject timePanel;
 	public GameObject[] infoPanels;
@@ -14,6 +17,7 @@ public class OverviewContent : MonoBehaviour {
 	public int strengthPanel;
 
 	void Start () {
+		timeText.text = GameManager.instance.GetTime();
 		SetInfoPanels();
 	}
 

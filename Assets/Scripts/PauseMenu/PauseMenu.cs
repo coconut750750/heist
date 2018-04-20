@@ -44,7 +44,7 @@ public class PauseMenu : MonoBehaviour {
 		}
 	}
 
-	public void UnPause(){
+	public void Unpause(){
 		HidePauseStashes();
 		gameObject.SetActive(false);
 	}

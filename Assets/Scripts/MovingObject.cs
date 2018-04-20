@@ -113,7 +113,7 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected void Move(Vector3 movement, float moveSpeed) {
-		if (!paused) {
+		if (!paused && !GameManager.instance.IsPaused()) {
 			rb2D.velocity = movement * moveSpeed;
 		} else {
 			rb2D.velocity = new Vector3(0, 0, 0);
