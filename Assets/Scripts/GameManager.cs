@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour {
 
 	private bool isPaused;
 
+	public string filename;
+	
 	void Awake () {
 		if (instance == null) {
 			instance = this;
@@ -39,12 +41,34 @@ public class GameManager : MonoBehaviour {
 
 		DontDestroyOnLoad (gameObject);
 		InitGame ();
+
+		filename = Application.persistentDataPath + "/" + "gamestate.dat";
+		ManagerData data = GameManager.Load<ManagerData>(filename);
+		if (data != null) {
+			day = data.day;
+			hour = data.hour;
+			minute = data.minute;
+			second = data.second;
+		}
+		timeText.text = "" + GetTime();	
 	}
 
 	void InitGame() {
 		Debug.Log("Game Started");
 		Physics2D.IgnoreLayerCollision (8, 9, true);
 	}
+
+	#if UNITY_EDITOR || UNITY_STANDALONE
+	protected void OnApplicationQuit() {
+		ManagerData data = new ManagerData(day, hour, minute, second);
+        GameManager.Save(data, filename);
+	}
+	#elif UNITY_ANDROID || UNITY_IOS
+	protected void OnApplicationPause() {
+		ManagerData data = new ManagerData(day, hour, minute, second);
+        GameManager.Save(data, filename);
+	}
+	#endif
 
 	void FixedUpdate() {
 		if (Time.time - lastChange > CHANGE_RATE_SECS && !isPaused) { 
