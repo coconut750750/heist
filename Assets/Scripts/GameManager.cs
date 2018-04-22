@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour {
 	private int minute;
 	private int second;
 	private float lastChange = 0f;
-	private const float CHANGE_RATE_SECS = 0.5f; // in seconds
+	private const float CHANGE_RATE_SECS = 0.001f; // in seconds
 	public Text timeText;
 
 	private bool isPaused;
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
 			minute = data.minute;
 			second = data.second;
 		}
-		timeText.text = "" + GetTime();	
+		timeText.text = "" + GetTimeString();	
 	}
 
 	void InitGame() {
@@ -82,12 +82,12 @@ public class GameManager : MonoBehaviour {
 					// new day here!
 				}
 			}
-			timeText.text = "" + GetTime();
+			timeText.text = "" + GetTimeString();
 			lastChange = Time.time;
     	}
 	}
 
-	public string GetTime() {
+	public string GetTimeString() {
 		string hourStr;
 		string minuteStr = "" + minute;
 		string ampm;
@@ -105,6 +105,14 @@ public class GameManager : MonoBehaviour {
 			hourStr = "12";
 		}
 		return "Day " + day + ". " + hourStr + ":" + minuteStr + " " + ampm;
+	}
+
+	public int GetHour() {
+		return hour;
+	}
+
+	public int GetMinute() {
+		return minute;
 	}
 
 	public void DisplayInventory(Inventory stash) {

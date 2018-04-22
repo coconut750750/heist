@@ -117,11 +117,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fe97aff3e6b3457f9688d2cbdd1be90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockingLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  doorTilemapGameObj: {fileID: 0}
   moveSpeed: 6
+  floor1: {fileID: 0}
+  floor2: {fileID: 0}
+  moneyText: {fileID: 0}
+  healthText: {fileID: 0}
 --- !u!212 &212475150828949476
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -136,7 +136,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bc0190a31b8324f95ae6d630013655ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

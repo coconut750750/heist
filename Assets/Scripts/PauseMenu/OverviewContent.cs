@@ -17,7 +17,7 @@ public class OverviewContent : MonoBehaviour {
 	public int strengthPanel;
 
 	void Start () {
-		timeText.text = GameManager.instance.GetTime();
+		timeText.text = GameManager.instance.GetTimeString();
 		SetInfoPanels();
 	}
 
