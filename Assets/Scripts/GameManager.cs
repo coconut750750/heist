@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -135,6 +136,10 @@ public class GameManager : MonoBehaviour {
 
 	public bool IsPaused() {
 		return isPaused;
+	}
+
+	public void QuitToSaveMenu() {
+		SceneManager.LoadScene("StartScene", LoadSceneMode.Single);
 	}
 
 	public static void Save(GameData data, string filename) {
