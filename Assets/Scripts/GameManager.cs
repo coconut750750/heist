@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -23,7 +24,7 @@ public class GameManager : MonoBehaviour {
 	private int minute;
 	private int second;
 	private float lastChange = 0f;
-	private const float CHANGE_RATE_SECS = 0.001f; // in seconds
+	private const float CHANGE_RATE_SECS = 0.5f; // in seconds
 	public Text timeText;
 
 	private bool isPaused;
@@ -39,7 +40,6 @@ public class GameManager : MonoBehaviour {
 
 		stashDisplayer.gameObject.SetActive(false);
 
-		DontDestroyOnLoad (gameObject);
 		InitGame ();
 
 		filename = Application.persistentDataPath + "/" + "gamestate.dat";
@@ -60,13 +60,11 @@ public class GameManager : MonoBehaviour {
 
 	#if UNITY_EDITOR || UNITY_STANDALONE
 	protected void OnApplicationQuit() {
-		ManagerData data = new ManagerData(day, hour, minute, second);
-        GameManager.Save(data, filename);
+		Save();
 	}
 	#elif UNITY_ANDROID || UNITY_IOS
 	protected void OnApplicationPause() {
-		ManagerData data = new ManagerData(day, hour, minute, second);
-        GameManager.Save(data, filename);
+		Save();
 	}
 	#endif
 
@@ -135,6 +133,32 @@ public class GameManager : MonoBehaviour {
 
 	public bool IsPaused() {
 		return isPaused;
+	}
+
+	public void QuitToStartMenu() {
+		SceneManager.LoadScene("StartScene", LoadSceneMode.Single);
+	}
+
+	public void Save() {
+		ManagerData data = new ManagerData(day, hour, minute, second);
+        GameManager.Save(data, filename);
+	}
+
+	public void SaveAll() {
+		// item stashes
+		ItemStash[] itemStashes = FindObjectsOfType<ItemStash>();
+		foreach (ItemStash itemStash in itemStashes) {
+			itemStash.Save();
+		}
+
+		// moving objects including player
+		MovingObject[] movingObjs = FindObjectsOfType<MovingObject>();
+		foreach (MovingObject movingObj in movingObjs) {
+			movingObj.Save();
+		}
+
+		// manager itself
+		Save();
 	}
 
 	public static void Save(GameData data, string filename) {
