@@ -8,6 +8,8 @@ using UnityEditor;
 
 public class RandomGroundTile : Tile {
 
+	public const int MAX_TILES = 4;
+	
 	[SerializeField]
 	private Sprite[] sprites;
 
@@ -16,10 +18,20 @@ public class RandomGroundTile : Tile {
 	}
 
 	public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
-		tileData.sprite = sprites [Random.Range (0, sprites.Length)];
+		tileData.sprite = sprites [GenerateIndex(position.x, position.y, sprites.Length)];
 		tileData.colliderType = Tile.ColliderType.None;
 	}
 
+	public int GenerateIndex(int x, int y, int len) {
+		switch (len) {
+			case 4:
+				return (x % 2) * 2 + (y % 2);
+			case 2:
+				return (x + y) % 2;
+			default:
+				return 0;
+		}
+	}
 
 	#if UNITY_EDITOR
 	[MenuItem("Assets/Create/Tiles/RandomGroundTile")]
