@@ -9,7 +9,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private Image itemBack;
 	public Item item;
 
-	public static Text text = null;
+	public static Text nameText = null;
+	public static Text qualityText = null;
 
 	private ItemStash parentStash;
 	[SerializeField]
@@ -24,14 +25,16 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string ITEM_IMAGE = "ItemImage";
 	private const string BACKGROUND_IMAGE = "BackgroundImage";
 	private const string INVENTORY_ITEM_TEXT = "SelectedInventoryItemText";
+	private const string INVENTORY_ITEM_QUALITY = "SelectedInventoryItemQuality";
 
 	void Awake() {
 		Refresh();
 	}
 
 	public void Refresh() {
-		if (text == null) {
-			text = GameObject.Find(INVENTORY_ITEM_TEXT).GetComponent<Text>();
+		if (nameText == null) {
+			nameText = GameObject.Find(INVENTORY_ITEM_TEXT).GetComponent<Text>();
+			qualityText = GameObject.Find(INVENTORY_ITEM_QUALITY).GetComponent<Text>();
 		}
 		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
 		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
@@ -93,7 +96,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			parentStash.DeselectAll();
 		}
 		
-		text.text = item.name;
+		nameText.text = item.name;
+		qualityText.text = item.quality + "%";
 		itemBack.color = SELECTED_COLOR;
 
 		selected = true;
@@ -110,7 +114,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	public void Deselect() {
 		if (selected) {
 			selected = false;
-			text.text = "";
+			nameText.text = "";
+			qualityText.text = "";
 			itemBack.color = DEFAULT_COLOR;
 		}
 	}

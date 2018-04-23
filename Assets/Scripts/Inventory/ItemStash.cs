@@ -145,12 +145,13 @@ public abstract class ItemStash : MonoBehaviour {
 		this.count = data.count;
 		this.capacity = data.capacity;
 		
-		string[] itemNames = data.itemNames;
+		ItemData[] itemData = data.itemData;
 		for (int i = 0; i < capacity; i++) {
-			if (itemNames[i] == null) {
+			if (itemData[i] == null) {
 				items[i] = null;
 			} else {
-				items[i] = ItemManager.instance.GetItem(itemNames[i]);
+				items[i] = ItemManager.instance.GetItem(itemData[i].itemName);
+				items[i].quality = itemData[i].itemQuality;
 			}
 		}
 	}
@@ -158,18 +159,19 @@ public abstract class ItemStash : MonoBehaviour {
 
 [Serializable]
 public class ItemStashData : GameData {
-	public string[] itemNames;
+	public ItemData[] itemData;
+
 	public int count = 0;
 	public int capacity = 0;
 
 	public ItemStashData(Item[] items, int count, int capacity) {
-		this.itemNames = new string[capacity];
+		this.itemData = new ItemData[capacity];
 		for (int i = 0; i < capacity; i++) {
 			Item item = items[i];
 			if (item == null) {
-				itemNames[i] = null;
+				itemData[i] = null;
 			} else {
-				itemNames[i] = item.name;
+				itemData[i] = new ItemData(items[i]);
 			}
 		}
 		this.count = count;
