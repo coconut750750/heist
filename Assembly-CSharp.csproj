@@ -73,6 +73,7 @@
      <Compile Include="Assets\Scripts\PauseMenu\OverviewContent.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\PauseStash.cs" />
+     <Compile Include="Assets\Scripts\PauseMenu\SavingContent.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\SliderControl.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PrefabBrush.cs" />
