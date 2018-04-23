@@ -14,9 +14,10 @@ public class PauseMenu : MonoBehaviour {
 
 	public int craftingIndex;
 	public CraftingStash craftingStash;
-
 	public int dismantleIndex;
 	public DismantleStash dismantleStash;
+
+	public GameObject quitSafetyMenu;
 
 	private Color WHITE = new Color(255, 255, 255);
 	[SerializeField]
@@ -85,6 +86,14 @@ public class PauseMenu : MonoBehaviour {
 
 	public void DisplayDismantleStash() {
 		dismantleStash.Display();
+	}
+
+	public void OpenQuitSafety() {
+		quitSafetyMenu.SetActive(true);
+	}
+
+	public void CloseQuitSafety() {
+		quitSafetyMenu.SetActive(false);
 	}
 
 	public ItemStash GetActiveStash() {
