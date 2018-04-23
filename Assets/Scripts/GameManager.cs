@@ -43,13 +43,8 @@ public class GameManager : MonoBehaviour {
 		InitGame ();
 
 		filename = Application.persistentDataPath + "/" + "gamestate.dat";
-		ManagerData data = GameManager.Load<ManagerData>(filename);
-		if (data != null) {
-			day = data.day;
-			hour = data.hour;
-			minute = data.minute;
-			second = data.second;
-		}
+		Load();
+
 		timeText.text = "" + GetTimeString();	
 	}
 
@@ -159,6 +154,33 @@ public class GameManager : MonoBehaviour {
 
 		// manager itself
 		Save();
+	}
+
+	public void Load() {
+		ManagerData data = GameManager.Load<ManagerData>(filename);
+		if (data != null) {
+			day = data.day;
+			hour = data.hour;
+			minute = data.minute;
+			second = data.second;
+		}
+	}
+
+	public void LoadAll() {
+		// item stashes
+		ItemStash[] itemStashes = FindObjectsOfType<ItemStash>();
+		foreach (ItemStash itemStash in itemStashes) {
+			itemStash.Load();
+		}
+
+		// moving objects including player
+		MovingObject[] movingObjs = FindObjectsOfType<MovingObject>();
+		foreach (MovingObject movingObj in movingObjs) {
+			movingObj.Load();
+		}
+
+		// manager itself
+		Load();
 	}
 
 	public static void Save(GameData data, string filename) {

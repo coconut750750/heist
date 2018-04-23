@@ -17,7 +17,6 @@ public class PauseMenu : MonoBehaviour {
 	public int dismantleIndex;
 	public DismantleStash dismantleStash;
 
-	public GameObject quitSafetyMenu;
 
 	private Color WHITE = new Color(255, 255, 255);
 	[SerializeField]
@@ -40,6 +39,8 @@ public class PauseMenu : MonoBehaviour {
 	}
 
 	public void Pause() {
+		GameManager.instance.PauseGame();
+
 		gameObject.SetActive(true);
 
 		// open first menu content
@@ -50,10 +51,13 @@ public class PauseMenu : MonoBehaviour {
 		// disable all other menu contents
 		for (int i = 1; i < menuContents.Length; i++) {
 			menuContents[i].SetActive(false);
+			menuButtons[i].GetComponent<Image>().color = WHITE;
 		}
 	}
 
 	public void Unpause(){
+		GameManager.instance.UnpauseGame();
+
 		HidePauseStashes();
 		gameObject.SetActive(false);
 	}
@@ -86,14 +90,6 @@ public class PauseMenu : MonoBehaviour {
 
 	public void DisplayDismantleStash() {
 		dismantleStash.Display();
-	}
-
-	public void OpenQuitSafety() {
-		quitSafetyMenu.SetActive(true);
-	}
-
-	public void CloseQuitSafety() {
-		quitSafetyMenu.SetActive(false);
 	}
 
 	public ItemStash GetActiveStash() {
