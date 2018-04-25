@@ -43,6 +43,32 @@ public class Player : MovingObject {
 
 	public int GetStrength() { return strength; }
 
+	protected override void FixedUpdate() {
+		float moveHorizontal = 0;
+		float moveVertical = 0;
+
+		Vector3 movement;
+		#if UNITY_STANDALONE || UNITY_WEBPLAYER
+
+		moveHorizontal = Input.GetAxis ("Horizontal");
+		moveVertical = Input.GetAxis ("Vertical");
+		movement = new Vector3(moveHorizontal, moveVertical, 0f);
+
+		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+
+		moveHorizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+		moveVertical = CrossPlatformInputManager.GetAxis("Vertical");
+		movement = new Vector3(moveHorizontal, moveVertical, 0f);
+
+		#endif
+
+		Move(movement.normalized);
+
+        if (moveHorizontal == 0 && moveVertical == 0) {
+			return;
+		}
+	}
+
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (GetFloor () == 1) {

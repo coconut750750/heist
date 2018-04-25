@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{85CAAFAE-AE57-F188-3D61-C1C067CA069D}</ProjectGuid>
+    <ProjectGuid>{C688C92B-7A25-3017-A0F1-CB2CB39A74C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>Assets</BaseDirectory>
@@ -51,44 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Buttons\ButtonA.cs" />
-     <Compile Include="Assets\Scripts\CameraController.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\Interactables\Desk.cs" />
-     <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
-     <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
-     <Compile Include="Assets\Scripts\Inventory\ItemDragger.cs" />
-     <Compile Include="Assets\Scripts\Inventory\ItemSlot.cs" />
-     <Compile Include="Assets\Scripts\Inventory\ItemStash.cs" />
-     <Compile Include="Assets\Scripts\Inventory\Pocket.cs" />
-     <Compile Include="Assets\Scripts\Inventory\PocketEditor.cs" />
-     <Compile Include="Assets\Scripts\Inventory\SingletonStash.cs" />
-     <Compile Include="Assets\Scripts\Inventory\StashDisplayer.cs" />
-     <Compile Include="Assets\Scripts\ItemManager.cs" />
-     <Compile Include="Assets\Scripts\Items\Item.cs" />
-     <Compile Include="Assets\Scripts\LightingController.cs" />
-     <Compile Include="Assets\Scripts\MovingObject.cs" />
-     <Compile Include="Assets\Scripts\Navigation\AStar.cs" />
-     <Compile Include="Assets\Scripts\Navigation\Heap.cs" />
-     <Compile Include="Assets\Scripts\Navigation\Nav2D.cs" />
-     <Compile Include="Assets\Scripts\Navigation\Nav2DAgent.cs" />
-     <Compile Include="Assets\Scripts\Navigation\Nav2DInspector.cs" />
-     <Compile Include="Assets\Scripts\Navigation\Nav2DObstacle.cs" />
-     <Compile Include="Assets\Scripts\NPC\NPC.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\CraftingStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\DismantleStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\OverviewContent.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\PauseMenu.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\PauseStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\SavingContent.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\SliderControl.cs" />
-     <Compile Include="Assets\Scripts\Player.cs" />
-     <Compile Include="Assets\Scripts\PrefabBrush.cs" />
-     <Compile Include="Assets\Scripts\StartMenu\StartMenu.cs" />
-     <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
-     <Compile Include="Assets\Scripts\TileScripts\RoadMarkerTile.cs" />
-     <Compile Include="Assets\Scripts\TileScripts\ShadowTile.cs" />
-     <Compile Include="Assets\Scripts\TileScripts\WallTile.cs" />
+     <Compile Include="Assets\2D Nav Assets\2DStar\Scripts\Editor\Nav2DInspector.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -180,6 +143,10 @@
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
       <Project>{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+    <ProjectReference Include="Assembly-CSharp.csproj">
+      <Project>{85CAAFAE-AE57-F188-3D61-C1C067CA069D}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+    <ProjectReference Include="Assembly-CSharp-Editor-firstpass.csproj">
+      <Project>{5F1A5DED-6D43-207E-81A2-EC9CF79329F8}</Project>      <Name>Assembly-CSharp-Editor-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

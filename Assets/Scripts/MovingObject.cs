@@ -26,7 +26,7 @@ public abstract class MovingObject : MonoBehaviour {
 	private const string LEFT = "PlayerLeftAnim";
 	private const string BACK = "PlayerBackAnim";
 	private const string RIGHT = "PlayerRightAnim";
-	private Animator animator;
+	protected Animator animator;
 
 	protected string filename;
 
@@ -61,35 +61,23 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 	#endif
 
-	protected void FixedUpdate() {
-		float moveHorizontal = 0;
-		float moveVertical = 0;
+	protected virtual void FixedUpdate() {
+		Move(new Vector3(0, 0, 0));		
+	}
 
-		Vector3 movement;
-		#if UNITY_STANDALONE || UNITY_WEBPLAYER
-
-		moveHorizontal = Input.GetAxis ("Horizontal");
-		moveVertical = Input.GetAxis ("Vertical");
-		movement = new Vector3(moveHorizontal, moveVertical, 0f);
-
-		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-
-		moveHorizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-		moveVertical = CrossPlatformInputManager.GetAxis("Vertical");
-		movement = new Vector3(moveHorizontal, moveVertical, 0f);
-
-		#endif
-
-		Move(movement.normalized, moveSpeed);
-
-        if (moveHorizontal == 0 && moveVertical == 0) {
-			return;
+	protected void Move(Vector3 movement) {
+		if (!paused && !GameManager.instance.IsPaused()) {
+			rb2D.velocity = movement * moveSpeed;
+			UpdateAnimator(movement);
+		} else {
+			rb2D.velocity = new Vector3(0, 0, 0);
 		}
+	}
 
+	protected void UpdateAnimator(Vector3 movement) {
 		string currentAnim = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-
-		if (Mathf.Abs (moveVertical) >= Mathf.Abs (moveHorizontal)) {
-			if (moveVertical <= 0) {
+		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
+			if (movement.y <= 0) {
 				if (currentAnim != FORWARD) {
 					animator.Play(FORWARD);
 				}
@@ -100,7 +88,7 @@ public abstract class MovingObject : MonoBehaviour {
 				}
 			}
 		} else {
-			if (moveHorizontal <= 0) {
+			if (movement.x <= 0) {
 				if (currentAnim != LEFT) {
 					animator.Play(LEFT);
 				}
@@ -109,14 +97,6 @@ public abstract class MovingObject : MonoBehaviour {
 					animator.Play(RIGHT);
 				}
 			}
-		}
-	}
-
-	protected void Move(Vector3 movement, float moveSpeed) {
-		if (!paused && !GameManager.instance.IsPaused()) {
-			rb2D.velocity = movement * moveSpeed;
-		} else {
-			rb2D.velocity = new Vector3(0, 0, 0);
 		}
 	}
 

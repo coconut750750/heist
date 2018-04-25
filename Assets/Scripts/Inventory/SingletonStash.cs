@@ -8,7 +8,7 @@ public abstract class SingletonStash : ItemStash {
 	public ItemSlot[] itemSlots;
 	protected Image[] itemImages;
 
-    public SingletonStash(int numItems) : base(numItems) {
+    public SingletonStash(int numItems) {
 		itemSlots = new ItemSlot[numItems];
 		itemImages = new Image[numItems];
     }
