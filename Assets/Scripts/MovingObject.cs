@@ -124,7 +124,7 @@ public abstract class MovingObject : MonoBehaviour {
 		}
 	}
 
-	protected int GetFloor() {
+	public int GetFloor() {
 		return floor + 1;
 	}
 

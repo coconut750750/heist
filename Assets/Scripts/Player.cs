@@ -16,9 +16,6 @@ public class Player : MovingObject {
 
 	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
 
-	public GameObject floor1;
-	public GameObject floor2;
-
 	private Pocket mainItems;
 
 	protected int money = 0;
@@ -33,6 +30,12 @@ public class Player : MovingObject {
 		mainItems = FindObjectOfType<Pocket>();
 
 		UpdateInfo();
+
+		if (GetFloor() == 1) {
+			GameManager.instance.HideFloor2();
+		} else if (GetFloor() == 2) {
+			GameManager.instance.ShowFloor2();
+		}
 	}
 
 	public int GetMoney() { return money; }
@@ -63,22 +66,15 @@ public class Player : MovingObject {
 		#endif
 
 		Move(movement.normalized);
-
-        if (moveHorizontal == 0 && moveVertical == 0) {
-			return;
-		}
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (GetFloor () == 1) {
-			floor2.SetActive (false);
+			GameManager.instance.HideFloor2();
 		} else if (GetFloor () == 2) {
-			floor2.SetActive (true);
+			GameManager.instance.ShowFloor2();
 		}
-
-		money += 1;
-		UpdateInfo();
 	}
 
 	protected override void OnTriggerExit2D(Collider2D other) {
@@ -132,7 +128,7 @@ public class Player : MovingObject {
         if (data != null) {
 			base.LoadFromData(data);
 			if (GetFloor () == 2) {
-				floor2.SetActive (true);
+				GameManager.instance.ShowFloor2();
 				gameObject.layer = 17 - gameObject.layer;
 			}
 			this.money = data.money;

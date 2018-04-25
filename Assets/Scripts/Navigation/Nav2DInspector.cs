@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
@@ -47,3 +48,4 @@ public class Nav2DInspector : Editor {
 			EditorUtility.SetDirty(polyNav);
 	}
 }
+#endif

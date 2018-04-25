@@ -64,7 +64,7 @@ public class Nav2D : MonoBehaviour {
 
 	//some initializing
 	void Reset(){
-		gameObject.name = "@Nav2D";
+		//gameObject.name = "@Nav2D";
 		gameObject.AddComponent<PolygonCollider2D>();
 	}
 
@@ -155,12 +155,6 @@ public class Nav2D : MonoBehaviour {
 		currentRequest.callback(path, success);
 		TryNextFindPath();
 	}
-
-
-
-
-
-
 
 	///Generate the map
 	public void GenerateMap(bool generateMaster){
@@ -456,8 +450,6 @@ public class Nav2D : MonoBehaviour {
 		Debug.DrawLine(point, possiblePoints[index]);
 		return possiblePoints[index];
 	}
-
-
 
 ////////////////////////////////////////
 ///////////GUI AND EDITOR STUFF/////////
