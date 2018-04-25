@@ -29,13 +29,7 @@ public class NPC : MovingObject {
 	}
 
 	protected override void FixedUpdate() {
-		UpdateAnimator(new Vector3(agent.movingDirection.x, agent.movingDirection.y, 0));
-	}
-
-	protected void OnCollisionEnter2D(Collision2D collision2D) {
-		if (collision2D.gameObject.CompareTag(PLAYER_TAG)) {
-			Physics2D.IgnoreCollision(collision2D.collider, collision2D.otherCollider);
-		}
+		UpdateAnimator(new Vector3(rb2D.velocity.x, rb2D.velocity.y, 0));
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {

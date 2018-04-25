@@ -108,7 +108,7 @@ public abstract class MovingObject : MonoBehaviour {
 			if (onStairs == 0) {
 				floor = 1 - floor;
 
-				rb2D.transform.position = new Vector3 (rb2D.transform.position.x, rb2D.transform.position.y, 
+				transform.position = new Vector3 (transform.position.x, transform.position.y, 
 					0 - (float)floor / 10);
 				gameObject.layer = 17 - gameObject.layer;
 				onStairs += 2;

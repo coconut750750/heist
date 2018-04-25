@@ -45,20 +45,19 @@ public class Nav2DAgent : MonoBehaviour{
 
 	private event Action<bool> reachedCallback;
 
-
+	private Rigidbody2D rb2d;
 	private Vector2 velocity          = Vector2.zero;
 	private float maxForce            = 100;
 	private int requests              = 0;
 	private List<Vector2> _activePath = new List<Vector2>();
 	private Vector2 _primeGoal        = Vector2.zero;
-	private Transform _transform;
 
 	private static List<Nav2DAgent> allAgents = new List<Nav2DAgent>();
 
 	///The position of the agent
 	public Vector2 position{
-		get {return _transform.position;}
-		set {_transform.position = value;}
+		get {return transform.position;}
+		set {transform.position = value;}
 	}
 
 	///The current active path of the agent
@@ -131,12 +130,12 @@ public class Nav2DAgent : MonoBehaviour{
 		get {return velocity.magnitude;}
 	}
 
-	//////
-	//////
-
 	void OnEnable(){ allAgents.Add(this); }
 	void OnDisable(){ allAgents.Remove(this); }
-	void Awake(){ _transform = transform; }
+	
+	void Awake(){ 
+		rb2d = gameObject.GetComponent<Rigidbody2D>();
+	}
 
 	///Set the destination for the agent. As a result the agent starts moving
 	public bool SetDestination(Vector2 goal){ return SetDestination(goal, null); }
@@ -188,6 +187,7 @@ public class Nav2DAgent : MonoBehaviour{
 	///Clears the path and as a result the agent is stop moving
 	public void Stop(){
 		activePath.Clear();
+		rb2d.velocity = Vector3.zero;
 		velocity = Vector2.zero;
 		requests = 0;
 		primeGoal = position;
@@ -236,13 +236,13 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 
 		velocity = Truncate(velocity, maxSpeed);
-		//
 
 		//slow down if wall ahead
 		LookAhead();
 
 		//move the agent
-		position += velocity * Time.deltaTime;
+		rb2d.velocity = velocity;
+		//position = gameObject.transform.position;
 
 		//restrict just after movement
 		Restrict();
