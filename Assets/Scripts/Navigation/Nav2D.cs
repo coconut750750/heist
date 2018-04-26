@@ -12,7 +12,8 @@ public class Nav2D : MonoBehaviour {
 	public bool generateOnUpdate = true;
 	///The list of obstacles for the navigation
 	public List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
-	public Nav2DCompObstacle compObstacle;
+
+	public List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
 	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.1f;
 
@@ -155,7 +156,6 @@ public class Nav2D : MonoBehaviour {
 		var masterPolys = new List<Polygon>();
 		var obstaclePolys = new List<Polygon>();
 
-		// TODO: create a polygon objects from a composite collider
 		//create a polygon object for each obstacle
 		for (int i = 0; i < navObstacles.Count; i++){
 			var obstacle = navObstacles[i];
@@ -165,7 +165,8 @@ public class Nav2D : MonoBehaviour {
 			obstaclePolys.Add(new Polygon(inflatedPoints));
 		}
 
-		if (compObstacle != null) {
+		//create polygon objects for each composite obstacle
+		foreach (Nav2DCompObstacle compObstacle in compObstacles) {
 			foreach (Vector2[] p in compObstacle.polygonPoints) {
 				var transformedPoints = TransformPoints(p, compObstacle.transform);
 				var inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + compObstacle.extraOffset) );
@@ -176,7 +177,6 @@ public class Nav2D : MonoBehaviour {
 		
 
 		if (generateMaster){
-
 			if (masterCollider is PolygonCollider2D){
 
 				var polyCollider = (PolygonCollider2D)masterCollider;
@@ -209,7 +209,6 @@ public class Nav2D : MonoBehaviour {
 			}
 		
 		} else {
-
 			masterPolys = map.masterPolygons.ToList();
 		}
 
@@ -223,7 +222,6 @@ public class Nav2D : MonoBehaviour {
 
 	//Create Nodes at convex points (since master poly is inverted, it will be concave for it) if they are valid
 	void CreateNodes (){
-
 		nodes.Clear();
 
 		for (int p = 0; p < map.allPolygons.Length; p++){
@@ -240,7 +238,9 @@ public class Nav2D : MonoBehaviour {
 				if (!PointIsValid(inflatedPoints[i]))
 					continue;
 
-				nodes.Add(new PathNode(inflatedPoints[i]));				
+				// round the position vector to ensure objects fit through doors
+				Vector2 rounded = new Vector2(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y));				
+				nodes.Add(new PathNode(rounded));				
 			}
 		}
 	}
@@ -306,8 +306,6 @@ public class Nav2D : MonoBehaviour {
 
 	///determine if a point is within a valid (walkable) area.
 	public bool PointIsValid (Vector2 point){
-
-		Debug.Log(point);
 
 		for (int i = 0; i < map.allPolygons.Length; i++){
 			if (i == 0 ? !PointInsidePolygon(map.allPolygons[i].points, point) : PointInsidePolygon(map.allPolygons[i].points, point))
@@ -551,10 +549,7 @@ public class Nav2D : MonoBehaviour {
 		private int _heapIndex;
 
 		public PathNode ( Vector2 pos  ){
-			this.pos = new Vector2();
-			// round the position vector to ensure objects fit through doors
-			this.pos.x = Mathf.Round(pos.x);
-			this.pos.y = Mathf.Round(pos.y);
+			this.pos = pos;	
 		}
 
 		public float fCost{

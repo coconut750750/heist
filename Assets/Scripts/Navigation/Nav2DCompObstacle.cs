@@ -20,28 +20,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 	private Transform _transform;
 
 	///The polygon points of the obstacle
-	public Vector2[] points{
-		get
-		{
-			var compCollider = (CompositeCollider2D)(this.compCollider);
-			//invert the main polygon points so that we save checking for inward/outward later (for Inflate)
-			var points = new List<Vector2>();
-			for (int i = 0; i < compCollider.pathCount; ++i){
-				Vector2[] pathPoints = new Vector2[compCollider.GetPathPointCount(i)];
-				compCollider.GetPath(i, pathPoints);
-				for (int p = 0; p < pathPoints.Length; ++p) {
-					points.Add( pathPoints[p] );
-				}
-			}
-
-			Vector2[] pointArr = points.ToArray();
-
-			if (invertPolygon)
-				System.Array.Reverse(pointArr);
-			return pointArr;	
-		}
-	}
-
 	public Vector2[][] polygonPoints {
 		get {
 			var obstaclePolys = new List<Vector2[]>();
@@ -76,9 +54,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 	}
 
 	void OnEnable(){
-
-		if (polyNav) {}
-			//polyNav.AddObstacle(this);
 		
 		lastPos = transform.position;
 		lastRot = transform.rotation;
@@ -88,8 +63,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 
 	void OnDisable(){
 
-		if (polyNav) {}
-			//polyNav.RemoveObstacle(this);
 	}
 
 	void Update(){

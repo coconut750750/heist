@@ -196,7 +196,6 @@ public class Nav2DAgent : MonoBehaviour{
 
 	//the callback from polyNav for when path is ready to use
 	void SetPath(Vector2[] path, bool success){
-
 		//in case the agent stoped somehow, but a path was pending
 		if (requests == 0)
 			return;

@@ -56,6 +56,9 @@ public class Nav2DObstacle : MonoBehaviour {
 
 			return null;
 		}
+		set {
+			points = value;
+		}
 	}
 
 	[SerializeField]
@@ -76,10 +79,6 @@ public class Nav2DObstacle : MonoBehaviour {
 	}
 
 	void OnEnable(){
-
-		if (polyNav)
-			polyNav.AddObstacle(this);
-		
 		lastPos = transform.position;
 		lastRot = transform.rotation;
 		lastScale = transform.localScale;
@@ -88,8 +87,6 @@ public class Nav2DObstacle : MonoBehaviour {
 
 	void OnDisable(){
 
-		if (polyNav)
-			polyNav.RemoveObstacle(this);
 	}
 
 	void Update(){
