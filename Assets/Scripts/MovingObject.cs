@@ -76,6 +76,11 @@ public abstract class MovingObject : MonoBehaviour {
 
 	protected void UpdateAnimator(Vector3 movement) {
 		string currentAnim = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+
+		if (movement.sqrMagnitude == 0) {
+			return;
+		}
+
 		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
 			if (movement.y <= 0) {
 				if (currentAnim != FORWARD) {
@@ -126,6 +131,10 @@ public abstract class MovingObject : MonoBehaviour {
 
 	public int GetFloor() {
 		return floor + 1;
+	}
+
+	public bool IsPaused() {
+		return paused;
 	}
 
 	public abstract void Save();

@@ -9,7 +9,7 @@ public class Nav2DAgent : MonoBehaviour{
 
 	public float maxSpeed			 = 0;
 	///The object mass
-	public float mass                = 20;
+	// public float mass                = 20; for smoother turns, add this back, then in lateupdate, vel += newvel/mass
 	///The distance to stop at from the goal
 	public float stoppingDistance    = 0.05f;
 	///The distance to start slowing down
@@ -45,9 +45,24 @@ public class Nav2DAgent : MonoBehaviour{
 	private event Action<bool> reachedCallback;
 
 	private Rigidbody2D rb2d;
-	private Vector2 velocity          = Vector2.zero;
+	
 	private int requests              = 0;
 	private List<Vector2> _activePath = new List<Vector2>();
+
+	private Vector2 velocity {
+		get {
+			return rb2d.velocity;
+		}
+		set {
+			rb2d.velocity = value;
+		}
+	}
+
+	private bool paused {
+		get {
+			return gameObject.GetComponent<MovingObject>().IsPaused() || GameManager.instance.IsPaused();
+		}
+	}
 	
 	///The current goal of the agent
 	private Vector2 primeGoal        = Vector2.zero;
@@ -103,7 +118,7 @@ public class Nav2DAgent : MonoBehaviour{
 			}
 			float dist= Vector2.Distance(position, activePath[0]);
 			for (int i= 0; i < activePath.Count; i++) {
-				dist += Vector2.Distance(activePath[i], activePath[i == activePath.Count - 1? i : i + 1]);
+				dist += Vector2.Distance(activePath[i], activePath[i == activePath.Count - 1 ? i : i + 1]);
 			}
 			return dist;
 		}
@@ -210,7 +225,6 @@ public class Nav2DAgent : MonoBehaviour{
 
 	//main loop
 	void LateUpdate(){
-
 		if (polyNav == null) {
 			return;
 		}
@@ -220,20 +234,22 @@ public class Nav2DAgent : MonoBehaviour{
 			return;
 		}
 
+		if (paused) {
+			rb2d.velocity = Vector2.zero;
+			return;
+		}
+
 		//calculate velocities
 		if (remainingDistance < slowingDistance) {
-			velocity += Arrive(nextPoint) / mass;
+			velocity = Arrive(nextPoint);
 		} else {
-			velocity += Seek(nextPoint) / mass;
+			velocity = Seek(nextPoint);
 		}
 
 		velocity = Truncate(velocity, maxSpeed);
 
 		//slow down if wall ahead
 		LookAhead();
-
-		//move the agent
-		rb2d.velocity = velocity;
 
 		//restrict just after movement
 		Restrict();
@@ -327,7 +343,7 @@ public class Nav2DAgent : MonoBehaviour{
 		Vector2 desiredVelocity = (pos - position).normalized * maxSpeed;
 		Vector2 steer = desiredVelocity - velocity;
 		steer = Truncate(steer, maxSpeed);
-		return steer;
+		return desiredVelocity;
 	}
 
 	//slowing at target's arrival
@@ -407,7 +423,6 @@ public class Nav2DAgent : MonoBehaviour{
 
     	Gizmos.color = new Color(1,1,1,0.1f);
     	Gizmos.DrawWireSphere(transform.position, avoidRadius);
-
 
     	if (!hasPath)
     		return;

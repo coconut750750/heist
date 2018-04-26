@@ -40,7 +40,9 @@ public class PauseMenu : MonoBehaviour {
 
 	public void Pause() {
 		GameManager.instance.PauseGame();
-
+		
+		// doesn't set active if only set once?!?
+		gameObject.SetActive(true);
 		gameObject.SetActive(true);
 
 		// open first menu content

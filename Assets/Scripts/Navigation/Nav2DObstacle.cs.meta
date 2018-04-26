@@ -1,10 +1,9 @@
 fileFormatVersion: 2
 guid: fc4f7f33d8fc7c0419b2308165807ce0
-labels:
-- a*
-- pathfinding
-- 2d
+timeCreated: 1524781635
+licenseType: Free
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences: []
   executionOrder: 0

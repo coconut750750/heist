@@ -2,14 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-
 [ExecuteInEditMode]
 [AddComponentMenu("Navigation/Nav2DCompObstacle")]
 ///Place on a game object to act as an obstacle
 public class Nav2DCompObstacle : MonoBehaviour {
 
-	///Inverts the polygon (done automatically if collider already exists due to a sprite)
-	public bool invertPolygon = false;
 	public float extraOffset;
 
 	public CompositeCollider2D compCollider;
@@ -33,8 +30,7 @@ public class Nav2DCompObstacle : MonoBehaviour {
 					points.Add(v);
 				}
 				
-				if (invertPolygon)
-					points.Reverse();
+				points.Reverse();
 				
 				obstaclePolys.Add(points.ToArray());
 				points.Clear();
@@ -49,8 +45,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 
 	void Reset(){
 		compCollider.isTrigger = true;
-		if (GetComponent<SpriteRenderer>() != null)
-			invertPolygon = true;
 	}
 
 	void OnEnable(){
