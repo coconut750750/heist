@@ -12,6 +12,7 @@ public class Nav2D : MonoBehaviour {
 	public bool generateOnUpdate = true;
 	///The list of obstacles for the navigation
 	public List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
+	public Nav2DCompObstacle compObstacle;
 	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.1f;
 
@@ -160,9 +161,19 @@ public class Nav2D : MonoBehaviour {
 			var obstacle = navObstacles[i];
 			var transformedPoints = TransformPoints(obstacle.points, obstacle.transform);
 			var inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + obstacle.extraOffset) );
-			
+		
 			obstaclePolys.Add(new Polygon(inflatedPoints));
 		}
+
+		if (compObstacle != null) {
+			foreach (Vector2[] p in compObstacle.polygonPoints) {
+				var transformedPoints = TransformPoints(p, compObstacle.transform);
+				var inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + compObstacle.extraOffset) );
+
+				obstaclePolys.Add(new Polygon(inflatedPoints));
+			}
+		}
+		
 
 		if (generateMaster){
 
@@ -221,16 +232,15 @@ public class Nav2D : MonoBehaviour {
 
 			Vector2[] inflatedPoints = InflatePolygon(poly.points, 0.05f);
 			for (int i = 0; i < inflatedPoints.Length; i++){
-				
+
 				//if point is concave dont create a node
 				if (PointIsConcave(inflatedPoints, i))
 					continue;
-
 				//if point is not in valid area dont create a node
 				if (!PointIsValid(inflatedPoints[i]))
 					continue;
 
-				nodes.Add(new PathNode(inflatedPoints[i]));
+				nodes.Add(new PathNode(inflatedPoints[i]));				
 			}
 		}
 	}
@@ -277,7 +287,6 @@ public class Nav2D : MonoBehaviour {
 		}
 	}
 
-
 	///Determine if 2 points see each other.
 	public bool CheckLOS (Vector2 posA, Vector2 posB){
 
@@ -298,8 +307,10 @@ public class Nav2D : MonoBehaviour {
 	///determine if a point is within a valid (walkable) area.
 	public bool PointIsValid (Vector2 point){
 
+		Debug.Log(point);
+
 		for (int i = 0; i < map.allPolygons.Length; i++){
-			if (i == 0? !PointInsidePolygon(map.allPolygons[i].points, point) : PointInsidePolygon(map.allPolygons[i].points, point))
+			if (i == 0 ? !PointInsidePolygon(map.allPolygons[i].points, point) : PointInsidePolygon(map.allPolygons[i].points, point))
 				return false;
 		}
 		return true;
@@ -483,7 +494,7 @@ public class Nav2D : MonoBehaviour {
 	[UnityEditor.MenuItem("GameObject/Create Other/Nav2D")]
 	public static void CreatePolyNav2D (){
 		if (FindObjectOfType(typeof(Nav2D)) == null){
-			var newNav = new GameObject("@Nav2D").AddComponent<Nav2D>();
+			var newNav = new GameObject("Nav2D").AddComponent<Nav2D>();
 			UnityEditor.Selection.activeObject = newNav;
 		}
 	}
@@ -492,7 +503,7 @@ public class Nav2D : MonoBehaviour {
 
 
 	//defines a polygon
-	class Polygon{
+	public class Polygon{
 		public Vector2[] points;
 		public Polygon(Vector2[] points){
 			this.points = points;

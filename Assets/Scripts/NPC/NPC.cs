@@ -22,7 +22,6 @@ public class NPC : MovingObject {
 		agent.OnNavigationStarted += NavStarted;
 		agent.maxSpeed = moveSpeed;
 
-		Debug.Log(destination);
 		Debug.Log(agent.SetDestination(destination));
 
 		UpdateSortingLayer();

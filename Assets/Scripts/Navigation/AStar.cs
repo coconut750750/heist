@@ -17,6 +17,10 @@ static class AStar {
 		sw.Start();
 		#endif
 
+		// foreach (PathNode p in allNodes) {
+		// 			UnityEngine.Debug.Log(allNodes.Length);
+		// }
+
 		var openList = new Heap<PathNode>(allNodes.Length);
 		var closedList = new HashSet<PathNode>();
 		var success = false;
@@ -73,6 +77,7 @@ static class AStar {
 
 		while(currentNode != startNode){
 			path.Add(currentNode.pos);
+			//UnityEngine.Debug.Log(currentNode.pos);
 			currentNode = currentNode.parent;
 		}
 

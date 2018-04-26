@@ -72,6 +72,7 @@
      <Compile Include="Assets\Scripts\Navigation\Heap.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2D.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DAgent.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Nav2DCompObstacle.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DInspector.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DObstacle.cs" />
      <Compile Include="Assets\Scripts\NPC\NPC.cs" />

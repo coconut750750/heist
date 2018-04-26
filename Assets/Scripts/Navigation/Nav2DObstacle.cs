@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 [ExecuteInEditMode]
@@ -103,6 +104,7 @@ public class Nav2DObstacle : MonoBehaviour {
 				DestroyImmediate(collider);
 				gameObject.AddComponent<BoxCollider2D>();
 			}
+
 			return;
 		}
 
