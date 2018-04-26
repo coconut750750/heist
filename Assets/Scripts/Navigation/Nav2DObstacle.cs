@@ -57,9 +57,8 @@ public class Nav2DObstacle : MonoBehaviour {
 		}
 	}
 
-	private Nav2D polyNav{
-		get {return Nav2D.current;}
-	}
+	[SerializeField]
+	private Nav2D polyNav;
 
 	void Reset(){
 		
@@ -113,5 +112,9 @@ public class Nav2DObstacle : MonoBehaviour {
 		lastPos = _transform.position;
 		lastRot = _transform.rotation;
 		lastScale = _transform.localScale;
+	}
+
+	public void SetNav2D(Nav2D polyNav) {
+		this.polyNav = polyNav;
 	}
 }

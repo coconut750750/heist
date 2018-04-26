@@ -21,6 +21,7 @@ public class Nav2DInspector : Editor {
 			Nav2DObstacle newPoly= new GameObject("NavObstacle").AddComponent(typeof(Nav2DObstacle)) as Nav2DObstacle;
 			newPoly.transform.parent = polyNav.transform;
 			newPoly.transform.localPosition = new Vector3(0, 0, -1);
+			newPoly.SetNav2D(polyNav);
 		}
 
 		GUI.backgroundColor = Color.white;

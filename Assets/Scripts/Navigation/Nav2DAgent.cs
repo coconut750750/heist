@@ -11,11 +11,11 @@ public class Nav2DAgent : MonoBehaviour{
 	///The object mass
 	public float mass                = 20;
 	///The distance to stop at from the goal
-	public float stoppingDistance    = 0.1f;
+	public float stoppingDistance    = 0.05f;
 	///The distance to start slowing down
-	public float slowingDistance     = 1;
+	public float slowingDistance     = 0.5f;
 	///The rate at which it will slow down
-	public float decelerationRate    = 2;
+	public float decelerationRate    = 10;
 	///Rotate transform as well?
 	public bool rotateTransform      = false;
 	///Speed to rotate at
@@ -82,7 +82,7 @@ public class Nav2DAgent : MonoBehaviour{
 		get	{ return requests > 0;}
 	}
 
-	///The PolyNav singleton
+	///The PolyNav object
 	public Nav2D polyNav;
 
 	///Does the agent has a path?

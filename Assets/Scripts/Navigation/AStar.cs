@@ -70,12 +70,15 @@ static class AStar {
 	private static Vector2[] RetracePath(PathNode startNode, PathNode endNode){
 		var path = new List<Vector2>();
 		var currentNode = endNode;
+
 		while(currentNode != startNode){
 			path.Add(currentNode.pos);
 			currentNode = currentNode.parent;
 		}
+
 		path.Add(startNode.pos);
 		path.Reverse();
+
 		return path.ToArray() ;
 	}
 

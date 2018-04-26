@@ -12,7 +12,7 @@ public class Nav2D : MonoBehaviour {
 	public bool generateOnUpdate = true;
 	///The list of obstacles for the navigation
 	public List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
-	///The radious from the edges to offset the agents.
+	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.1f;
 
 	///A Flag to tell PolyNav to regenerate the map
@@ -28,28 +28,7 @@ public class Nav2D : MonoBehaviour {
 	private PathNode startNode;
 	private PathNode endNode;
 
-	private Collider2D _masterCollider;
-	private Collider2D masterCollider{
-		get
-		{
-			if (_masterCollider == null)
-				_masterCollider = GetComponent<Collider2D>();
-			return _masterCollider;
-		}
-	}
-
-
-	///The current instance of Nav2D
-	private static Nav2D _current;
-	public static Nav2D current{
-		get
-		{
-			if (_current == null || !Application.isPlaying)
-				_current = FindObjectOfType(typeof(Nav2D)) as Nav2D;
-			
-			return _current;
-		}
-	}
+	private Collider2D masterCollider;
 
 	///The total nodes count of the map
 	public int nodesCount{
@@ -61,23 +40,23 @@ public class Nav2D : MonoBehaviour {
 		get {return isProcessingPath;}
 	}
 
-
 	//some initializing
 	void Reset(){
-		//gameObject.name = "@Nav2D";
 		gameObject.AddComponent<PolygonCollider2D>();
 	}
 
 	//some initializing
 	void Awake(){
-		_current = this;
+		masterCollider = GetComponent<Collider2D>();
 		masterCollider.enabled = false;
+
 		GenerateMap(true);
 	}
 
 	///Adds a Nav2DObstacle to the map.
 	public void AddObstacle( Nav2DObstacle navObstacle ){
 		if (!navObstacles.Contains(navObstacle)){
+			navObstacle.SetNav2D(this);
 			navObstacles.Add(navObstacle);
 			regenerateFlag = true;
 		}
@@ -95,7 +74,6 @@ public class Nav2D : MonoBehaviour {
 			GenerateMap(false);
 		}
 	}
-
 
 	///Find a path 'from' and 'to', providing a callback for when path is ready containing the path.
 	public void FindPath(Vector2 start, Vector2 end, System.Action<Vector2[], bool> callback){
@@ -176,11 +154,13 @@ public class Nav2D : MonoBehaviour {
 		var masterPolys = new List<Polygon>();
 		var obstaclePolys = new List<Polygon>();
 
+		// TODO: create a polygon objects from a composite collider
 		//create a polygon object for each obstacle
 		for (int i = 0; i < navObstacles.Count; i++){
 			var obstacle = navObstacles[i];
 			var transformedPoints = TransformPoints(obstacle.points, obstacle.transform);
 			var inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + obstacle.extraOffset) );
+			
 			obstaclePolys.Add(new Polygon(inflatedPoints));
 		}
 
@@ -238,9 +218,10 @@ public class Nav2D : MonoBehaviour {
 		for (int p = 0; p < map.allPolygons.Length; p++){
 			var poly = map.allPolygons[p];
 			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
+
 			Vector2[] inflatedPoints = InflatePolygon(poly.points, 0.05f);
 			for (int i = 0; i < inflatedPoints.Length; i++){
-
+				
 				//if point is concave dont create a node
 				if (PointIsConcave(inflatedPoints, i))
 					continue;
@@ -330,6 +311,7 @@ public class Nav2D : MonoBehaviour {
 		var inflatedPoints = new Vector2[points.Length];
 
 		for (int i = 0; i < points.Length; i++){
+			
 
 			Vector2 ab = (points[(i + 1) % points.Length] - points[i]).normalized;
 			Vector2 ac = (points[i == 0? points.Length - 1 : i - 1] - points[i]).normalized;
@@ -558,7 +540,10 @@ public class Nav2D : MonoBehaviour {
 		private int _heapIndex;
 
 		public PathNode ( Vector2 pos  ){
-			this.pos = pos;
+			this.pos = new Vector2();
+			// round the position vector to ensure objects fit through doors
+			this.pos.x = Mathf.Round(pos.x);
+			this.pos.y = Mathf.Round(pos.y);
 		}
 
 		public float fCost{
