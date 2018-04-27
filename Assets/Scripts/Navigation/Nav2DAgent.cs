@@ -429,9 +429,10 @@ public class Nav2DAgent : MonoBehaviour{
     	if (!hasPath)
     		return;
 
-		Gizmos.color = new Color(1f, 1f, 1f, 0.2f);
+		Gizmos.color = new Color(0.2f, 1f, 0.2f, 1f);
 		Gizmos.DrawLine(position, activePath[0]);
-		for (int i= 0; i < activePath.Count; i++)
+		for (int i= 0; i < activePath.Count; i++) {
 			Gizmos.DrawLine(activePath[i], activePath[(i == activePath.Count - 1)? i : i + 1]);
+		}
     }
 }

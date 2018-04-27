@@ -36262,6 +36262,10 @@ Prefab:
       propertyPath: m_Name
       value: NPC (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1928241464923502, guid: b5324eb211a224545b2ba8792862873f, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b5324eb211a224545b2ba8792862873f, type: 2}
   m_IsPrefabParent: 0
@@ -60141,11 +60145,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -4.05
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -22.54
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalPosition.z
@@ -60179,12 +60183,17 @@ Prefab:
     - target: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
         type: 2}
       propertyPath: destination.x
-      value: 11
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
         type: 2}
       propertyPath: destination.y
-      value: 11
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
+        type: 2}
+      propertyPath: moveSpeed
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b5324eb211a224545b2ba8792862873f, type: 2}
@@ -80626,7 +80635,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -10}
+  m_Offset: {x: 0.11745453, y: -10.9518585}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -80637,7 +80646,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 48, y: 68}
+  m_Size: {x: 32.535446, y: 55.62593}
   m_EdgeRadius: 0
 --- !u!114 &1937691461
 MonoBehaviour:
@@ -80658,6 +80667,9 @@ MonoBehaviour:
   - {fileID: 196853886}
   inflateRadius: 0.1
   regenerateFlag: 1
+  masterBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!1 &1946776564
 GameObject:
   m_ObjectHideFlags: 0

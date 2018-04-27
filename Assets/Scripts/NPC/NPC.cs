@@ -8,9 +8,10 @@ public class NPC : MovingObject {
 
 	private Inventory inventory;
 	private int money;
-	public Vector2 destination;
-
+	
 	private Nav2DAgent agent;
+	public Vector2 destination;
+	private bool isMoving;
 
 	protected override void Start () {
 		base.Start();
@@ -20,6 +21,7 @@ public class NPC : MovingObject {
 		
 		agent.OnDestinationReached += NavArrived;
 		agent.OnNavigationStarted += NavStarted;
+		agent.OnDestinationInvalid += DestinationInvalid;
 		agent.maxSpeed = moveSpeed;
 
 		agent.SetDestination(destination);
@@ -28,7 +30,13 @@ public class NPC : MovingObject {
 	}
 
 	protected override void FixedUpdate() {
-		UpdateAnimator(new Vector3(rb2D.velocity.x, rb2D.velocity.y, 0));
+		if (isMoving) {
+			UpdateAnimator(new Vector3(rb2D.velocity.x, rb2D.velocity.y, 0));
+		} else {
+			Bounds nav2DBounds = agent.polyNav.masterBounds;
+			Vector2 newDest = GenerateRandomDest(nav2DBounds);
+			agent.SetDestination(newDest);
+		}
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
@@ -44,16 +52,31 @@ public class NPC : MovingObject {
 		}
 	}
 
-	protected void GenerateRandomDest() {
-		
+	protected Vector2 GenerateRandomDest(Bounds bound) {
+		float minX = bound.min.x;
+		float minY = bound.min.y;
+		float maxX = bound.max.x;
+		float maxY = bound.max.y;
+
+		float x = Random.Range(minX, maxX);
+		float y = Random.Range(minY, maxY);
+
+		return new Vector2(x, y);
 	}
 
 	protected void NavStarted() {
 		Debug.Log("started");
+		isMoving = true;
 	}
 
 	protected void NavArrived() {
 		Debug.Log("arrived");
+		isMoving = false;
+	}
+
+	protected void DestinationInvalid() {
+		Debug.Log("invalid dest");
+		isMoving = false;
 	}
 
     public override void Load()
