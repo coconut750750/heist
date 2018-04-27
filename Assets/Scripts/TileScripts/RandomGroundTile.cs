@@ -18,18 +18,9 @@ public class RandomGroundTile : Tile {
 	}
 
 	public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
-		tileData.sprite = sprites [GenerateIndex(position.x, position.y, sprites.Length)];
-		tileData.colliderType = Tile.ColliderType.None;
-	}
-
-	public int GenerateIndex(int x, int y, int len) {
-		switch (len) {
-			case 4:
-				return (x % 2) * 2 + (y % 2);
-			case 2:
-				return (x + y) % 2;
-			default:
-				return 0;
+		if (sprites.Length != 0) {
+			tileData.sprite = sprites [Mathf.Abs(position.x + position.y) % sprites.Length];
+			tileData.colliderType = Tile.ColliderType.None;
 		}
 	}
 

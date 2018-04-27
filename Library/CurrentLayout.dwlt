@@ -203,13 +203,13 @@ MonoBehaviour:
     height: 389
   m_MinSize: {x: 204, y: 221}
   m_MaxSize: {x: 4004, y: 4021}
-  m_ActualView: {fileID: 14}
+  m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
   - {fileID: 14}
   - {fileID: 17}
-  m_Selected: 1
-  m_LastSelected: 2
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -357,7 +357,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoom: 0
     m_UniformScale: 1
     m_UpDirection: 1
@@ -416,9 +416,9 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
-    m_LastClickedID: 0
-    m_ExpandedIDs: 76fbffff00000000
+    m_SelectedIDs: c0faffff
+    m_LastClickedID: -1344
+    m_ExpandedIDs: 9efbffff00000000482d0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -468,15 +468,15 @@ MonoBehaviour:
     width: 751
     height: 368
   m_PersistentViewDataDictionary: {fileID: 0}
-  m_SceneLighting: 1
+  m_SceneLighting: 0
   lastFramingTime: 529.8316769599915
   m_2DMode: 1
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -3.8292089, y: 1.3837519, z: -0.080653295}
+    m_Target: {x: 3.1363773, y: 5.1080933, z: -0.6044382}
     speed: 2
-    m_Value: {x: -3.8292089, y: 1.3837519, z: -0.080653295}
+    m_Value: {x: 3.1363773, y: 5.1080933, z: -0.6044382}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -504,9 +504,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 16.958902
+    m_Target: 19.974253
     speed: 2
-    m_Value: 16.958902
+    m_Value: 19.974253
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -584,19 +584,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scripts/Items
+    - Assets/Prefabs
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Items
+  - Assets/Prefabs
   m_LastFoldersGridSize: -1
   m_LastProjectPath: /Users/Brandon/Desktop/Computer Science/Heist - Unity/Heist
   m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 218.99994}
-    m_SelectedIDs: 22290000
-    m_LastClickedID: 10530
-    m_ExpandedIDs: 00000000ee2700005c28000090280000662900008e290000002a0000242a0000283100002a3100002c3100002e31000030310000ffffff7f
+    scrollPos: {x: 0, y: 39}
+    m_SelectedIDs: 66280000
+    m_LastClickedID: 10342
+    m_ExpandedIDs: 00000000f6270000662800009a280000722900009a290000102a0000342a000090310000923100009431000096310000983100009a3100009c3100009e310000a0310000ffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -624,7 +624,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ee2700005c28000090280000662900008e290000002a0000242a0000283100002a3100002c3100002e31000030310000
+    m_ExpandedIDs: 00000000f6270000662800009a280000722900009a290000102a0000342a000090310000923100009431000096310000983100009a3100009c3100009e310000a0310000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -733,7 +733,7 @@ MonoBehaviour:
     width: 275
     height: 418
   m_PersistentViewDataDictionary: {fileID: 0}
-  m_ScrollPosition: {x: 0, y: 0}
+  m_ScrollPosition: {x: 0, y: 810.9543}
   m_InspectorMode: 0
   m_PreviewResizer:
     m_CachedPref: -160

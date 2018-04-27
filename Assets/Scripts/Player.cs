@@ -16,9 +16,6 @@ public class Player : MovingObject {
 
 	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
 
-	public GameObject floor1;
-	public GameObject floor2;
-
 	private Pocket mainItems;
 
 	protected int money = 0;
@@ -33,6 +30,12 @@ public class Player : MovingObject {
 		mainItems = FindObjectOfType<Pocket>();
 
 		UpdateInfo();
+
+		if (GetFloor() == 1) {
+			GameManager.instance.HideFloor2();
+		} else if (GetFloor() == 2) {
+			GameManager.instance.ShowFloor2();
+		}
 	}
 
 	public int GetMoney() { return money; }
@@ -43,16 +46,35 @@ public class Player : MovingObject {
 
 	public int GetStrength() { return strength; }
 
+	protected override void FixedUpdate() {
+		float moveHorizontal = 0;
+		float moveVertical = 0;
+
+		Vector3 movement;
+		#if UNITY_STANDALONE || UNITY_WEBPLAYER
+
+		moveHorizontal = Input.GetAxis ("Horizontal");
+		moveVertical = Input.GetAxis ("Vertical");
+		movement = new Vector3(moveHorizontal, moveVertical, 0f);
+
+		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+
+		moveHorizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+		moveVertical = CrossPlatformInputManager.GetAxis("Vertical");
+		movement = new Vector3(moveHorizontal, moveVertical, 0f);
+
+		#endif
+
+		Move(movement.normalized);
+	}
+
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (GetFloor () == 1) {
-			floor2.SetActive (false);
+			GameManager.instance.HideFloor2();
 		} else if (GetFloor () == 2) {
-			floor2.SetActive (true);
+			GameManager.instance.ShowFloor2();
 		}
-
-		money += 1;
-		UpdateInfo();
 	}
 
 	protected override void OnTriggerExit2D(Collider2D other) {
@@ -106,7 +128,7 @@ public class Player : MovingObject {
         if (data != null) {
 			base.LoadFromData(data);
 			if (GetFloor () == 2) {
-				floor2.SetActive (true);
+				GameManager.instance.ShowFloor2();
 				gameObject.layer = 17 - gameObject.layer;
 			}
 			this.money = data.money;

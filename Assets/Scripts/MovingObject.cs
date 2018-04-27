@@ -11,9 +11,7 @@ public abstract class MovingObject : MonoBehaviour {
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
-	private const string DOOR_TAG = "Door";
 	private const float DOOR_DELAY_SECONDS = 0.02f;
-	private Sprite currentDoorSprite;
 
 	private const string STAIRS_TAG = "Stairs";
 	protected int onStairs = 0;
@@ -26,15 +24,14 @@ public abstract class MovingObject : MonoBehaviour {
 	private const string LEFT = "PlayerLeftAnim";
 	private const string BACK = "PlayerBackAnim";
 	private const string RIGHT = "PlayerRightAnim";
-	private Animator animator;
+	protected Animator animator;
 
 	protected string filename;
 
-	IEnumerator doorDelay(Collider2D door) {
+	IEnumerator doorDelay() {
 		paused = true;
 		yield return new WaitForSeconds(DOOR_DELAY_SECONDS);
 		paused = false;
-		door.gameObject.GetComponent<SpriteRenderer> ().sprite = null;
 	}
 
 	void Awake() {
@@ -61,35 +58,28 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 	#endif
 
-	protected void FixedUpdate() {
-		float moveHorizontal = 0;
-		float moveVertical = 0;
+	protected virtual void FixedUpdate() {
+		Move(new Vector3(0, 0, 0));		
+	}
 
-		Vector3 movement;
-		#if UNITY_STANDALONE || UNITY_WEBPLAYER
+	protected void Move(Vector3 movement) {
+		if (!paused && !GameManager.instance.IsPaused()) {
+			rb2D.velocity = movement * moveSpeed;
+			UpdateAnimator(movement);
+		} else {
+			rb2D.velocity = new Vector3(0, 0, 0);
+		}
+	}
 
-		moveHorizontal = Input.GetAxis ("Horizontal");
-		moveVertical = Input.GetAxis ("Vertical");
-		movement = new Vector3(moveHorizontal, moveVertical, 0f);
+	protected void UpdateAnimator(Vector3 movement) {
+		string currentAnim = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
 
-		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-
-		moveHorizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-		moveVertical = CrossPlatformInputManager.GetAxis("Vertical");
-		movement = new Vector3(moveHorizontal, moveVertical, 0f);
-
-		#endif
-
-		Move(movement.normalized, moveSpeed);
-
-        if (moveHorizontal == 0 && moveVertical == 0) {
+		if (movement.sqrMagnitude == 0) {
 			return;
 		}
 
-		string currentAnim = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-
-		if (Mathf.Abs (moveVertical) >= Mathf.Abs (moveHorizontal)) {
-			if (moveVertical <= 0) {
+		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
+			if (movement.y <= 0) {
 				if (currentAnim != FORWARD) {
 					animator.Play(FORWARD);
 				}
@@ -100,7 +90,7 @@ public abstract class MovingObject : MonoBehaviour {
 				}
 			}
 		} else {
-			if (moveHorizontal <= 0) {
+			if (movement.x <= 0) {
 				if (currentAnim != LEFT) {
 					animator.Play(LEFT);
 				}
@@ -112,23 +102,12 @@ public abstract class MovingObject : MonoBehaviour {
 		}
 	}
 
-	protected void Move(Vector3 movement, float moveSpeed) {
-		if (!paused && !GameManager.instance.IsPaused()) {
-			rb2D.velocity = movement * moveSpeed;
-		} else {
-			rb2D.velocity = new Vector3(0, 0, 0);
-		}
-	}
-
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.CompareTag (DOOR_TAG)) {
-			StartCoroutine (doorDelay (other));
-			currentDoorSprite = other.gameObject.GetComponent<SpriteRenderer> ().sprite; 
-		} else if (other.gameObject.CompareTag (STAIRS_TAG)) {
+		if (other.gameObject.CompareTag (STAIRS_TAG)) {
 			if (onStairs == 0) {
 				floor = 1 - floor;
 
-				rb2D.transform.position = new Vector3 (rb2D.transform.position.x, rb2D.transform.position.y, 
+				transform.position = new Vector3 (transform.position.x, transform.position.y, 
 					0 - (float)floor / 10);
 				gameObject.layer = 17 - gameObject.layer;
 				onStairs += 2;
@@ -137,15 +116,21 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
-		if (other.gameObject.CompareTag (DOOR_TAG)) {
-			other.gameObject.GetComponent<SpriteRenderer> ().sprite = currentDoorSprite;
-		} else if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
+		if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
 			onStairs -= 1;
 		}
 	}
 
-	protected int GetFloor() {
+	public void StartDoorDelay() {
+		StartCoroutine (doorDelay ());
+	}
+
+	public int GetFloor() {
 		return floor + 1;
+	}
+
+	public bool IsPaused() {
+		return paused;
 	}
 
 	public abstract void Save();

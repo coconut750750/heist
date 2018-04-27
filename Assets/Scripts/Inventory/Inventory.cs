@@ -5,19 +5,17 @@ using UnityEngine.UI;
 
 public class Inventory : ItemStash {
 
-	public const int NUM_ITEMS = 24;
-
     [SerializeField]
     private string inventoryName;
 
 	private bool isDisplaying;
 
-	public Inventory() : base(NUM_ITEMS) {
+	public Inventory() {
 		isDisplaying = false;
 	}
 
 	void Awake () {
-
+        capacity = base.items.Length;
 	}
 
     public string GetName() {

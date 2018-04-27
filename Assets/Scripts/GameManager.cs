@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	public StashDisplayer stashDisplayer;
 
+	public Camera mainCamera;
+
 	// in game clock
 	private int day = 1;
 	private int hour;
@@ -50,7 +52,8 @@ public class GameManager : MonoBehaviour {
 
 	void InitGame() {
 		Debug.Log("Game Started");
-		Physics2D.IgnoreLayerCollision (8, 9, true);
+		Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Ground"), LayerMask.NameToLayer("Floor2"), true);
+		HideFloor2();
 	}
 
 	#if UNITY_EDITOR || UNITY_STANDALONE
@@ -128,6 +131,14 @@ public class GameManager : MonoBehaviour {
 
 	public bool IsPaused() {
 		return isPaused;
+	}
+
+	public void ShowFloor2() {
+		mainCamera.cullingMask = -1;
+	}
+
+	public void HideFloor2() {
+		mainCamera.cullingMask = -1 ^ 1 << LayerMask.NameToLayer("Floor2");
 	}
 
 	public void QuitToStartMenu() {

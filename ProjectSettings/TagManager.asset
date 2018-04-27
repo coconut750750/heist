@@ -7,6 +7,7 @@ TagManager:
   - Door
   - Wall
   - Stairs
+  - NPC
   layers:
   - Default
   - TransparentFX

@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212478986519291262}
   - component: {fileID: 61361658528830460}
   - component: {fileID: 50906435512047868}
+  - component: {fileID: 114539945788449762}
   m_Layer: 8
   m_Name: DoorWooden
   m_TagString: Door
@@ -87,6 +88,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114539945788449762
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1978699569618290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aade90c346ecd41a0bb28dd976e7ff07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212478986519291262
 SpriteRenderer:
   m_ObjectHideFlags: 1
