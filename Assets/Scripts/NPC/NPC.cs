@@ -10,7 +10,7 @@ public class NPC : MovingObject {
 	private int money;
 	
 	private Nav2DAgent agent;
-	public Vector2 destination;
+	private Vector2 destination;
 	private bool isMoving;
 
 	protected override void Start () {
@@ -23,8 +23,6 @@ public class NPC : MovingObject {
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
 		agent.maxSpeed = moveSpeed;
-
-		agent.SetDestination(destination);
 
 		UpdateSortingLayer();
 	}
@@ -61,7 +59,7 @@ public class NPC : MovingObject {
 		float x = Random.Range(minX, maxX);
 		float y = Random.Range(minY, maxY);
 
-		return new Vector2(x, y);
+		return new Vector2((int)x, (int)y);
 	}
 
 	protected void NavStarted() {

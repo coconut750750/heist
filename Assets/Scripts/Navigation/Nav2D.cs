@@ -8,6 +8,7 @@ using System;
 
 public class Nav2D : MonoBehaviour {
 
+	public bool drawGizmos;
 	///If true map will recalculate whenever an obstacle changes position, rotation or scale.
 	public bool generateOnUpdate = true;
 	///The list of obstacles for the navigation
@@ -32,6 +33,7 @@ public class Nav2D : MonoBehaviour {
 	private PathNode endNode;
 
 	private Collider2D masterCollider;
+	[NonSerialized]
 	public Bounds masterBounds;
 
 	///The total nodes count of the map
@@ -221,6 +223,8 @@ public class Nav2D : MonoBehaviour {
 	void CreateNodes() {
 		nodes.Clear();
 
+		List<Vector2> alreadyAdded = new List<Vector2>();
+
 		for (int p = 0; p < map.allPolygons.Length; p++) {
 			Polygon poly = map.allPolygons[p];
 			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
@@ -239,16 +243,17 @@ public class Nav2D : MonoBehaviour {
 				}				
 				// round the position vector to ensure objects fit through doors
 				Vector2 rounded = new Vector2(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y));				
-				nodes.Add(new PathNode(rounded));				
+				if (!alreadyAdded.Contains(rounded)) {
+					alreadyAdded.Add(rounded);
+					nodes.Add(new PathNode(rounded));
+				}		
 			}
 		}
 	}
 
 	//link the nodes provided
 	void LinkNodes(List<PathNode> nodeList) {
-
 		for (int a = 0; a < nodeList.Count; a++) {
-
 			nodeList[a].links.Clear();
 
 			for (int b = 0; b < nodeList.Count; b++) {
@@ -363,6 +368,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Check intersection of two segments, each defined by two vectors.
+	// TODO: give vector cd a buffer (if ab comes close to cd but doesnt intersect, don't link them, give room for npc box collider)
 	public static bool SegmentsCross (Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
 		float denominator = ((b.x - a.x) * (d.y - c.y)) - ((b.y - a.y) * (d.x - c.x));
 
@@ -457,80 +463,6 @@ public class Nav2D : MonoBehaviour {
 		return possiblePoints[index];
 	}
 
-////////////////////////////////////////
-///////////GUI AND EDITOR STUFF/////////
-////////////////////////////////////////
-#if UNITY_EDITOR
-	
-	void OnDrawGizmos () {
-
-		if (!Application.isPlaying) {
-			CreatePolyMap(true);
-			CreateNodes();
-			LinkNodes(nodes);
-		}
-
-		//the original drawn polygons
-		if (masterCollider is PolygonCollider2D) {
-			PolygonCollider2D polyCollider = masterCollider as PolygonCollider2D;
-			for (int i = 0; i < polyCollider.pathCount; ++i ) {
-	            for (int p = 0; p < polyCollider.GetPath(i).Length; ++p )
-	                DebugDrawPolygon(TransformPoints( polyCollider.GetPath(i), polyCollider.transform ), Color.green );
-	        }
-        
-        } else if (masterCollider is BoxCollider2D) {
-        	BoxCollider2D box = masterCollider as BoxCollider2D;
-			Vector2 tl = box.offset + new Vector2(-box.size.x, box.size.y)/2;
-			Vector2 tr = box.offset + new Vector2(box.size.x, box.size.y)/2;
-			Vector2 br = box.offset + new Vector2(box.size.x, -box.size.y)/2;
-			Vector2 bl = box.offset + new Vector2(-box.size.x, -box.size.y)/2;
-        	DebugDrawPolygon(TransformPoints(new Vector2[]{tl, tr, br, bl}, masterCollider.transform), Color.green);
-        }
-
-		float nodeSize = 0.15f;
-		Color white = new Color(1, 1f, 1f, 0.5f);
-		foreach (PathNode p in nodes) {
-			Vector2[] square = new Vector2[4];
-			square[0] = p.pos + new Vector2(-nodeSize, 0);
-			square[1] = p.pos + new Vector2(0, nodeSize);
-			square[2] = p.pos + new Vector2(nodeSize, 0);
-			square[3] = p.pos + new Vector2(0, -nodeSize);
-
-			foreach (int index in p.links) {
-				PathNode link = nodes[index];
-				Debug.DrawLine(p.pos, link.pos, white);
-			}
-
-			DebugDrawPolygon(square, white);
-		}
-
-		//the inflated used polygons
-        foreach (Polygon pathPoly in map.masterPolygons) {
-        	DebugDrawPolygon(pathPoly.points, new Color(1f,1f,1f, 0.7f));
-		}
-		foreach(Polygon poly in map.obstaclePolygons) {
-			DebugDrawPolygon(poly.points, new Color(1, 0.7f, 0.7f, 0.7f));
-		}
-	}
-
-	//helper debug function
-	void DebugDrawPolygon(Vector2[] points, Color color) {
-		for (int i = 0; i < points.Length; i++) {
-			Debug.DrawLine(points[i], points[(i + 1) % points.Length], color);
-		}
-	}
-
-	[UnityEditor.MenuItem("GameObject/Create Other/Nav2D")]
-	public static void CreatePolyNav2D() {
-		if (FindObjectOfType(typeof(Nav2D)) == null) {
-			Nav2D newNav = new GameObject("Nav2D").AddComponent<Nav2D>();
-			UnityEditor.Selection.activeObject = newNav;
-		}
-	}
-
-#endif
-
-
 	//defines a polygon
 	public class Polygon {
 		public Vector2[] points;
@@ -599,4 +531,81 @@ public class Nav2D : MonoBehaviour {
 			return -compare;
 		}
 	}
+
+////////////////////////////////////////
+///////////GUI AND EDITOR STUFF/////////
+////////////////////////////////////////
+#if UNITY_EDITOR
+	
+	void OnDrawGizmos () {
+
+		if (!drawGizmos) {
+			return;
+		}
+
+		if (!Application.isPlaying) {
+			CreatePolyMap(true);
+			CreateNodes();
+			LinkNodes(nodes);
+		}
+
+		//the original drawn polygons
+		if (masterCollider is PolygonCollider2D) {
+			PolygonCollider2D polyCollider = masterCollider as PolygonCollider2D;
+			for (int i = 0; i < polyCollider.pathCount; ++i ) {
+	            for (int p = 0; p < polyCollider.GetPath(i).Length; ++p )
+	                DebugDrawPolygon(TransformPoints( polyCollider.GetPath(i), polyCollider.transform ), Color.green );
+	        }
+        
+        } else if (masterCollider is BoxCollider2D) {
+        	BoxCollider2D box = masterCollider as BoxCollider2D;
+			Vector2 tl = box.offset + new Vector2(-box.size.x, box.size.y)/2;
+			Vector2 tr = box.offset + new Vector2(box.size.x, box.size.y)/2;
+			Vector2 br = box.offset + new Vector2(box.size.x, -box.size.y)/2;
+			Vector2 bl = box.offset + new Vector2(-box.size.x, -box.size.y)/2;
+        	DebugDrawPolygon(TransformPoints(new Vector2[]{tl, tr, br, bl}, masterCollider.transform), Color.green);
+        }
+
+		float nodeSize = 0.15f;
+		Color white = new Color(1, 1f, 1f, 0.5f);
+		foreach (PathNode p in nodes) {
+			Vector2[] square = new Vector2[4];
+			square[0] = p.pos + new Vector2(-nodeSize, 0);
+			square[1] = p.pos + new Vector2(0, nodeSize);
+			square[2] = p.pos + new Vector2(nodeSize, 0);
+			square[3] = p.pos + new Vector2(0, -nodeSize);
+
+			// foreach (int index in p.links) {
+			// 	PathNode link = nodes[index];
+			// 	Debug.DrawLine(p.pos, link.pos, white);
+			// }
+
+			DebugDrawPolygon(square, white);
+		}
+
+		//the inflated used polygons
+        foreach (Polygon pathPoly in map.masterPolygons) {
+        	DebugDrawPolygon(pathPoly.points, new Color(1f, 1f, 1f, 1f));
+		}
+		foreach(Polygon poly in map.obstaclePolygons) {
+			DebugDrawPolygon(poly.points, new Color(1, 0.7f, 0.7f, 1f));
+		}
+	}
+
+	//helper debug function
+	void DebugDrawPolygon(Vector2[] points, Color color) {
+		for (int i = 0; i < points.Length; i++) {
+			Debug.DrawLine(points[i], points[(i + 1) % points.Length], color);
+		}
+	}
+
+	[UnityEditor.MenuItem("GameObject/Create Other/Nav2D")]
+	public static void CreatePolyNav2D() {
+		if (FindObjectOfType(typeof(Nav2D)) == null) {
+			Nav2D newNav = new GameObject("Nav2D").AddComponent<Nav2D>();
+			UnityEditor.Selection.activeObject = newNav;
+		}
+	}
+
+#endif
 }
