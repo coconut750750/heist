@@ -14,7 +14,7 @@ public class NPC : MovingObject {
 
 	protected override void Start () {
 		base.Start();
-		inventory = gameObject.GetComponent<Inventory>();
+		//inventory = gameObject.GetComponent<Inventory>();
 
 		agent = gameObject.GetComponent<Nav2DAgent>();
 		
@@ -42,6 +42,10 @@ public class NPC : MovingObject {
 		} else if (GetFloor () == 2) {
 			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Elevated2";
 		}
+	}
+
+	protected void GenerateRandomDest() {
+		
 	}
 
 	protected void NavStarted() {

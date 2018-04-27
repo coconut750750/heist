@@ -22,13 +22,13 @@ public class Nav2DObstacle : MonoBehaviour {
 	public Vector2[] points{
 		get {
 			if (collider is BoxCollider2D){
-				var box = (BoxCollider2D)collider;
+				BoxCollider2D box = (BoxCollider2D)collider;
 				Vector2 pos = new Vector2(collider.transform.position.x, collider.transform.position.y);
 				pos -= new Vector2(0.5f, 0.5f);
-				var tl = pos + new Vector2(-box.size.x, box.size.y)/2;
-				var tr = pos + new Vector2(box.size.x, box.size.y)/2;
-				var br = pos + new Vector2(box.size.x, -box.size.y)/2;
-				var bl = pos + new Vector2(-box.size.x, -box.size.y)/2;
+				Vector2 tl = pos + new Vector2(-box.size.x, box.size.y)/2;
+				Vector2 tr = pos + new Vector2(box.size.x, box.size.y)/2;
+				Vector2 br = pos + new Vector2(box.size.x, -box.size.y)/2;
+				Vector2 bl = pos + new Vector2(-box.size.x, -box.size.y)/2;
 				return new Vector2[]{tl, tr, br, bl};
 			}
 

@@ -330,30 +330,31 @@ public class Nav2DAgent : MonoBehaviour{
 	void OnInvalid(){
 		Stop();
 
-		if (reachedCallback != null)
+		if (reachedCallback != null) {
 			reachedCallback(false);
-
-		if (OnDestinationInvalid != null)
+		}
+		if (OnDestinationInvalid != null) {
 			OnDestinationInvalid();
+		}
 	}
 
 	
 	//seeking a target
 	Vector2 Seek(Vector2 pos){
 		Vector2 desiredVelocity = (pos - position).normalized * maxSpeed;
-		Vector2 steer = desiredVelocity - velocity;
-		steer = Truncate(steer, maxSpeed);
+		// Vector2 steer = desiredVelocity - velocity;
+		// steer = Truncate(steer, maxSpeed);
 		return desiredVelocity;
 	}
 
 	//slowing at target's arrival
 	Vector2 Arrive(Vector2 pos){
 
-		var desiredVelocity = (pos - position);
+		Vector2 desiredVelocity = (pos - position);
 		float dist = desiredVelocity.magnitude;
 
-		if (dist > 0){
-			var reqSpeed = dist / (decelerationRate);
+		if (dist > 0) {
+			float reqSpeed = dist / (decelerationRate);
 			reqSpeed = Mathf.Min(reqSpeed, maxSpeed);
 			desiredVelocity *= reqSpeed / dist;
 		}
@@ -369,8 +370,8 @@ public class Nav2DAgent : MonoBehaviour{
 		if (lookAheadDistance <= 0)
 			return;
 
-		var currentLookAheadDistance= Mathf.Lerp(0, lookAheadDistance, velocity.magnitude/maxSpeed);
-		var lookAheadPos= position + velocity.normalized * currentLookAheadDistance;
+		float currentLookAheadDistance = Mathf.Lerp(0, lookAheadDistance, velocity.magnitude/maxSpeed);
+		Vector2 lookAheadPos= position + velocity.normalized * currentLookAheadDistance;
 
 		Debug.DrawLine(position, lookAheadPos, Color.blue);
 
@@ -380,14 +381,14 @@ public class Nav2DAgent : MonoBehaviour{
 		if (avoidRadius > 0){
 			
 			for (int i = 0; i < allAgents.Count; i++){
-				var otherAgent = allAgents[i];
+				Nav2DAgent otherAgent = allAgents[i];
 				if (otherAgent == this || otherAgent.avoidRadius <= 0)
 					continue;
 
-				var mlt = otherAgent.avoidRadius + this.avoidRadius;
-				var dist = (lookAheadPos - otherAgent.position).magnitude;
-				var str = (lookAheadPos - otherAgent.position).normalized * mlt;
-				var steer = Vector3.Lerp( (Vector3)str, Vector3.zero, dist/mlt);
+				float mlt = otherAgent.avoidRadius + this.avoidRadius;
+				float dist = (lookAheadPos - otherAgent.position).magnitude;
+				Vector2 str = (lookAheadPos - otherAgent.position).normalized * mlt;
+				Vector3 steer = Vector3.Lerp( (Vector3)str, Vector3.zero, dist/mlt);
 				velocity += (Vector2)steer;
 
 				Debug.DrawLine(otherAgent.position, otherAgent.position + str, new Color(1,0,0,0.1f));
@@ -397,12 +398,13 @@ public class Nav2DAgent : MonoBehaviour{
 
 	//keep agent within valid area
 	void Restrict(){
-
-		if (!restrict)
+		if (!restrict) {
 			return;
+		}
 
-		if (!polyNav.PointIsValid(position))
+		if (!polyNav.PointIsValid(position)) {
 			position = polyNav.GetCloserEdgePoint(position);
+		}
 	}
     
     //limit the magnitude of a vector
