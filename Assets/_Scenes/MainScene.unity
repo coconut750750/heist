@@ -60078,136 +60078,56 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -7.22
+      value: -4.05
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -14.18
+      value: -22.54
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4803666775398604, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    - target: {fileID: 4411343399689126, guid: b5324eb211a224545b2ba8792862873f, type: 2}
       propertyPath: m_RootOrder
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 114049451046784306, guid: 713106729ff70498881b148df9f4cf4c,
+    - target: {fileID: 114936218335763826, guid: b5324eb211a224545b2ba8792862873f,
         type: 2}
-      propertyPath: doorTilemapGameObj
+      propertyPath: polyNav
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 212475150828949476, guid: 713106729ff70498881b148df9f4cf4c,
+      objectReference: {fileID: 1937691461}
+    - target: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
         type: 2}
-      propertyPath: m_SortingOrder
-      value: 0
+      propertyPath: destination.x
+      value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1202737420108178, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1202737420108178, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
-      propertyPath: m_TagString
-      value: NPC
-      objectReference: {fileID: 0}
-    - target: {fileID: 61377362640275188, guid: 713106729ff70498881b148df9f4cf4c,
+    - target: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
         type: 2}
-      propertyPath: m_AutoTiling
-      value: 0
+      propertyPath: destination.y
+      value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 212475150828949476, guid: 713106729ff70498881b148df9f4cf4c,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 1568317233
-      objectReference: {fileID: 0}
-    - target: {fileID: 212475150828949476, guid: 713106729ff70498881b148df9f4cf4c,
-        type: 2}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1202737420108178, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
-      propertyPath: m_Name
-      value: NPC
-      objectReference: {fileID: 0}
-    - target: {fileID: 50567597181741606, guid: 713106729ff70498881b148df9f4cf4c,
-        type: 2}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 61377362640275188, guid: 713106729ff70498881b148df9f4cf4c,
-        type: 2}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 50567597181741606, guid: 713106729ff70498881b148df9f4cf4c,
-        type: 2}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114049451046784306, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
-  m_ParentPrefab: {fileID: 100100000, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: b5324eb211a224545b2ba8792862873f, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &670050829 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1202737420108178, guid: 713106729ff70498881b148df9f4cf4c,
-    type: 2}
-  m_PrefabInternal: {fileID: 670050828}
---- !u!114 &670050830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 670050829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71fd5d6e4c676477486f62ee22ff36ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 3
-  destination: {x: 11, y: 11}
---- !u!114 &670050831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 670050829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93cc6a4987f7c684798156c56d545838, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxSpeed: 0
-  stoppingDistance: 0.01
-  slowingDistance: 0.05
-  decelerationRate: 10
-  rotateTransform: 0
-  rotateSpeed: 350
-  avoidRadius: 0
-  lookAheadDistance: 1
-  repath: 0
-  restrict: 0
-  closerPointOnInvalid: 0
-  debugPath: 1
-  polyNav: {fileID: 1937691461}
 --- !u!114 &670895715 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114851727118913432, guid: ddc2c10feb75840bcb83b403d9dbe63f,

@@ -11,9 +11,7 @@ public abstract class MovingObject : MonoBehaviour {
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
-	private const string DOOR_TAG = "Door";
 	private const float DOOR_DELAY_SECONDS = 0.02f;
-	private Sprite currentDoorSprite;
 
 	private const string STAIRS_TAG = "Stairs";
 	protected int onStairs = 0;
@@ -30,11 +28,10 @@ public abstract class MovingObject : MonoBehaviour {
 
 	protected string filename;
 
-	IEnumerator doorDelay(Collider2D door) {
+	IEnumerator doorDelay() {
 		paused = true;
 		yield return new WaitForSeconds(DOOR_DELAY_SECONDS);
 		paused = false;
-		door.gameObject.GetComponent<SpriteRenderer> ().sprite = null;
 	}
 
 	void Awake() {
@@ -106,10 +103,7 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.CompareTag (DOOR_TAG)) {
-			StartCoroutine (doorDelay (other));
-			currentDoorSprite = other.gameObject.GetComponent<SpriteRenderer> ().sprite; 
-		} else if (other.gameObject.CompareTag (STAIRS_TAG)) {
+		if (other.gameObject.CompareTag (STAIRS_TAG)) {
 			if (onStairs == 0) {
 				floor = 1 - floor;
 
@@ -122,11 +116,13 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
-		if (other.gameObject.CompareTag (DOOR_TAG)) {
-			other.gameObject.GetComponent<SpriteRenderer> ().sprite = currentDoorSprite;
-		} else if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
+		if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
 			onStairs -= 1;
 		}
+	}
+
+	public void StartDoorDelay() {
+		StartCoroutine (doorDelay ());
 	}
 
 	public int GetFloor() {
