@@ -8,7 +8,8 @@ using System;
 
 public class Nav2D : MonoBehaviour {
 
-	public bool drawGizmos;
+	public bool drawNodes;
+	public bool drawNodesAndEdges;
 	///If true map will recalculate whenever an obstacle changes position, rotation or scale.
 	public bool generateOnUpdate = true;
 	///The list of obstacles for the navigation
@@ -16,7 +17,7 @@ public class Nav2D : MonoBehaviour {
 	private List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
 
 	///The radius from the edges to offset the agents.
-	public float inflateRadius = 0.1f;
+	public float inflateRadius = 0.5f;
 
 	///A Flag to tell PolyNav to regenerate the map
 	public bool regenerateFlag;
@@ -265,7 +266,6 @@ public class Nav2D : MonoBehaviour {
 			}
 		}
 
-		// TODO: delete useless nodes
 		DeleteSurrounded(alreadyAdded);
 	}
 
@@ -376,25 +376,8 @@ public class Nav2D : MonoBehaviour {
 				return false;
 			}
 		}
-		//check if point inside a wall
-		// for (int i = 0; i < compObstacles.Count; i++) {
-		// 	Vector2 left = new Vector2(-1, 0);
-		// 	Vector2 top = new Vector2(0, 1);
-		// 	Vector2 right = new Vector2(1, 0);
-		// 	Vector2 down = new Vector2(0, -1);
 
-		// 	float hitDis = 0.51f;
-		// 	RaycastHit2D[] hitInfoLeft = Physics2D.RaycastAll(point, left, hitDis);
-		// 	RaycastHit2D[] hitInfoTop = Physics2D.RaycastAll(point, top, hitDis);
-		// 	RaycastHit2D[] hitInfoRight = Physics2D.RaycastAll(point, right, hitDis);
-		// 	RaycastHit2D[] hitInfoDown = Physics2D.RaycastAll(point, down, hitDis);
-			
-		// 	foreach (RaycastHit2D hitInfo in hitInfoLeft) {
-		// 		if (hitInfo.collider == compObstacles[1].GetCollider()) {
-		// 			return false;
-		// 		}
-		// 	}
-		// }
+		// cant check if point in comp obstacles because comp obstacles are edge colliders
 
 		return true;
 	}
@@ -433,7 +416,6 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Check intersection of two segments, each defined by two vectors.
-	// TODO: give vector cd a buffer (if ab comes close to cd but doesnt intersect, don't link them, give room for npc box collider)
 	public static bool SegmentsCross (Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
 		float denominator = ((b.x - a.x) * (d.y - c.y)) - ((b.y - a.y) * (d.x - c.x));
 
@@ -606,7 +588,7 @@ public class Nav2D : MonoBehaviour {
 	
 	void OnDrawGizmos () {
 
-		if (!drawGizmos) {
+		if (!drawNodes && !drawNodesAndEdges) {
 			return;
 		}
 
@@ -642,10 +624,12 @@ public class Nav2D : MonoBehaviour {
 			square[2] = p.pos + new Vector2(nodeSize, 0);
 			square[3] = p.pos + new Vector2(0, -nodeSize);
 
-			// foreach (int index in p.links) {
-			// 	PathNode link = nodes[index];
-			// 	Debug.DrawLine(p.pos, link.pos, white);
-			// }
+			if (drawNodesAndEdges) {
+				foreach (int index in p.links) {
+					PathNode link = nodes[index];
+					Debug.DrawLine(p.pos, link.pos, white);
+				}
+			}
 
 			DebugDrawPolygon(square, white);
 		}
