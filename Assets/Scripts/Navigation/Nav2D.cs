@@ -12,9 +12,9 @@ public class Nav2D : MonoBehaviour {
 	///If true map will recalculate whenever an obstacle changes position, rotation or scale.
 	public bool generateOnUpdate = true;
 	///The list of obstacles for the navigation
-	public List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
+	private List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
+	private List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
 
-	public List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
 	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.1f;
 
@@ -48,11 +48,11 @@ public class Nav2D : MonoBehaviour {
 
 	//some initializing
 	void Reset() {
-		gameObject.AddComponent<PolygonCollider2D>();
+		gameObject.AddComponent<BoxCollider2D>();
 	}
 
 	//some initializing
-	void Awake() {
+	void Start() {
 		masterCollider = GetComponent<Collider2D>();
 		masterBounds = masterCollider.bounds;
 		masterCollider.enabled = false;
@@ -63,8 +63,14 @@ public class Nav2D : MonoBehaviour {
 	///Adds a Nav2DObstacle to the map.
 	public void AddObstacle(Nav2DObstacle navObstacle) {
 		if (!navObstacles.Contains(navObstacle)) {
-			navObstacle.SetNav2D(this);
 			navObstacles.Add(navObstacle);
+			regenerateFlag = true;
+		}
+	}
+
+	public void AddObstacle(Nav2DCompObstacle navObstacle) {
+		if (!compObstacles.Contains(navObstacle)) {
+			compObstacles.Add(navObstacle);
 			regenerateFlag = true;
 		}
 	}
@@ -72,6 +78,11 @@ public class Nav2D : MonoBehaviour {
 	///Removes a Nav2DObstacle to the map.
 	public void RemoveObstacle(Nav2DObstacle navObstacle) {
 		navObstacles.Remove(navObstacle);
+		regenerateFlag = true;
+	}
+
+	public void RemoveObstacle(Nav2DCompObstacle navObstacle) {
+		compObstacles.Remove(navObstacle);
 		regenerateFlag = true;
 	}
 
@@ -114,8 +125,6 @@ public class Nav2D : MonoBehaviour {
 		foreach (PathNode p in nodes) {
 			newNodes.Add(p);
 		}
-
-		Debug.Log("start nodes: " + nodes.Count);
 
 		newNodes.Add(startNode);
 		LinkStart(startNode, newNodes);
@@ -229,26 +238,60 @@ public class Nav2D : MonoBehaviour {
 			Polygon poly = map.allPolygons[p];
 			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
 
-			Vector2[] inflatedPoints = InflatePolygon(poly.points, 0.05f);
+			Vector2[] inflatedPoints = InflatePolygon(poly.points, 0.25f);
 			for (int i = 0; i < inflatedPoints.Length; i++) {
 				//if point is concave dont create a node
-				
 				if (PointIsConcave(inflatedPoints, i)) {
 					continue;
 				}
 				
+				//round the position vector to ensure objects fit through doors
+				//also need to round to allow CheckLOS() between them
+				Vector2 rounded = new Vector2(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y));				
+				
+				//Vector2 rounded = new Vector2(inflatedPoints[i].x, inflatedPoints[i].y);				
+
+				
 				//if point is not in valid area dont create a node
-				if (!PointIsValid(inflatedPoints[i])) {
+				if (!PointIsValid(rounded)) {
 					continue;
 				}				
-				// round the position vector to ensure objects fit through doors
-				Vector2 rounded = new Vector2(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y));				
+
+				// if point is already added, do not create a node
 				if (!alreadyAdded.Contains(rounded)) {
 					alreadyAdded.Add(rounded);
 					nodes.Add(new PathNode(rounded));
 				}		
 			}
 		}
+
+		// TODO: delete useless nodes
+		DeleteSurrounded(alreadyAdded);
+	}
+
+	//mark and delete surrounded nodes
+	void DeleteSurrounded(List<Vector2> addedVectors) {
+		for (int n = 0; n < nodes.Count; n++) {
+			Vector2 left = nodes[n].pos + new Vector2(-1, 0);
+			Vector2 top = nodes[n].pos + new Vector2(0, 1);
+			Vector2 right = nodes[n].pos + new Vector2(1, 0);
+			Vector2 down = nodes[n].pos + new Vector2(0, -1);
+
+			bool leftBlocked = addedVectors.Contains(left) || !PointIsValid(left);
+			bool topBlocked = addedVectors.Contains(top) || !PointIsValid(top);
+			bool rightBlocked = addedVectors.Contains(right) || !PointIsValid(right);
+			bool downBlocked = addedVectors.Contains(down) || !PointIsValid(down);
+
+			nodes[n].surrounded = leftBlocked && topBlocked && rightBlocked && downBlocked;
+		}
+
+		List<PathNode> cleanedNodes = new List<PathNode>();
+		foreach (PathNode p in nodes) {
+			if (!p.surrounded) {
+				cleanedNodes.Add(p);
+			}
+		}
+		nodes = cleanedNodes;
 	}
 
 	//link the nodes provided
@@ -321,16 +364,38 @@ public class Nav2D : MonoBehaviour {
 
 	///determine if a point is within a valid (walkable) area.
 	public bool PointIsValid (Vector2 point) {
+		// check if point in nav 2d boundaries
 		for (int i = 0; i < map.masterPolygons.Length; i++) {
 			if (!PointInsidePolygon(map.masterPolygons[i].points, point)) {
 				return false;
 			}
 		}
-		for (int i = 0; i < map.obstaclePolygons.Length; i++) {
-			if (PointInsidePolygon(map.obstaclePolygons[i].points, point)) {
+		// check if point not in any obstacles
+		for (int i = 0; i < navObstacles.Count; i++) {
+			if (navObstacles[i].GetCollider().OverlapPoint(point)) {
 				return false;
 			}
 		}
+		//check if point inside a wall
+		// for (int i = 0; i < compObstacles.Count; i++) {
+		// 	Vector2 left = new Vector2(-1, 0);
+		// 	Vector2 top = new Vector2(0, 1);
+		// 	Vector2 right = new Vector2(1, 0);
+		// 	Vector2 down = new Vector2(0, -1);
+
+		// 	float hitDis = 0.51f;
+		// 	RaycastHit2D[] hitInfoLeft = Physics2D.RaycastAll(point, left, hitDis);
+		// 	RaycastHit2D[] hitInfoTop = Physics2D.RaycastAll(point, top, hitDis);
+		// 	RaycastHit2D[] hitInfoRight = Physics2D.RaycastAll(point, right, hitDis);
+		// 	RaycastHit2D[] hitInfoDown = Physics2D.RaycastAll(point, down, hitDis);
+			
+		// 	foreach (RaycastHit2D hitInfo in hitInfoLeft) {
+		// 		if (hitInfo.collider == compObstacles[1].GetCollider()) {
+		// 			return false;
+		// 		}
+		// 	}
+		// }
+
 		return true;
 	}
 
@@ -393,10 +458,11 @@ public class Nav2D : MonoBehaviour {
 	public static bool PointInsidePolygon(Vector2[] polyPoints, Vector2 point) {
 
 		float xMin = 0;
-		for (int i = 0; i < polyPoints.Length; i++)
+		for (int i = 0; i < polyPoints.Length; i++) {
 			xMin = Mathf.Min(xMin, polyPoints[i].x);
+		}
 
-		Vector2 origin = new Vector2(xMin - 0.1f, point.y);
+		Vector2 origin = new Vector2(xMin - 1f, point.y);
 		int intersections = 0;
 
 		for (int i = 0; i < polyPoints.Length; i++) {
@@ -478,7 +544,6 @@ public class Nav2D : MonoBehaviour {
 		public Polygon[] obstaclePolygons;
 		public Polygon[] allPolygons;
 
-
 		public PolyMap(Polygon[] masterPolys, Polygon[] obstaclePolys) {
 			masterPolygons = masterPolys;
 			obstaclePolygons = obstaclePolys;
@@ -503,7 +568,6 @@ public class Nav2D : MonoBehaviour {
 
 	//defines a node for A*
 	public class PathNode : IHeapItem<PathNode> {
-
 		public Vector2 pos;
 		public List<int> links = new List<int>();
 		public float gCost = 1;
@@ -511,8 +575,11 @@ public class Nav2D : MonoBehaviour {
 		public PathNode parent = null;
 		private int _heapIndex;
 
-		public PathNode ( Vector2 pos  ) {
+		public bool surrounded; // true if node is surrounded (4 sides) by other nodes and colliders
+
+		public PathNode (Vector2 pos) {
 			this.pos = pos;	
+			surrounded = false;
 		}
 
 		public float fCost{

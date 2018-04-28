@@ -9,7 +9,11 @@ public class Nav2DCompObstacle : MonoBehaviour {
 
 	public float extraOffset;
 
-	public CompositeCollider2D compCollider;
+	private CompositeCollider2D compCollider {
+		get {
+			return gameObject.GetComponent<CompositeCollider2D>();
+		}
+	}
 
 	private Vector3 lastPos;
 	private Quaternion lastRot;
@@ -43,12 +47,11 @@ public class Nav2DCompObstacle : MonoBehaviour {
 	[SerializeField]
 	private Nav2D polyNav;
 
-	void Reset(){
-		compCollider.isTrigger = true;
+	void Awake() {
+		this.polyNav.AddObstacle(this);
 	}
 
 	void OnEnable(){
-		
 		lastPos = transform.position;
 		lastRot = transform.rotation;
 		lastScale = transform.localScale;
@@ -68,7 +71,7 @@ public class Nav2DCompObstacle : MonoBehaviour {
 		lastScale = _transform.localScale;
 	}
 
-	public void SetNav2D(Nav2D polyNav) {
-		this.polyNav = polyNav;
+	public Collider2D GetCollider() {
+		return compCollider;
 	}
 }

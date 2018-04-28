@@ -11,7 +11,11 @@ public class Nav2DObstacle : MonoBehaviour {
 	public bool invertPolygon = false;
 	public float extraOffset;
 
-	public new Collider2D collider;
+	private new Collider2D collider {
+		get {
+			return gameObject.GetComponent<Collider2D>();
+		}
+	}
 
 	private Vector3 lastPos;
 	private Quaternion lastRot;
@@ -21,10 +25,12 @@ public class Nav2DObstacle : MonoBehaviour {
 	///The polygon points of the obstacle
 	public Vector2[] points{
 		get {
+			if (collider == null) {
+				return new Vector2[0];
+			}
 			if (collider is BoxCollider2D){
-				BoxCollider2D box = (BoxCollider2D)collider;
-				Vector2 pos = new Vector2(collider.transform.position.x, collider.transform.position.y);
-				pos -= new Vector2(0.5f, 0.5f);
+				BoxCollider2D box = (BoxCollider2D) collider;
+				Vector2 pos = Vector2.zero;//new Vector2(transform.position.x, transform.position.y);
 				Vector2 tl = pos + new Vector2(-box.size.x, box.size.y)/2;
 				Vector2 tr = pos + new Vector2(box.size.x, box.size.y)/2;
 				Vector2 br = pos + new Vector2(box.size.x, -box.size.y)/2;
@@ -46,10 +52,14 @@ public class Nav2DObstacle : MonoBehaviour {
 	[SerializeField]
 	private Nav2D polyNav;
 
-	void Reset(){
-		collider.isTrigger = true;
-		if (GetComponent<SpriteRenderer>() != null)
+	void Reset() {
+		if (GetComponent<SpriteRenderer>() != null) {
 			invertPolygon = true;
+		}
+	}
+
+	void Awake() {
+		this.polyNav.AddObstacle(this);
 	}
 
 	void OnEnable(){
@@ -59,20 +69,16 @@ public class Nav2DObstacle : MonoBehaviour {
 		_transform = transform;
 	}
 
-	void OnDisable(){
-
-	}
-
 	void Update(){
-		if (_transform.position != lastPos || _transform.rotation != lastRot || _transform.localScale != lastScale)
+		if (_transform.position != lastPos || _transform.rotation != lastRot || _transform.localScale != lastScale) {
 			polyNav.regenerateFlag = true;
-
+		}
 		lastPos = _transform.position;
 		lastRot = _transform.rotation;
 		lastScale = _transform.localScale;
 	}
 
-	public void SetNav2D(Nav2D polyNav) {
-		this.polyNav = polyNav;
+	public Collider2D GetCollider() {
+		return collider;
 	}
 }
