@@ -21,18 +21,25 @@ public class NPCSpawner : MonoBehaviour {
 	public NPC[] npcsToSpawn;
 	private List<NPC> npcs;
 
-	private Rect cameraRect;
-	public int NpcSize;
+	public int npcSize;
+	public int spawnRange;
+
+	public float spawnDelay;
+	private bool canSpawn;
+
+	IEnumerator SpawnDelay() {
+		canSpawn = false;
+		yield return new WaitForSeconds(spawnDelay);
+		canSpawn = true;
+	}
 
 	void Start () {
 		npcs = new List<NPC>();
+		canSpawn = true;
 	}
 	
 	void Update () {
 		int hour = GameManager.instance.GetHour();
-
-		cameraRect = GameManager.instance.GetCameraRect();
-		Debug.Log(cameraRect.min + " " + cameraRect.max);
 
 		if (END_BASE_HOUR <= hour && hour < END_PEAK_HOUR) {
 			if (npcs.Count < PEAK_MIN) {
@@ -50,20 +57,29 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	void Spawn() {
-		Vector2 pos = GenerateRandomNPCPos();
+		if (!canSpawn) {
+			return;
+		}
+
+		Vector2? pos = GenerateRandomNPCPos();
+		if (pos == null) {
+			return;
+		}
 
 		NPC toSpawn = npcsToSpawn[Random.Range(0, npcsToSpawn.Length)];
 		
-		NPC instance = Instantiate (toSpawn, pos, Quaternion.identity) as NPC;
+		NPC instance = Instantiate (toSpawn, (Vector2)pos, Quaternion.identity) as NPC;
 		instance.SetAgentNav(polyNav);
 		instance.transform.SetParent(transform);
 
 		npcs.Add(instance);
+
+		StartCoroutine(SpawnDelay());
 	}
 
 	void Recall() {
 		foreach (NPC npc in npcs) {
-			if (!NpcIsVisible(npc)) {
+			if (!NpcIsInRange(npc)) {
 				npcs.Remove(npc);
 				Destroy(npc);
 				return;
@@ -71,33 +87,43 @@ public class NPCSpawner : MonoBehaviour {
 		}
 	}
 
-	// returns a vector 2 position one past the border of the camera to ensure it is close enough to player 
+	// returns a vector 2 position out of range 
 	// to be relevant
-	Vector2 GenerateRandomNPCPos() {
+	Vector2? GenerateRandomNPCPos() {
+		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
 		int side = Random.Range(0, 4);
+		Vector2 pos;
+
 		switch (side) {
 			case 0: // left
-				float y = Random.Range(cameraRect.min.y, cameraRect.max.y);
-				return new Vector2(cameraRect.min.x - 1, y);
+				float y = Random.Range(range.min.y, range.max.y);
+				pos = new Vector2(range.min.x - 1, y);
+				break;
 			case 1: // top
-				float x = Random.Range(cameraRect.min.x, cameraRect.max.x);
-				return new Vector2(x, cameraRect.max.y + 1);
+				float x = Random.Range(range.min.x, range.max.x);
+				pos = new Vector2(x, range.max.y + 1);
+				break;
 			case 2: // right
-				y = Random.Range(cameraRect.min.y, cameraRect.max.y);
-				return new Vector2(cameraRect.max.x + 1, y);
+				y = Random.Range(range.min.y, range.max.y);
+				pos = new Vector2(range.max.x + 1, y);
+				break;
 			default: // down
-				x = Random.Range(cameraRect.min.x, cameraRect.max.x);
-				return new Vector2(x, cameraRect.min.y - 1);
-			
+				x = Random.Range(range.min.x, range.max.x);
+				pos = new Vector2(x, range.min.y - 1);
+				break;
+		}
+
+		if (polyNav.PointIsValid(pos)) {
+			return pos;
+		} else {
+			return null;
 		}
 	}
 
 	// checks to see if NPC is in the range of the camera
-	bool NpcIsVisible(NPC npc) {
-		Rect inflatedCamera = new Rect();
-		inflatedCamera.position = cameraRect.position;
-		inflatedCamera.width = cameraRect.width + 2 * NpcSize;
-		inflatedCamera.height = cameraRect.height + 2 * NpcSize;
-		return inflatedCamera.Contains((Vector2)(npc.transform.position));
+	bool NpcIsInRange(NPC npc) {
+		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
+
+		return range.Contains((Vector2)(npc.transform.position));
 	}
 }

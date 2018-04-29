@@ -142,12 +142,13 @@ public class GameManager : MonoBehaviour {
 		mainCamera.cullingMask = -1 ^ 1 << LayerMask.NameToLayer("Floor2");
 	}
 
-	public Rect GetCameraRect() {
-		Rect camRect = new Rect();
-		camRect.height = 2f * mainCamera.orthographicSize;
-        camRect.width = camRect.height * mainCamera.aspect;
-		camRect.position = mainCamera.transform.position;
-		return camRect;
+	public Rect GetCurrentPlayerRange(int range) {
+		Rect rect = new Rect();
+		rect.position = mainPlayer.transform.position;
+		rect.width = range;
+		rect.height = range;
+
+		return rect;
 	}
 
 	public void QuitToStartMenu() {

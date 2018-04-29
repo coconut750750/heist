@@ -299,7 +299,7 @@ public class Nav2D : MonoBehaviour {
 		for (int i = 0; i < nodeList.Count; i++) {
 			nodeList[i].links.Clear();
 		}
-		
+
 		for (int a = 0; a < nodeList.Count; a++) {
 			for (int b = a + 1; b < nodeList.Count; b++) {
 				PathNode nodeA = nodeList[a];
@@ -385,8 +385,9 @@ public class Nav2D : MonoBehaviour {
 		}
 		
 		// check if point not in any obstacles
-		for (int i = 0; i < navObstacles.Count; i++) {
-			if (navObstacles[i].GetCollider().OverlapPoint(point)) {
+		// TODO: separate border walls from obstacle walls in floor 2
+		for (int i = 0; i < map.obstaclePolygons.Length; i++) {
+			if (PointInsidePolygon(map.obstaclePolygons[i].points, point)) {
 				return false;
 			}
 		}
