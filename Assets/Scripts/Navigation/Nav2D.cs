@@ -12,6 +12,7 @@ public class Nav2D : MonoBehaviour {
 	public bool drawNodesAndEdges;
 	///If true map will recalculate whenever an obstacle changes position, rotation or scale.
 	public bool generateOnUpdate = true;
+
 	///The list of obstacles for the navigation
 	private List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
 	private List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
@@ -183,8 +184,7 @@ public class Nav2D : MonoBehaviour {
 
 				obstaclePolys.Add(new Polygon(inflatedPoints));
 			}
-		}
-		
+		}		
 
 		if (generateMaster) {
 			if (masterCollider is PolygonCollider2D) {
@@ -385,15 +385,14 @@ public class Nav2D : MonoBehaviour {
 		}
 		
 		// check if point not in any obstacles
-		// TODO: separate border walls from obstacle walls in floor 2
+		int inside = 0;
 		for (int i = 0; i < map.obstaclePolygons.Length; i++) {
-			if (PointInsidePolygon(map.obstaclePolygons[i].points, point)) {
-				return false;
+			if (!PointInsidePolygon(map.obstaclePolygons[i].points, point)) {
+				inside++;
 			}
 		}
-		// cant check if point in comp obstacles because comp obstacles are edge colliders
 
-		return true;
+		return inside % 2 == 0;
 	}
 
 	///Kind of scales a polygon based on it's vertices average normal.

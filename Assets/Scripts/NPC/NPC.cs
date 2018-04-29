@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NPC : MovingObject {
 
+	public float newDestinationDelay;
+
 	private const string PLAYER_TAG = "Player";
 
 	private Inventory inventory;
@@ -17,16 +19,24 @@ public class NPC : MovingObject {
 	private Vector2 destination;
 	private bool isMoving;
 
+	private bool searchForDest;
+
+	IEnumerator ArriveDelay() {
+		searchForDest = false;
+		yield return new WaitForSeconds(newDestinationDelay);
+		searchForDest = true;
+	}
+
 	protected override void Start () {
 		base.Start();
 		//inventory = gameObject.GetComponent<Inventory>();
-
-		Debug.Log("spawned!");
 		
 		agent.OnDestinationReached += NavArrived;
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
 		agent.maxSpeed = moveSpeed;
+
+		searchForDest = true;
 
 		UpdateSortingLayer();
 	}
@@ -35,9 +45,11 @@ public class NPC : MovingObject {
 		if (isMoving) {
 			UpdateAnimator(new Vector3(rb2D.velocity.x, rb2D.velocity.y, 0));
 		} else {
-			Bounds nav2DBounds = agent.polyNav.masterBounds;
-			Vector2 newDest = GenerateRandomDest(nav2DBounds);
-			agent.SetDestination(newDest);
+			if (searchForDest) {
+				Bounds nav2DBounds = agent.polyNav.masterBounds;
+				Vector2 newDest = GenerateRandomDest(nav2DBounds);
+				agent.SetDestination(newDest);
+			}
 		}
 	}
 
@@ -78,6 +90,7 @@ public class NPC : MovingObject {
 	protected void NavArrived() {
 		Debug.Log("arrived");
 		isMoving = false;
+		StartCoroutine(ArriveDelay());
 	}
 
 	protected void DestinationInvalid() {
