@@ -40,7 +40,7 @@ static class AStar {
 			}
 
 			
-			foreach (var neighbour in currentNode.links.Select( index => allNodes[index] )){
+			foreach (PathNode neighbour in currentNode.links){
 
 				if (closedList.Contains(neighbour))
 					continue;
