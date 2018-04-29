@@ -140,7 +140,7 @@ public class Nav2D : MonoBehaviour {
 	// delete start and end node
 	// destroy links between end node and other nodes
 	void RequestDone(Vector2[] path, bool success) {
-		DeleteExternalLinks(nodes);
+		DeleteExternalLinks();
 		isProcessingPath = false;
 		currentRequest.callback(path, success);
 		TryNextFindPath();
@@ -239,7 +239,7 @@ public class Nav2D : MonoBehaviour {
 			Polygon poly = map.allPolygons[p];
 			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
 
-			Vector2[] inflatedPoints = InflatePolygon(poly.points, 0.25f);
+			Vector2[] inflatedPoints = InflatePolygon(poly.points, inflateRadius);
 			for (int i = 0; i < inflatedPoints.Length; i++) {
 				//if point is concave dont create a node
 				if (PointIsConcave(inflatedPoints, i)) {
@@ -297,28 +297,25 @@ public class Nav2D : MonoBehaviour {
 	//link the nodes provided
 	void LinkNodes(List<PathNode> nodeList) {
 		for (int a = 0; a < nodeList.Count; a++) {
-			nodeList[a].links.Clear();
-
-			for (int b = 0; b < nodeList.Count; b++) {
-				if (nodeList[a] == nodeList[b]) {
-					continue;
-				}
-				if (b > a) {
-					continue;
-				}
-				if (CheckLOS(nodeList[a].pos, nodeList[b].pos)) {
-					nodeList[a].links.Add(b);
-					nodeList[b].links.Add(a);
+			for (int b = a + 1; b < nodeList.Count; b++) {
+				PathNode nodeA = nodeList[a];
+				PathNode nodeB = nodeList[b];
+				
+				if (CheckLOS(nodeA.pos, nodeB.pos)) {
+					nodeList[a].links.Add(nodeB);
+					nodeList[b].links.Add(nodeA);
 				}
 			}
 		}
+
+		DeleteLoneNodes();
 	}
 	
 	//Link the start node in
 	void LinkStart(PathNode start, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
 			if (CheckLOS(start.pos, toNodes[i].pos)) {
-				start.links.Add(i);
+				start.links.Add(toNodes[i]);
 			}			
 		}
 	}
@@ -327,16 +324,28 @@ public class Nav2D : MonoBehaviour {
 	void LinkEnd(PathNode end, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
 			if (CheckLOS(end.pos, toNodes[i].pos)) {
-				toNodes[i].links.Add(toNodes.IndexOf(end));
+				toNodes[i].links.Add(end);
 			}			
 		}
 	}
 
-	void DeleteExternalLinks(List<PathNode> nodes) {
+	//deletes nodes with no links
+	void DeleteLoneNodes() {
+		List<PathNode> nonLoneNodes = new List<PathNode>();
+		foreach (PathNode p in nodes) {
+			if (p.links.Count > 0) {
+				nonLoneNodes.Add(p);
+			}
+		}
+		nodes = nonLoneNodes; 
+	}
+
+	//delete links to nodes that were removed
+	void DeleteExternalLinks() {
 		for (int i = 0; i < nodes.Count; i++) {
-			List<int> freshLinks = new List<int>(nodes[i].links);
-			foreach (int link in nodes[i].links) {
-				if (link > nodes.Count) {
+			List<PathNode> freshLinks = new List<PathNode>(nodes[i].links);
+			foreach (PathNode link in nodes[i].links) {
+				if (!nodes.Contains(link)) {
 					freshLinks.Remove(link);
 				}
 			}
@@ -370,13 +379,13 @@ public class Nav2D : MonoBehaviour {
 				return false;
 			}
 		}
+		
 		// check if point not in any obstacles
 		for (int i = 0; i < navObstacles.Count; i++) {
 			if (navObstacles[i].GetCollider().OverlapPoint(point)) {
 				return false;
 			}
 		}
-
 		// cant check if point in comp obstacles because comp obstacles are edge colliders
 
 		return true;
@@ -551,7 +560,7 @@ public class Nav2D : MonoBehaviour {
 	//defines a node for A*
 	public class PathNode : IHeapItem<PathNode> {
 		public Vector2 pos;
-		public List<int> links = new List<int>();
+		public List<PathNode> links = new List<PathNode>();
 		public float gCost = 1;
 		public float hCost;
 		public PathNode parent = null;
@@ -625,9 +634,8 @@ public class Nav2D : MonoBehaviour {
 			square[3] = p.pos + new Vector2(0, -nodeSize);
 
 			if (drawNodesAndEdges) {
-				foreach (int index in p.links) {
-					PathNode link = nodes[index];
-					Debug.DrawLine(p.pos, link.pos, white);
+				foreach (PathNode neighbor in p.links) {
+					Debug.DrawLine(p.pos, neighbor.pos, white);
 				}
 			}
 
