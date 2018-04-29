@@ -117,9 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fe97aff3e6b3457f9688d2cbdd1be90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
-  floor1: {fileID: 0}
-  floor2: {fileID: 0}
+  moveSpeed: 5
   moneyText: {fileID: 0}
   healthText: {fileID: 0}
 --- !u!212 &212475150828949476

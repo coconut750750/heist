@@ -9,7 +9,11 @@ public class NPC : MovingObject {
 	private Inventory inventory;
 	private int money;
 	
-	private Nav2DAgent agent;
+	private Nav2DAgent agent {
+		get {
+			return gameObject.GetComponent<Nav2DAgent>();
+		}
+	}
 	private Vector2 destination;
 	private bool isMoving;
 
@@ -17,7 +21,7 @@ public class NPC : MovingObject {
 		base.Start();
 		//inventory = gameObject.GetComponent<Inventory>();
 
-		agent = gameObject.GetComponent<Nav2DAgent>();
+		Debug.Log("spawned!");
 		
 		agent.OnDestinationReached += NavArrived;
 		agent.OnNavigationStarted += NavStarted;
@@ -60,6 +64,10 @@ public class NPC : MovingObject {
 		float y = Random.Range(minY, maxY);
 
 		return new Vector2((int)x, (int)y);
+	}
+
+	public void SetAgentNav(Nav2D nav) {
+		agent.polyNav = nav;
 	}
 
 	protected void NavStarted() {

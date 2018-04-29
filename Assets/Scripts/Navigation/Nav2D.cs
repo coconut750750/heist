@@ -296,6 +296,10 @@ public class Nav2D : MonoBehaviour {
 
 	//link the nodes provided
 	void LinkNodes(List<PathNode> nodeList) {
+		for (int i = 0; i < nodeList.Count; i++) {
+			nodeList[i].links.Clear();
+		}
+		
 		for (int a = 0; a < nodeList.Count; a++) {
 			for (int b = a + 1; b < nodeList.Count; b++) {
 				PathNode nodeA = nodeList[a];
