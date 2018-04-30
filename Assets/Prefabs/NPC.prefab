@@ -120,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   newDestinationDelay: 3
+  destinationRange: 15
 --- !u!114 &114936218335763826
 MonoBehaviour:
   m_ObjectHideFlags: 1

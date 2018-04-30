@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private Camera mainCamera;
 
+	public Nav2D groundNav;
+	public Nav2D floor2Nav;
+
 	// in game clock
 	private int day = 1;
 	private int hour;

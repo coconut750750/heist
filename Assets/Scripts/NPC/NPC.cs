@@ -6,6 +6,8 @@ public class NPC : MovingObject {
 
 	public float newDestinationDelay;
 
+	public int destinationRange;
+
 	private const string PLAYER_TAG = "Player";
 
 	private Inventory inventory;
@@ -18,6 +20,8 @@ public class NPC : MovingObject {
 	}
 	private Vector2 destination;
 	private bool isMoving;
+
+	private int prevFloor;
 
 	private bool searchForDest;
 
@@ -36,6 +40,7 @@ public class NPC : MovingObject {
 		agent.OnDestinationInvalid += DestinationInvalid;
 		agent.maxSpeed = moveSpeed;
 
+		prevFloor = GetFloor();
 		searchForDest = true;
 
 		UpdateSortingLayer();
@@ -66,16 +71,24 @@ public class NPC : MovingObject {
 		}
 	}
 
+	// Generates random destination within bound and within the destination range
 	protected Vector2 GenerateRandomDest(Bounds bound) {
-		float minX = bound.min.x;
-		float minY = bound.min.y;
-		float maxX = bound.max.x;
-		float maxY = bound.max.y;
+		Vector2 currPos = transform.position;
 
-		float x = Random.Range(minX, maxX);
-		float y = Random.Range(minY, maxY);
+		float posMinX = currPos.x - destinationRange;
+		float posMaxX = currPos.x + destinationRange;
+		float posMinY = currPos.y - destinationRange;
+		float posMaxY = currPos.y + destinationRange;
 
-		return new Vector2((int)x, (int)y);
+		float minX = Mathf.Max(bound.min.x, posMinX);
+		float maxX = Mathf.Min(bound.max.x, posMaxX);
+		float minY = Mathf.Max(bound.min.y, posMinY);
+		float maxY = Mathf.Min(bound.max.y, posMaxY);
+
+		float x = Mathf.Round(Random.Range(minX, maxX));
+		float y = Mathf.Round(Random.Range(minY, maxY));
+
+		return new Vector2(x, y);
 	}
 
 	public void SetAgentNav(Nav2D nav) {
@@ -91,6 +104,15 @@ public class NPC : MovingObject {
 		Debug.Log("arrived");
 		isMoving = false;
 		StartCoroutine(ArriveDelay());
+
+		if (GetFloor() != prevFloor) {
+			prevFloor = GetFloor();
+			if (prevFloor == 1) {
+				SetAgentNav(GameManager.instance.groundNav);
+			} else if (prevFloor == 2) {
+				SetAgentNav(GameManager.instance.floor2Nav);
+			}
+		}
 	}
 
 	protected void DestinationInvalid() {
