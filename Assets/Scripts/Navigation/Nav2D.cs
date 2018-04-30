@@ -10,11 +10,14 @@ public class Nav2D : MonoBehaviour {
 
 	public bool drawNodes;
 	public bool drawNodesAndEdges;
-	///If true map will recalculate whenever an obstacle changes position, rotation or scale.
-	public bool generateOnUpdate = true;
+
 	///The list of obstacles for the navigation
 	private List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
 	private List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
+
+	// if graph is connected, include all valid points
+	// if graph is not connected, exclude points that are not inside any obstacles
+	public bool isConnected;
 
 	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.5f;
@@ -183,8 +186,7 @@ public class Nav2D : MonoBehaviour {
 
 				obstaclePolys.Add(new Polygon(inflatedPoints));
 			}
-		}
-		
+		}		
 
 		if (generateMaster) {
 			if (masterCollider is PolygonCollider2D) {
@@ -296,6 +298,10 @@ public class Nav2D : MonoBehaviour {
 
 	//link the nodes provided
 	void LinkNodes(List<PathNode> nodeList) {
+		for (int i = 0; i < nodeList.Count; i++) {
+			nodeList[i].links.Clear();
+		}
+
 		for (int a = 0; a < nodeList.Count; a++) {
 			for (int b = a + 1; b < nodeList.Count; b++) {
 				PathNode nodeA = nodeList[a];
@@ -381,14 +387,19 @@ public class Nav2D : MonoBehaviour {
 		}
 		
 		// check if point not in any obstacles
-		for (int i = 0; i < navObstacles.Count; i++) {
-			if (navObstacles[i].GetCollider().OverlapPoint(point)) {
-				return false;
+		int inside = 0;
+		for (int i = 0; i < map.obstaclePolygons.Length; i++) {
+			if (PointInsidePolygon(map.obstaclePolygons[i].points, point)) {
+				inside++;
 			}
 		}
-		// cant check if point in comp obstacles because comp obstacles are edge colliders
 
-		return true;
+		if (isConnected) {
+			return (inside & 1) == 0;
+		} else {
+			return (inside & 1) == 0 && inside != 0;
+		}
+		
 	}
 
 	///Kind of scales a polygon based on it's vertices average normal.
@@ -625,7 +636,7 @@ public class Nav2D : MonoBehaviour {
         }
 
 		float nodeSize = 0.15f;
-		Color white = new Color(1, 1f, 1f, 0.5f);
+		Color white = new Color(1, 1f, 1f, 1f);
 		foreach (PathNode p in nodes) {
 			Vector2[] square = new Vector2[4];
 			square[0] = p.pos + new Vector2(-nodeSize, 0);

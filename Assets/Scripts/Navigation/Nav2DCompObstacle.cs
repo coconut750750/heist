@@ -15,6 +15,9 @@ public class Nav2DCompObstacle : MonoBehaviour {
 		}
 	}
 
+	[SerializeField]
+	private Nav2D polyNav;
+
 	private Vector3 lastPos;
 	private Quaternion lastRot;
 	private Vector3 lastScale;
@@ -44,9 +47,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 		}
 	}
 
-	[SerializeField]
-	private Nav2D polyNav;
-
 	void Awake() {
 		this.polyNav.AddObstacle(this);
 	}
@@ -56,10 +56,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 		lastRot = transform.rotation;
 		lastScale = transform.localScale;
 		_transform = transform;
-	}
-
-	void OnDisable(){
-
 	}
 
 	void Update(){

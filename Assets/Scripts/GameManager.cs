@@ -18,7 +18,11 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	public StashDisplayer stashDisplayer;
 
-	public Camera mainCamera;
+	[SerializeField]
+	private Camera mainCamera;
+
+	public Nav2D groundNav;
+	public Nav2D floor2Nav;
 
 	// in game clock
 	private int day = 1;
@@ -31,7 +35,7 @@ public class GameManager : MonoBehaviour {
 
 	private bool isPaused;
 
-	public string filename;
+	private string filename;
 	
 	void Awake () {
 		if (instance == null) {
@@ -139,6 +143,15 @@ public class GameManager : MonoBehaviour {
 
 	public void HideFloor2() {
 		mainCamera.cullingMask = -1 ^ 1 << LayerMask.NameToLayer("Floor2");
+	}
+
+	public Rect GetCurrentPlayerRange(int range) {
+		Rect rect = new Rect();
+		rect.position = mainPlayer.transform.position;
+		rect.width = range;
+		rect.height = range;
+
+		return rect;
 	}
 
 	public void QuitToStartMenu() {

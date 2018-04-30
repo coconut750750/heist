@@ -4,25 +4,44 @@ using UnityEngine;
 
 public class NPC : MovingObject {
 
+	public float newDestinationDelay;
+
+	public int destinationRange;
+
 	private const string PLAYER_TAG = "Player";
 
 	private Inventory inventory;
 	private int money;
 	
-	private Nav2DAgent agent;
+	private Nav2DAgent agent {
+		get {
+			return gameObject.GetComponent<Nav2DAgent>();
+		}
+	}
 	private Vector2 destination;
 	private bool isMoving;
+
+	private int prevFloor;
+
+	private bool searchForDest;
+
+	IEnumerator ArriveDelay() {
+		searchForDest = false;
+		yield return new WaitForSeconds(newDestinationDelay);
+		searchForDest = true;
+	}
 
 	protected override void Start () {
 		base.Start();
 		//inventory = gameObject.GetComponent<Inventory>();
-
-		agent = gameObject.GetComponent<Nav2DAgent>();
 		
 		agent.OnDestinationReached += NavArrived;
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
 		agent.maxSpeed = moveSpeed;
+
+		prevFloor = GetFloor();
+		searchForDest = true;
 
 		UpdateSortingLayer();
 	}
@@ -31,9 +50,11 @@ public class NPC : MovingObject {
 		if (isMoving) {
 			UpdateAnimator(new Vector3(rb2D.velocity.x, rb2D.velocity.y, 0));
 		} else {
-			Bounds nav2DBounds = agent.polyNav.masterBounds;
-			Vector2 newDest = GenerateRandomDest(nav2DBounds);
-			agent.SetDestination(newDest);
+			if (searchForDest) {
+				Bounds nav2DBounds = agent.polyNav.masterBounds;
+				Vector2 newDest = GenerateRandomDest(nav2DBounds);
+				agent.SetDestination(newDest);
+			}
 		}
 	}
 
@@ -50,16 +71,28 @@ public class NPC : MovingObject {
 		}
 	}
 
+	// Generates random destination within bound and within the destination range
 	protected Vector2 GenerateRandomDest(Bounds bound) {
-		float minX = bound.min.x;
-		float minY = bound.min.y;
-		float maxX = bound.max.x;
-		float maxY = bound.max.y;
+		Vector2 currPos = transform.position;
 
-		float x = Random.Range(minX, maxX);
-		float y = Random.Range(minY, maxY);
+		float posMinX = currPos.x - destinationRange;
+		float posMaxX = currPos.x + destinationRange;
+		float posMinY = currPos.y - destinationRange;
+		float posMaxY = currPos.y + destinationRange;
 
-		return new Vector2((int)x, (int)y);
+		float minX = Mathf.Max(bound.min.x, posMinX);
+		float maxX = Mathf.Min(bound.max.x, posMaxX);
+		float minY = Mathf.Max(bound.min.y, posMinY);
+		float maxY = Mathf.Min(bound.max.y, posMaxY);
+
+		float x = Mathf.Round(Random.Range(minX, maxX));
+		float y = Mathf.Round(Random.Range(minY, maxY));
+
+		return new Vector2(x, y);
+	}
+
+	public void SetAgentNav(Nav2D nav) {
+		agent.polyNav = nav;
 	}
 
 	protected void NavStarted() {
@@ -70,6 +103,16 @@ public class NPC : MovingObject {
 	protected void NavArrived() {
 		Debug.Log("arrived");
 		isMoving = false;
+		StartCoroutine(ArriveDelay());
+
+		if (GetFloor() != prevFloor) {
+			prevFloor = GetFloor();
+			if (prevFloor == 1) {
+				SetAgentNav(GameManager.instance.groundNav);
+			} else if (prevFloor == 2) {
+				SetAgentNav(GameManager.instance.floor2Nav);
+			}
+		}
 	}
 
 	protected void DestinationInvalid() {
