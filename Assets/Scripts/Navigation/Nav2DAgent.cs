@@ -7,7 +7,8 @@ using System.Collections.Generic;
 [AddComponentMenu("Navigation/Nav2DAgent")]
 public class Nav2DAgent : MonoBehaviour{
 
-	public float maxSpeed			 = 0;
+	[NonSerialized]
+	public float maxSpeed			 = 5; // taken by the gameobject using nav2d agent
 	///The object mass
 	// public float mass                = 20; for smoother turns, add this back, then in lateupdate, vel += newvel/mass
 	///The distance to stop at from the goal

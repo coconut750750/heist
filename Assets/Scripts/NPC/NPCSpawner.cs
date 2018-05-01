@@ -35,7 +35,7 @@ public class NPCSpawner : MonoBehaviour {
 
 	void Start () {
 		npcs = new List<NPC>();
-		canSpawn = true;
+		StartCoroutine(SpawnDelay());
 	}
 	
 	void Update () {
@@ -94,26 +94,29 @@ public class NPCSpawner : MonoBehaviour {
 		int side = Random.Range(0, 4);
 		Vector2 pos;
 
+		Debug.Log(range.min + " " + range.max);
+
 		switch (side) {
 			case 0: // left
-				float y = Random.Range(range.min.y, range.max.y);
+				float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
 				pos = new Vector2(range.min.x - 1, y);
 				break;
 			case 1: // top
-				float x = Random.Range(range.min.x, range.max.x);
+				float x = Mathf.Round(Random.Range(range.min.x, range.max.x));
 				pos = new Vector2(x, range.max.y + 1);
 				break;
 			case 2: // right
-				y = Random.Range(range.min.y, range.max.y);
+				y = Mathf.Round(Random.Range(range.min.y, range.max.y));
 				pos = new Vector2(range.max.x + 1, y);
 				break;
 			default: // down
-				x = Random.Range(range.min.x, range.max.x);
+				x = Mathf.Round(Random.Range(range.min.x, range.max.x));
 				pos = new Vector2(x, range.min.y - 1);
 				break;
 		}
 
 		if (polyNav.PointIsValid(pos)) {
+			Debug.Log(pos);
 			return pos;
 		} else {
 			return null;
