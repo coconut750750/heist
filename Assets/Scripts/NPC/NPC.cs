@@ -10,6 +10,7 @@ public class NPC : MovingObject {
 
 	private const string PLAYER_TAG = "Player";
 
+	private string npcName;
 	private Inventory inventory;
 	private int money;
 	
