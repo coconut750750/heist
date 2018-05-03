@@ -19,6 +19,8 @@ public class StashDisplayer : MonoBehaviour {
         }
 
         nameText = transform.Find("InventoryName").GetComponent<Text>();
+
+        gameObject.SetActive(false);
     }
 
     public static void SetInventory(Inventory displayInventory) {
@@ -49,4 +51,18 @@ public class StashDisplayer : MonoBehaviour {
             itemSlots[i].Deselect();
         }
     }
+
+    public void DisplayInventory(Inventory stash) {
+        GameManager.instance.PauseGame();
+
+		gameObject.SetActive(true);
+		StashDisplayer.SetInventory(stash);
+	}
+
+	public void HideInventory() {
+        GameManager.instance.UnpauseGame();
+
+		gameObject.SetActive(false);
+		StashDisplayer.ClearInventory();
+	}
 }

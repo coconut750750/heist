@@ -9,10 +9,7 @@ using System.IO;
 
 public class Player : MovingObject {
 
-	private const string FORWARD = "PlayerForwardAnim";
-	private const string LEFT = "PlayerLeftAnim";
-	private const string BACK = "PlayerBackAnim";
-	private const string RIGHT = "PlayerRightAnim";
+	private const string NPC_TAG = "NPC";
 
 	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
 

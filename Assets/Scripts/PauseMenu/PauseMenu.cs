@@ -7,16 +7,21 @@ public class PauseMenu : MonoBehaviour {
 
 	public static PauseMenu instance = null;
 
-	public GameObject[] menuContents;
-	public Button[] menuButtons;
+	[SerializeField]
+	private GameObject[] menuContents;
+	[SerializeField]
+	private Button[] menuButtons;
 
 	private int openedMenu;
 
-	public int craftingIndex;
-	public CraftingStash craftingStash;
-	public int dismantleIndex;
-	public DismantleStash dismantleStash;
-
+	[SerializeField]
+	private int craftingIndex;
+	[SerializeField]
+	private CraftingStash craftingStash;
+	[SerializeField]
+	private int dismantleIndex;
+	[SerializeField]
+	private DismantleStash dismantleStash;
 
 	private Color WHITE = new Color(255, 255, 255);
 	[SerializeField]

@@ -94,8 +94,6 @@ public class NPCSpawner : MonoBehaviour {
 		int side = Random.Range(0, 4);
 		Vector2 pos;
 
-		Debug.Log(range.min + " " + range.max);
-
 		switch (side) {
 			case 0: // left
 				float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
@@ -116,7 +114,6 @@ public class NPCSpawner : MonoBehaviour {
 		}
 
 		if (polyNav.PointIsValid(pos)) {
-			Debug.Log(pos);
 			return pos;
 		} else {
 			return null;
