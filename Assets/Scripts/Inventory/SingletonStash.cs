@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Different from a regular inventory
+// Every time a UI holding a singleton stash opens up, the SAME item stash gets displayed
 public abstract class SingletonStash : ItemStash {
 
 	public ItemSlot[] itemSlots;
@@ -13,7 +15,8 @@ public abstract class SingletonStash : ItemStash {
 		itemImages = new Image[numItems];
     }
 
-    protected virtual void Awake() {
+    protected override void Start() {
+		base.Start();
 		SetItemSlots();
 	}
 

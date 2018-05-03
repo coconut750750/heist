@@ -12,8 +12,8 @@ public abstract class PauseStash : SingletonStash {
 
     }
 
-    protected override void Awake() {
-        base.Awake();
+    protected override void Start() {
+        base.Start();
         isDisplaying = false;
     }
 

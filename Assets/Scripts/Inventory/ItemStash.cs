@@ -17,7 +17,7 @@ public abstract class ItemStash : MonoBehaviour {
 
 	protected string filename;
 
-	void Start() {
+	protected virtual void Start() {
 		capacity = items.Length;
 		for (int i = 0; i < capacity; i++) {
 			if (items[i] != null) {
