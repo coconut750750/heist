@@ -25,6 +25,8 @@ GameObject:
   - component: {fileID: 61813588771378998}
   - component: {fileID: 114431858986268764}
   - component: {fileID: 114936218335763826}
+  - component: {fileID: 114654633985807300}
+  - component: {fileID: 114035646611418314}
   m_Layer: 8
   m_Name: NPC
   m_TagString: NPC
@@ -99,7 +101,7 @@ Animator:
   m_GameObject: {fileID: 1928241464923502}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 150dfe516ee6b413ea341b6f8133661c, type: 2}
+  m_Controller: {fileID: 9100000, guid: e63c198b28922411382ae8fa881d4457, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -107,6 +109,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114035646611418314
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1928241464923502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6099e3f52ce24c9292579e4f98472ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114431858986268764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -119,8 +132,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
-  newDestinationDelay: 3
+  newDestinationDelay: 5
   destinationRange: 15
+--- !u!114 &114654633985807300
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1928241464923502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd3dea029b374c8ba167f5520bc18ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 11400000, guid: 3482529d10cf44207aaa6bd06c823cfe, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  inventoryName: 
 --- !u!114 &114936218335763826
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -132,7 +166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93cc6a4987f7c684798156c56d545838, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 0
   stoppingDistance: 0.01
   slowingDistance: 0.05
   decelerationRate: 10
@@ -179,7 +212,7 @@ SpriteRenderer:
   m_SortingLayerID: 1568317233
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2d10fe7c02a5b426baffbeebfbf5a51b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 791a2fc40699142b3abe0bddca83063a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -52,7 +52,7 @@ public abstract class Interactable : MonoBehaviour {
         {
             PlayerLeave(player);
             
-            if (buttonObj.activeSelf && button.getListeners() == 0) {
+            if (buttonObj.activeSelf && button.GetListeners() == 0) {
                 buttonObj.SetActive(false);
             }
         }
@@ -63,7 +63,7 @@ public abstract class Interactable : MonoBehaviour {
             Interact(player);
         };
 
-        if (button.getListeners() > 0) {
+        if (button.GetListeners() > 0) {
             alreadyRemoved = true;
             Interactable.button.RemoveAllListeners();
         }

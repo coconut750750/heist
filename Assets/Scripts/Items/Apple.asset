@@ -14,3 +14,4 @@ MonoBehaviour:
   itemName: Apple
   sprite: {fileID: 21300000, guid: 6181994a7d3a4495bad6f77ba4e3dc69, type: 3}
   quality: 100
+  price: 5

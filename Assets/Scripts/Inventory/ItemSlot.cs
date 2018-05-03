@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class ItemSlot : MonoBehaviour, IDropHandler {
 	private Image itemImage;
@@ -26,6 +27,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string BACKGROUND_IMAGE = "BackgroundImage";
 	private const string INVENTORY_ITEM_TEXT = "SelectedInventoryItemText";
 	private const string INVENTORY_ITEM_QUALITY = "SelectedInventoryItemQuality";
+
+	// called when an item is selected
+	public event Action<Item> OnSelected;
+
+	public event Action<Item> OnDeselected;
 
 	void Awake() {
 		Refresh();
@@ -64,7 +70,9 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void SetItem(Item item) {
 		if (item == null) {
-			Reset();
+			itemImage.sprite = null;
+			itemImage.enabled = false;
+			this.item = null;
 			return;
 		}
 		
@@ -90,8 +98,13 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			GameManager.instance.mainPlayer.GetPocket().DeselectAll();
 		}
 		if (GameManager.instance.IsPaused()) {
-			PauseMenu.instance.GetActiveStash().DeselectAll();
+			if (PauseMenu.instance.isActiveAndEnabled) {
+				PauseMenu.instance.GetActiveStash().DeselectAll();
+			} else if (NPCUI.instance.isActiveAndEnabled) {
+				NPCUI.instance.DeselectAll();
+			}
 		}
+
 		if (parentStash != null) {
 			parentStash.DeselectAll();
 		}
@@ -101,6 +114,12 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemBack.color = SELECTED_COLOR;
 
 		selected = true;
+		
+		Debug.Log("selected " + this.index);
+
+		if (OnSelected != null) {
+			OnSelected(this.item);
+		}
 	}
 
 	public void ToggleSelect() {
@@ -113,10 +132,17 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void Deselect() {
 		if (selected) {
+			
+			Debug.Log("deselected " + this.index);
+
 			selected = false;
 			nameText.text = "";
 			qualityText.text = "";
 			itemBack.color = DEFAULT_COLOR;
+
+			if (OnDeselected != null) {
+				OnDeselected(this.item);
+			}
 		}
 	}
 
@@ -140,6 +166,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
 		this.item = null;
+		this.OnSelected = null;
+		this.OnDeselected = null;
 		Deselect();
 	}
 
@@ -169,8 +197,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		imageDragged.enabled = tempEnabled;
 
 		// swap item slot items
-		
-
 		Item tempItem1 = GetItem();
 		Item tempItem2 = itemSlotOther.GetItem();
 		
@@ -181,7 +207,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		int indexOther = itemSlotOther.GetIndex();
 		if (parentStash == itemSlotOther.GetParentStash()) {
 			parentStash.SwapItemPositions(indexOther, index);
-		} else {
+		} else { // different parent stashes, so item slot other should be deselected
 			itemSlotOther.GetParentStash().RemoveItemAtIndex(indexOther);
 			itemSlotOther.GetParentStash().AddItemAtIndex(tempItem1, indexOther);
 

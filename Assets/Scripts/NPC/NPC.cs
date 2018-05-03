@@ -10,6 +10,7 @@ public class NPC : MovingObject {
 
 	private const string PLAYER_TAG = "Player";
 
+	private string npcName;
 	private Inventory inventory;
 	private int money;
 	
@@ -33,8 +34,8 @@ public class NPC : MovingObject {
 
 	protected override void Start () {
 		base.Start();
-		//inventory = gameObject.GetComponent<Inventory>();
-		
+		inventory = gameObject.GetComponent<Inventory>();
+
 		agent.OnDestinationReached += NavArrived;
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
@@ -93,6 +94,10 @@ public class NPC : MovingObject {
 
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
+	}
+
+	public Inventory GetInventory() {
+		return inventory;
 	}
 
 	protected void NavStarted() {

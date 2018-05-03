@@ -9,19 +9,13 @@ public class Desk : Interactable {
 
     private Inventory items;
 
-	// Use this for initialization
 	void Start () {
         items = gameObject.GetComponent<Inventory>();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     public override void Interact(Player player) {
-        Debug.Log(Interactable.player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.getListeners());
+        Debug.Log(Interactable.player.GetName() + " interacted with " + gameObject.name + " " + Interactable.button.GetListeners());
 
-        GameManager.instance.DisplayInventory(items);
+        GameManager.instance.stashDisplayer.DisplayInventory(items);
     }
 }

@@ -23,7 +23,7 @@ public class ButtonA : Button {
 		listeners = 0;
 	}
 
-	public int getListeners() {
+	public int GetListeners() {
 		return listeners;
 	}
 }

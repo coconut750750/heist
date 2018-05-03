@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour {
 	public StashDisplayer stashDisplayer;
 
 	[SerializeField]
+	public NPCUI npcDisplayer;
+
+	[SerializeField]
 	private Camera mainCamera;
 
 	public Nav2D groundNav;
@@ -43,8 +46,6 @@ public class GameManager : MonoBehaviour {
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
-
-		stashDisplayer.gameObject.SetActive(false);
 
 		InitGame ();
 
@@ -115,16 +116,6 @@ public class GameManager : MonoBehaviour {
 		return minute;
 	}
 
-	public void DisplayInventory(Inventory stash) {
-		stashDisplayer.gameObject.SetActive(true);
-		StashDisplayer.SetInventory(stash);
-	}
-
-	public void HideInventory() {
-		stashDisplayer.gameObject.SetActive(false);
-		StashDisplayer.ClearInventory();
-	}
-
 	public void PauseGame() {
 		isPaused = true;
 	}
@@ -147,7 +138,7 @@ public class GameManager : MonoBehaviour {
 
 	public Rect GetCurrentPlayerRange(int range) {
 		Rect rect = new Rect();
-		rect.position = mainPlayer.transform.position;
+		rect.position = mainPlayer.transform.position - new Vector3(range / 2, range / 2);
 		rect.width = range;
 		rect.height = range;
 

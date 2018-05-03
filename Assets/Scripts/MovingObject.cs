@@ -20,10 +20,16 @@ public abstract class MovingObject : MonoBehaviour {
 
 	public float moveSpeed;
 
-	private const string FORWARD = "PlayerForwardAnim";
-	private const string LEFT = "PlayerLeftAnim";
-	private const string BACK = "PlayerBackAnim";
-	private const string RIGHT = "PlayerRightAnim";
+	private int forwardStateHash = Animator.StringToHash("Base Layer.Forward");
+	private int backStateHash = Animator.StringToHash("Base Layer.Back");
+	private int leftStateHash = Animator.StringToHash("Base Layer.Left");
+	private int rightStateHash = Animator.StringToHash("Base Layer.Right");
+
+	private int forwardHash = Animator.StringToHash("Forward");
+	private int backHash = Animator.StringToHash("Back");
+	private int leftHash = Animator.StringToHash("Left");
+	private int rightHash = Animator.StringToHash("Right");
+
 	protected Animator animator;
 
 	protected string filename;
@@ -72,31 +78,30 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected void UpdateAnimator(Vector3 movement) {
-		string currentAnim = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-
 		if (movement.sqrMagnitude == 0) {
 			return;
 		}
 
+		AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
 		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
 			if (movement.y <= 0) {
-				if (currentAnim != FORWARD) {
-					animator.Play(FORWARD);
+				if (stateInfo.fullPathHash != forwardStateHash) {
+					animator.SetTrigger(forwardHash);
 				}
-				animator.Play(FORWARD);
 			} else {
-				if (currentAnim != BACK) {
-					animator.Play(BACK);
+				if (stateInfo.fullPathHash != backStateHash) {
+					animator.SetTrigger(backHash);
 				}
 			}
 		} else {
 			if (movement.x <= 0) {
-				if (currentAnim != LEFT) {
-					animator.Play(LEFT);
+				if (stateInfo.fullPathHash != leftStateHash) {
+					animator.SetTrigger(leftHash);
 				}
 			} else {
-				if (currentAnim != RIGHT) {
-					animator.Play(RIGHT);
+				if (stateInfo.fullPathHash != rightStateHash) {
+					animator.SetTrigger(rightHash);
 				}
 			}
 		}
