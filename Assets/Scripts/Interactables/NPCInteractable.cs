@@ -11,10 +11,7 @@ public class NPCInteractable : Interactable {
 		npcObject = gameObject.GetComponent<NPC>();
 	}
 	
-	public override void Interact(Player player)
-    {
-        Debug.Log("wassup");
-
+	public override void Interact(Player player) {
         GameManager.instance.npcDisplayer.Display(npcObject);
     }
 }

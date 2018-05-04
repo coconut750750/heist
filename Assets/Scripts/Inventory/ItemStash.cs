@@ -58,6 +58,8 @@ public abstract class ItemStash : MonoBehaviour {
 			return;
 		}
 
+		Debug.Log("adding" + itemToAdd.name);
+
 		for (int i = 0; i < capacity; i++) {
 			if (items[i] == null) {
 				AddItemAtIndex(itemToAdd, i);

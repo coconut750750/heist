@@ -44,6 +44,8 @@ public class NPCUI : MonoBehaviour {
 	private Item selectedItem = null;
 	private Item tradingItem = null;
 
+	private bool willTrade = false;
+
 	void Awake() {
 		if (instance == null) {
 			instance = this;
@@ -124,6 +126,23 @@ public class NPCUI : MonoBehaviour {
 		}
 	}
 
+	public void OnClickTrade() {
+		if (selectedItem == null || tradingItem == null || !willTrade) {
+			return;
+		}
+
+		GameManager.instance.mainPlayer.AddItem(selectedItem);
+		npcInventory.RemoveItem(selectedItem);
+		npcInventory.AddItem(tradingItem);
+
+		tradingStash.RemoveItem(tradingItem);
+		selectedItem = null;
+		tradingItem = null;
+		willTrade = false;
+
+		UpdateInventoryUI();
+	}
+
 	private void UpdateInventoryUI() {
 		for (int i = 0; i < itemSlots.Length; i++) {
             itemSlots[i].Refresh();
@@ -154,6 +173,7 @@ public class NPCUI : MonoBehaviour {
 		tradingItem = null;
 
 		tradingSlider.value = 0;
+		willTrade = false;
 	}
 
 	private void UpdateTradingSlider() {
@@ -165,6 +185,7 @@ public class NPCUI : MonoBehaviour {
 
 		float itemValuePerc = tradingItem.GetValue() / selectedItem.GetValue();
 
+		willTrade = false;
 		ColorBlock cb = tradingSlider.colors;
 		if (itemValuePerc < LOWER_BOUND_TRADING_PERC) {
 			tradingSlider.value = 1;
@@ -172,6 +193,7 @@ public class NPCUI : MonoBehaviour {
 		} else if (itemValuePerc > UPPER_BOUND_TRADING_PERC) {
 			tradingSlider.value = 3;
 			cb.disabledColor = GREEN;
+			willTrade = true;
 		} else {
 			tradingSlider.value = 2;
 			cb.disabledColor = YELLOW;
