@@ -33,6 +33,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public event Action<Item> OnDeselected;
 
+	public event Action<Item> OnDropped;
+
+	public event Action OnRemoved;
+
 	void Awake() {
 		Refresh();
 	}
@@ -70,9 +74,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void SetItem(Item item) {
 		if (item == null) {
-			itemImage.sprite = null;
-			itemImage.enabled = false;
-			this.item = null;
+			ResetItem();
 			return;
 		}
 		
@@ -161,6 +163,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
 		this.item = null;
+
+		if (OnRemoved != null) {
+			OnRemoved();
+		}
+
 		Deselect();
 	}
 
@@ -200,13 +207,20 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		int indexOther = itemSlotOther.GetIndex();
 		if (parentStash == itemSlotOther.GetParentStash()) {
 			parentStash.SwapItemPositions(indexOther, index);
-		} else { // different parent stashes, so item slot other should be deselected
+		} else if (itemSlotOther.GetParentStash() != null && parentStash != null) { 
+			// different parent stashes, so item slot other should be deselected
 			itemSlotOther.GetParentStash().RemoveItemAtIndex(indexOther);
 			itemSlotOther.GetParentStash().AddItemAtIndex(tempItem1, indexOther);
 
 			parentStash.RemoveItemAtIndex(index);
 			parentStash.AddItemAtIndex(tempItem2, index);
 		}
+
+		itemSlotOther.Deselect();
 		Select();
+
+		if (OnDropped != null) {
+			OnDropped(this.item);
+		}
     }
 }

@@ -4,11 +4,9 @@ using UnityEngine;
 
 public abstract class PauseStash : SingletonStash {
 
-	public const int NUM_ITEMS = 4;
-
 	protected bool isDisplaying;
 
-    public PauseStash() : base(NUM_ITEMS) {
+    public PauseStash(int numItems) : base(numItems) {
 
     }
 

@@ -5,6 +5,14 @@ using UnityEngine.UI;
 
 public class NPCUI : MonoBehaviour {
 
+	public const float LOWER_BOUND_TRADING_PERC = 1.00f;
+	public const float UPPER_BOUND_TRADING_PERC = 1.25f;
+
+	public Color RED = Color.red;
+	public Color YELLOW = Color.yellow;
+	public Color GREEN = Color.green;
+	public Color WHITE = Color.white;
+
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	public static NPCUI instance = null;
@@ -23,14 +31,18 @@ public class NPCUI : MonoBehaviour {
 	private Text priceText;
 
 	[SerializeField]
-	private ItemSlot tradingSlot;
+	private TradingStash tradingStash;
+
+	[SerializeField]
+	private Slider tradingSlider;
 	
 	private Inventory npcInventory;
 
 	[SerializeField]
 	private ItemSlot[] itemSlots;
 
-	private Item selectedItem;
+	private Item selectedItem = null;
+	private Item tradingItem = null;
 
 	void Awake() {
 		if (instance == null) {
@@ -49,7 +61,9 @@ public class NPCUI : MonoBehaviour {
 			itemSlots[i].OnDeselected += OnDeselectedItem;
         }
 		priceText.text = EMPTY_PRICE_TEXT;
-		selectedItem = null;
+
+		tradingStash.OnAdded += TradeItemEntered;
+		tradingStash.OnRemoved += TradeItemRemoved;
 	}
 	
 	public void Display(NPC npc) {
@@ -71,29 +85,27 @@ public class NPCUI : MonoBehaviour {
 		npcInventory.SetDisplaying(false);
 		npcInventory = null;
 
+		tradingStash.Hide();
+
 		gameObject.SetActive(false);
 
 		GameManager.instance.UnpauseGame();
 	}
 
-	public void DeselectAll() {
+	public void DeselectAllItemSlots() {
 		for (int i = 0; i < itemSlots.Length; i++) {
             itemSlots[i].Deselect();
         }
 	}
 
+	// Doesn't deselect item slots because player might be inputing a trading item so,
+	// don't want to clear price
+	public void DeselectAll() {
+		tradingStash.DeselectAll();
+	}
+
 	public Inventory GetNPCInventory() {
 		return npcInventory;
-	}
-
-	public void OnSelectedItem(Item item) {
-		priceText.text = item.price.ToString();
-		selectedItem = item;
-	}
-
-	public void OnDeselectedItem(Item item) {
-		priceText.text = EMPTY_PRICE_TEXT;
-		selectedItem = null;
 	}
 
 	public void OnClickBuy() {
@@ -117,5 +129,56 @@ public class NPCUI : MonoBehaviour {
             itemSlots[i].Refresh();
             itemSlots[i].InsertItem(npcInventory.GetItem(i), npcInventory);
         }
+	}
+
+	private void OnSelectedItem(Item item) {
+		priceText.text = item.price.ToString();
+		selectedItem = item;
+
+		UpdateTradingSlider();
+	}
+
+	private void OnDeselectedItem(Item item) {
+		priceText.text = EMPTY_PRICE_TEXT;
+		selectedItem = null;
+
+		tradingSlider.value = 0;
+	}
+
+	private void TradeItemEntered(Item item) {
+		tradingItem = item;
+		UpdateTradingSlider();
+	}
+
+	private void TradeItemRemoved() {
+		tradingItem = null;
+
+		tradingSlider.value = 0;
+	}
+
+	private void UpdateTradingSlider() {
+		if (tradingItem == null || selectedItem == null) {
+			tradingSlider.value = 0;
+			tradingSlider.targetGraphic.color = WHITE;
+			return;
+		}
+
+		float itemValuePerc = tradingItem.GetValue() / selectedItem.GetValue();
+
+		ColorBlock cb = tradingSlider.colors;
+		if (itemValuePerc < LOWER_BOUND_TRADING_PERC) {
+			tradingSlider.value = 1;
+			cb.disabledColor = RED;
+		} else if (itemValuePerc > UPPER_BOUND_TRADING_PERC) {
+			tradingSlider.value = 3;
+			cb.disabledColor = GREEN;
+		} else {
+			tradingSlider.value = 2;
+			cb.disabledColor = YELLOW;
+			cb.normalColor = YELLOW;
+
+			Debug.Log(YELLOW);
+		}
+		tradingSlider.colors = cb;
 	}
 }

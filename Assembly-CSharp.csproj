@@ -80,6 +80,7 @@
      <Compile Include="Assets\Scripts\NPC\NPC.cs" />
      <Compile Include="Assets\Scripts\NPC\NPCSpawner.cs" />
      <Compile Include="Assets\Scripts\NPC\NPCUI.cs" />
+     <Compile Include="Assets\Scripts\NPC\TradingStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\CraftingStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\DismantleStash.cs" />
      <Compile Include="Assets\Scripts\PauseMenu\OverviewContent.cs" />
