@@ -44,7 +44,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		}
 		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
 		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
-		Reset();
+		ResetItem();
 	}
 
 	public void SetIndex(int i) {
@@ -115,8 +115,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 		selected = true;
 		
-		Debug.Log("selected " + this.index);
-
 		if (OnSelected != null) {
 			OnSelected(this.item);
 		}
@@ -132,9 +130,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void Deselect() {
 		if (selected) {
-			
-			Debug.Log("deselected " + this.index);
-
 			selected = false;
 			nameText.text = "";
 			qualityText.text = "";
@@ -162,12 +157,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		this.outputAllowed = allowed;
 	}
 
-	public void Reset() {
+	public void ResetItem() {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
 		this.item = null;
-		this.OnSelected = null;
-		this.OnDeselected = null;
 		Deselect();
 	}
 

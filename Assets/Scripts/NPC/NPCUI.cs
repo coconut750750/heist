@@ -30,6 +30,8 @@ public class NPCUI : MonoBehaviour {
 	[SerializeField]
 	private ItemSlot[] itemSlots;
 
+	private Item selectedItem;
+
 	void Awake() {
 		if (instance == null) {
 			instance = this;
@@ -41,8 +43,13 @@ public class NPCUI : MonoBehaviour {
 
 		for (int i = 0; i < itemSlots.Length; i++) {
             itemSlots[i].SetIndex(i);
+			itemSlots[i].SetInputAllowed(false);
+			itemSlots[i].SetOutputAllowed(false);
+			itemSlots[i].OnSelected += OnSelectedItem;
+			itemSlots[i].OnDeselected += OnDeselectedItem;
         }
 		priceText.text = EMPTY_PRICE_TEXT;
+		selectedItem = null;
 	}
 	
 	public void Display(NPC npc) {
@@ -53,17 +60,12 @@ public class NPCUI : MonoBehaviour {
 		npcInventory = npc.GetInventory();
 		npcInventory.SetDisplaying(true);
 
-		for (int i = 0; i < itemSlots.Length; i++) {
-            itemSlots[i].Refresh();
-            itemSlots[i].InsertItem(npcInventory.GetItem(i), npcInventory);
-			itemSlots[i].OnSelected += DisplayItemPrice;
-			itemSlots[i].OnDeselected += HideItemPrice;
-        }
+		UpdateInventoryUI();
 	}
 
 	public void Hide() {
 		for (int i = 0; i < npcInventory.GetCapacity(); i++) {
-            itemSlots[i].Reset();
+            itemSlots[i].ResetItem();
         }
 
 		npcInventory.SetDisplaying(false);
@@ -84,11 +86,36 @@ public class NPCUI : MonoBehaviour {
 		return npcInventory;
 	}
 
-	public void DisplayItemPrice(Item item) {
+	public void OnSelectedItem(Item item) {
 		priceText.text = item.price.ToString();
+		selectedItem = item;
 	}
 
-	public void HideItemPrice(Item item) {
+	public void OnDeselectedItem(Item item) {
 		priceText.text = EMPTY_PRICE_TEXT;
+		selectedItem = null;
+	}
+
+	public void OnClickBuy() {
+		if (selectedItem == null) {
+			return;
+		}
+		int playerMoney = GameManager.instance.mainPlayer.GetMoney();
+		int price = selectedItem.price;
+
+		if (playerMoney >= price) {
+			GameManager.instance.mainPlayer.SetMoney(playerMoney - price);
+			GameManager.instance.mainPlayer.AddItem(selectedItem);
+			npcInventory.RemoveItem(selectedItem);
+
+			UpdateInventoryUI();
+		}
+	}
+
+	private void UpdateInventoryUI() {
+		for (int i = 0; i < itemSlots.Length; i++) {
+            itemSlots[i].Refresh();
+            itemSlots[i].InsertItem(npcInventory.GetItem(i), npcInventory);
+        }
 	}
 }

@@ -176,8 +176,8 @@ MonoBehaviour:
     y: 0
     width: 248
     height: 389
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -571,9 +571,9 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 2e2c0000542c0000842c0000
-    m_LastClickedID: 11396
-    m_ExpandedIDs: 9efbffff000000002c2b00007a2b0000d62b00001a2c00007a2c0000cc2c0000d82c0000ba2d0000e82d00001a2e0000b82e00008e2f0000f62f000096300000
+    m_SelectedIDs: 98300000
+    m_LastClickedID: 12440
+    m_ExpandedIDs: 9efbffff00000000fa2b00003e2c0000a82c0000fc2c0000bc300000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -674,7 +674,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 315}
     m_SelectedIDs: 5a290000
     m_LastClickedID: 10586
-    m_ExpandedIDs: 000000000c2800007c280000c2280000ca280000a0290000c8290000422a0000682a00003433000036330000383300003a3300003c3300003e3300004033000042330000443300004633000048330000ffffff7f
+    m_ExpandedIDs: 000000004c280000bc280000022900000a290000e0290000082a0000822a0000a82a00005a3300005c3300005e33000060330000623300006433000066330000683300006a3300006c3300006e330000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -702,7 +702,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000000c2800007c280000c2280000ca280000a0290000c8290000422a0000682a00003433000036330000383300003a3300003c3300003e3300004033000042330000443300004633000048330000
+    m_ExpandedIDs: 000000004c280000bc280000022900000a290000e0290000082a0000822a0000a82a00005a3300005c3300005e33000060330000623300006433000066330000683300006a3300006c3300006e330000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -811,7 +811,7 @@ MonoBehaviour:
     width: 275
     height: 418
   m_PersistentViewDataDictionary: {fileID: 0}
-  m_ScrollPosition: {x: 0, y: 0}
+  m_ScrollPosition: {x: 0, y: 179.95508}
   m_InspectorMode: 0
   m_PreviewResizer:
     m_CachedPref: -100

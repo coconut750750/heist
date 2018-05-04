@@ -42,7 +42,7 @@ public abstract class SingletonStash : ItemStash {
 		bool success = base.RemoveItemAtIndex(index);
 
 		if (success) {
-			itemSlots[index].Reset();
+			itemSlots[index].ResetItem();
 		}
 			
 		return success;
