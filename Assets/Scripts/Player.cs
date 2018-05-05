@@ -112,6 +112,10 @@ public class Player : MovingObject {
 		mainItems.RemoveItem(item);
 	}
 
+	public bool CanAddItem() {
+		return !mainItems.IsFull();
+	}
+
 	private void UpdateInfo() {
 		if (moneyText != null) {
 			moneyText.text = "" + money;

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class NPCUI : MonoBehaviour {
 
-	public const float LOWER_BOUND_TRADING_PERC = 1.00f;
-	public const float UPPER_BOUND_TRADING_PERC = 1.25f;
+	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
+	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
 
-	public Color RED = Color.red;
-	public Color YELLOW = Color.yellow;
-	public Color GREEN = Color.green;
-	public Color WHITE = Color.white;
+	private Color YELLOW = Color.yellow;
+	private Color GREEN = Color.green;
+	private Color DARK_GREEN = new Color(0, 0.5f, 0);
+	private Color WHITE = Color.white;
 
 	private const string EMPTY_PRICE_TEXT = "---";
 
@@ -29,6 +29,12 @@ public class NPCUI : MonoBehaviour {
 
 	[SerializeField]
 	private Text priceText;
+
+	[SerializeField]
+	private Button buyButton;
+
+	[SerializeField]
+	private Button tradeButton;
 
 	[SerializeField]
 	private TradingStash tradingStash;
@@ -64,6 +70,9 @@ public class NPCUI : MonoBehaviour {
         }
 		priceText.text = EMPTY_PRICE_TEXT;
 
+		buyButton.interactable = false;
+		tradeButton.interactable = false;
+
 		tradingStash.OnAdded += TradeItemEntered;
 		tradingStash.OnRemoved += TradeItemRemoved;
 	}
@@ -90,7 +99,6 @@ public class NPCUI : MonoBehaviour {
 		tradingStash.Hide();
 
 		gameObject.SetActive(false);
-
 		GameManager.instance.UnpauseGame();
 	}
 
@@ -154,6 +162,7 @@ public class NPCUI : MonoBehaviour {
 		priceText.text = item.price.ToString();
 		selectedItem = item;
 
+		UpdateButtons();
 		UpdateTradingSlider();
 	}
 
@@ -161,45 +170,67 @@ public class NPCUI : MonoBehaviour {
 		priceText.text = EMPTY_PRICE_TEXT;
 		selectedItem = null;
 
-		tradingSlider.value = 0;
+		UpdateButtons();
+		UpdateTradingSlider();
 	}
 
 	private void TradeItemEntered(Item item) {
 		tradingItem = item;
+
+		UpdateButtons();
 		UpdateTradingSlider();
 	}
 
 	private void TradeItemRemoved() {
 		tradingItem = null;
 
-		tradingSlider.value = 0;
-		willTrade = false;
+		Debug.Log(GameManager.instance.mainPlayer.GetPocket().ToString());
+		UpdateButtons();
+		UpdateTradingSlider();
+	}
+
+	private void UpdateButtons() {
+		buyButton.interactable = false;
+		tradeButton.interactable = false;
+
+		if (!GameManager.instance.mainPlayer.CanAddItem()) {
+			return;
+		}
+
+		if (selectedItem != null) {
+			if (GameManager.instance.mainPlayer.GetMoney() >= selectedItem.price) {
+				buyButton.interactable = true;
+			}
+
+			if (tradingItem != null) {
+				willTrade = tradingItem.GetValue() / selectedItem.GetValue() > LOWER_BOUND_TRADING_PERC;
+				if (willTrade) {
+					tradeButton.interactable = true;
+				}
+			}
+		}
 	}
 
 	private void UpdateTradingSlider() {
 		if (tradingItem == null || selectedItem == null) {
 			tradingSlider.value = 0;
 			tradingSlider.targetGraphic.color = WHITE;
+			willTrade = false;
 			return;
 		}
 
 		float itemValuePerc = tradingItem.GetValue() / selectedItem.GetValue();
 
-		willTrade = false;
 		ColorBlock cb = tradingSlider.colors;
 		if (itemValuePerc < LOWER_BOUND_TRADING_PERC) {
 			tradingSlider.value = 1;
-			cb.disabledColor = RED;
-		} else if (itemValuePerc > UPPER_BOUND_TRADING_PERC) {
+			cb.disabledColor = YELLOW;
+		} else if (itemValuePerc >= UPPER_BOUND_TRADING_PERC) {
 			tradingSlider.value = 3;
-			cb.disabledColor = GREEN;
-			willTrade = true;
+			cb.disabledColor = DARK_GREEN;
 		} else {
 			tradingSlider.value = 2;
-			cb.disabledColor = YELLOW;
-			cb.normalColor = YELLOW;
-
-			Debug.Log(YELLOW);
+			cb.disabledColor = GREEN;
 		}
 		tradingSlider.colors = cb;
 	}

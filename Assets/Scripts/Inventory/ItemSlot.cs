@@ -164,10 +164,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemImage.enabled = false;
 		this.item = null;
 
-		if (OnRemoved != null) {
-			OnRemoved();
-		}
-
 		Deselect();
 	}
 
@@ -199,10 +195,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		// swap item slot items
 		Item tempItem1 = GetItem();
 		Item tempItem2 = itemSlotOther.GetItem();
-		
+
 		SetItem(tempItem2);
 		itemSlotOther.SetItem(tempItem1);
-
+		
 		// swap parent stash positions
 		int indexOther = itemSlotOther.GetIndex();
 		if (parentStash == itemSlotOther.GetParentStash()) {
@@ -221,6 +217,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 		if (OnDropped != null) {
 			OnDropped(this.item);
+		}
+
+		if (itemSlotOther.GetItem() == null && itemSlotOther.OnRemoved != null) {
+			itemSlotOther.OnRemoved();
 		}
     }
 }

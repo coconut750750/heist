@@ -61177,15 +61177,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 417ff8e9aa23a485da9301e52a6fa241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RED: {r: 1, g: 0, b: 0, a: 1}
-  YELLOW: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  GREEN: {r: 0, g: 1, b: 0, a: 1}
-  WHITE: {r: 1, g: 1, b: 1, a: 1}
   nameText: {fileID: 544449593}
   healthText: {fileID: 1943132125}
   expText: {fileID: 1964685815}
   strengthText: {fileID: 51873706}
   priceText: {fileID: 1635568096}
+  buyButton: {fileID: 1767796449}
+  tradeButton: {fileID: 1423563153}
   tradingStash: {fileID: 478775706}
   tradingSlider: {fileID: 268493801}
   itemSlots:
@@ -78187,7 +78185,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.23529412}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -82307,7 +82305,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.23529412}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -82591,7 +82589,7 @@ GameObject:
   - component: {fileID: 1826270231}
   - component: {fileID: 1826270230}
   m_Layer: 5
-  m_Name: NPCBack
+  m_Name: NPCMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

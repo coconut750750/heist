@@ -58,8 +58,6 @@ public abstract class ItemStash : MonoBehaviour {
 			return;
 		}
 
-		Debug.Log("adding" + itemToAdd.name);
-
 		for (int i = 0; i < capacity; i++) {
 			if (items[i] == null) {
 				AddItemAtIndex(itemToAdd, i);
@@ -110,6 +108,10 @@ public abstract class ItemStash : MonoBehaviour {
 
 	public int GetNumItems() {
 		return count;
+	}
+
+	public bool IsFull() {
+		return count == capacity;
 	}
 
 	public abstract void SetDisplaying(bool isDisplaying);
