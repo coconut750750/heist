@@ -37,7 +37,7 @@ public class StashDisplayer : MonoBehaviour {
 
     public static void ClearInventory() {
         for (int i = 0; i < displayInventory.GetCapacity(); i++) {
-            itemSlots[i].Reset();
+            itemSlots[i].ResetItem();
         }
 
         displayInventory.SetDisplaying(false);

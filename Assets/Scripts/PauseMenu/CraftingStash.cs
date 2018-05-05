@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class CraftingStash : PauseStash {
 
+    public const int NUM_ITEMS = 4;
+
     public int outputIndex;
     
-    public CraftingStash() : base() {
+    public CraftingStash() : base(NUM_ITEMS) {
 		
     }
 

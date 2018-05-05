@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class DismantleStash : PauseStash {
 
+	public const int NUM_ITEMS = 4;
+
 	public int[] outputIndices;
     
-    public DismantleStash() : base() {
+    public DismantleStash() : base(NUM_ITEMS) {
 		
     }
 

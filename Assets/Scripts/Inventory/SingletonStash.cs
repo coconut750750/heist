@@ -13,6 +13,7 @@ public abstract class SingletonStash : ItemStash {
     public SingletonStash(int numItems) {
 		itemSlots = new ItemSlot[numItems];
 		itemImages = new Image[numItems];
+		items = new Item[numItems];
     }
 
     protected override void Start() {
@@ -42,7 +43,7 @@ public abstract class SingletonStash : ItemStash {
 		bool success = base.RemoveItemAtIndex(index);
 
 		if (success) {
-			itemSlots[index].Reset();
+			itemSlots[index].ResetItem();
 		}
 			
 		return success;

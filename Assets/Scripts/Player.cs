@@ -16,9 +16,13 @@ public class Player : MovingObject {
 	private Pocket mainItems;
 
 	protected int money = 0;
-	public Text moneyText;
+	[SerializeField]
+	private Text moneyText;
+	
 	protected int health = 0;
-	public Text healthText;
+	[SerializeField]
+	private Text healthText;
+
 	protected int exp = 0;
 	protected int strength = 0;
 
@@ -36,6 +40,8 @@ public class Player : MovingObject {
 	}
 
 	public int GetMoney() { return money; }
+
+	public void SetMoney(int money) { this.money = money; UpdateInfo(); }
 
 	public int GetHealth() { return health; }
 
@@ -72,6 +78,9 @@ public class Player : MovingObject {
 		} else if (GetFloor () == 2) {
 			GameManager.instance.ShowFloor2();
 		}
+
+		money += 10;
+		UpdateInfo(); 
 	}
 
 	protected override void OnTriggerExit2D(Collider2D other) {
@@ -101,6 +110,14 @@ public class Player : MovingObject {
 
 	public void RemoveItem(Item item) {
 		mainItems.RemoveItem(item);
+	}
+
+	public int NumItems() {
+		return mainItems.GetNumItems();
+	}
+
+	public bool CanAddItem() {
+		return !mainItems.IsFull();
 	}
 
 	private void UpdateInfo() {

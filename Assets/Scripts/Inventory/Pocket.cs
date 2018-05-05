@@ -16,7 +16,7 @@ public class Pocket : SingletonStash {
 	}
 
 	public override bool IsDisplaying() {
-			return true;
+		return true;
 	}
 
 	public override void Save() {

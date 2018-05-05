@@ -11,6 +11,10 @@ public class Item : ScriptableObject {
 	public int quality; // out of 100
 	public int price; // constant for all items
 
+	public float GetValue() {
+		return (float)(price * quality) / 100f;
+	}
+
 }
 
 [Serializable]

@@ -33,6 +33,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public event Action<Item> OnDeselected;
 
+	public event Action<Item> OnDropped;
+
+	public event Action OnRemoved;
+
 	void Awake() {
 		Refresh();
 	}
@@ -44,7 +48,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		}
 		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
 		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
-		Reset();
+		ResetItem();
 	}
 
 	public void SetIndex(int i) {
@@ -70,9 +74,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void SetItem(Item item) {
 		if (item == null) {
-			itemImage.sprite = null;
-			itemImage.enabled = false;
-			this.item = null;
+			ResetItem();
 			return;
 		}
 		
@@ -115,8 +117,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 		selected = true;
 		
-		Debug.Log("selected " + this.index);
-
 		if (OnSelected != null) {
 			OnSelected(this.item);
 		}
@@ -132,9 +132,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void Deselect() {
 		if (selected) {
-			
-			Debug.Log("deselected " + this.index);
-
 			selected = false;
 			nameText.text = "";
 			qualityText.text = "";
@@ -162,12 +159,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		this.outputAllowed = allowed;
 	}
 
-	public void Reset() {
+	public void ResetItem() {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
 		this.item = null;
-		this.OnSelected = null;
-		this.OnDeselected = null;
+
 		Deselect();
 	}
 
@@ -199,21 +195,32 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		// swap item slot items
 		Item tempItem1 = GetItem();
 		Item tempItem2 = itemSlotOther.GetItem();
-		
+
 		SetItem(tempItem2);
 		itemSlotOther.SetItem(tempItem1);
-
+		
 		// swap parent stash positions
 		int indexOther = itemSlotOther.GetIndex();
 		if (parentStash == itemSlotOther.GetParentStash()) {
 			parentStash.SwapItemPositions(indexOther, index);
-		} else { // different parent stashes, so item slot other should be deselected
+		} else if (itemSlotOther.GetParentStash() != null && parentStash != null) { 
+			// different parent stashes, so item slot other should be deselected
 			itemSlotOther.GetParentStash().RemoveItemAtIndex(indexOther);
 			itemSlotOther.GetParentStash().AddItemAtIndex(tempItem1, indexOther);
 
 			parentStash.RemoveItemAtIndex(index);
 			parentStash.AddItemAtIndex(tempItem2, index);
 		}
+
+		itemSlotOther.Deselect();
 		Select();
+
+		if (OnDropped != null) {
+			OnDropped(this.item);
+		}
+
+		if (itemSlotOther.GetItem() == null && itemSlotOther.OnRemoved != null) {
+			itemSlotOther.OnRemoved();
+		}
     }
 }
