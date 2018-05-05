@@ -112,6 +112,10 @@ public class Player : MovingObject {
 		mainItems.RemoveItem(item);
 	}
 
+	public int NumItems() {
+		return mainItems.GetNumItems();
+	}
+
 	public bool CanAddItem() {
 		return !mainItems.IsFull();
 	}

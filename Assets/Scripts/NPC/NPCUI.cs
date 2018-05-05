@@ -198,7 +198,12 @@ public class NPCUI : MonoBehaviour {
 		}
 
 		if (selectedItem != null) {
-			if (GameManager.instance.mainPlayer.GetMoney() >= selectedItem.price) {
+			if (GameManager.instance.mainPlayer.NumItems() == 
+						GameManager.instance.mainPlayer.GetPocket().GetCapacity() - 1 &&
+						tradingItem != null) {
+				// player has open slot but trading item isnt empty
+				buyButton.interactable = false;
+			} else if (GameManager.instance.mainPlayer.GetMoney() >= selectedItem.price) {
 				buyButton.interactable = true;
 			}
 
