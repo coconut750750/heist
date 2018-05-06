@@ -15,11 +15,11 @@ public class Player : MovingObject {
 
 	private Pocket mainItems;
 
-	protected int money = 0;
+	protected int money = 200;
 	[SerializeField]
 	private Text moneyText;
 	
-	protected int health = 0;
+	protected int health = 100;
 	[SerializeField]
 	private Text healthText;
 
@@ -153,9 +153,6 @@ public class Player : MovingObject {
 			base.LoadFromData(new PlayerData(
 				0, 0, START_POS, 0, 0, 0, 0
 			));
-			this.money = 0;
-			this.health = 100;
-			this.exp = 0;
 		}
 
 		UpdateInfo();

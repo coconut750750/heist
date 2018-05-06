@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class NPC : MovingObject {
 
+	public const float BOTTOM_END_TRADING_PERC = 0.85f;
+	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
+	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
+
+	public const float BUY_PERC = 0.85f;
+
 	public float newDestinationDelay;
 
 	public int destinationRange;

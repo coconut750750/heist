@@ -51,7 +51,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Buttons\ButtonA.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\Interactables\Desk.cs" />
@@ -79,22 +78,26 @@
      <Compile Include="Assets\Scripts\Navigation\Nav2DObstacle.cs" />
      <Compile Include="Assets\Scripts\NPC\NPC.cs" />
      <Compile Include="Assets\Scripts\NPC\NPCSpawner.cs" />
-     <Compile Include="Assets\Scripts\NPC\NPCUI.cs" />
      <Compile Include="Assets\Scripts\NPC\TradingStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\CraftingStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\DismantleStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\OverviewContent.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\PauseMenu.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\PauseStash.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\SavingContent.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu\SliderControl.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PrefabBrush.cs" />
-     <Compile Include="Assets\Scripts\StartMenu\StartMenu.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RoadMarkerTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\ShadowTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\WallTile.cs" />
+     <Compile Include="Assets\Scripts\UI\Buttons\ButtonA.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\BuyController.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\NPCUI.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\SellController.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\TradeController.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\CraftingStash.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\DismantleStash.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\OverviewContent.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\PauseMenu.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\PauseStash.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\SavingContent.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu\SliderControl.cs" />
+     <Compile Include="Assets\Scripts\UI\StartMenu\StartMenu.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
