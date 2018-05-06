@@ -22,7 +22,11 @@ public class NPCUI : MonoBehaviour {
 
 	[SerializeField]
 	private TradeController tradeController;
+
+	[SerializeField]
+	private SellController sellController;
 	
+	private NPC npc;
 	private Inventory npcInventory;
 
 	[SerializeField]
@@ -55,6 +59,7 @@ public class NPCUI : MonoBehaviour {
 
 		gameObject.SetActive(true);
 
+		this.npc = npc;
 		npcInventory = npc.GetInventory();
 		npcInventory.SetDisplaying(true);
 
@@ -68,8 +73,10 @@ public class NPCUI : MonoBehaviour {
 
 		npcInventory.SetDisplaying(false);
 		npcInventory = null;
+		npc = null;
 
 		tradeController.HideTradingStash();
+		sellController.HideSellingStash();
 
 		gameObject.SetActive(false);
 		GameManager.instance.UnpauseGame();
@@ -85,6 +92,7 @@ public class NPCUI : MonoBehaviour {
 	// don't want to clear price
 	public void DeselectAll() {
 		tradeController.DeselectAll();
+		sellController.DeselectAll();
 	}
 
 	public Inventory GetNPCInventory() {
@@ -99,7 +107,14 @@ public class NPCUI : MonoBehaviour {
 
 	public void OnClickTrade() {
 		if (tradeController.Trade(npcInventory)) {
-			SetSelectedItem(null);
+			SetSelectedItem(null, -1);
+			UpdateInventoryUI();
+		}
+	}
+
+	public void OnClickSell() {
+		if (sellController.Sell()) {
+			sellController.UpdateButtons();
 			UpdateInventoryUI();
 		}
 	}
@@ -111,17 +126,17 @@ public class NPCUI : MonoBehaviour {
         }
 	}
 
-	private void OnSelectedItem(Item item) {
+	private void OnSelectedItem(Item item, int index) {
 		buyController.SetPriceText(item.price);
-		SetSelectedItem(item);
+		SetSelectedItem(item, index);
 
 		UpdateButtons();
 		UpdateTradingSlider();
 	}
 
-	private void OnDeselectedItem(Item item) {
+	private void OnDeselectedItem() {
 		buyController.ResetPriceText();
-		SetSelectedItem(null);
+		SetSelectedItem(null, -1);
 
 		UpdateButtons();
 		UpdateTradingSlider();
@@ -144,14 +159,19 @@ public class NPCUI : MonoBehaviour {
 	private void UpdateButtons() {
 		buyController.UpdateButtons(tradingItem != null);
 		tradeController.UpdateButtons();
+		sellController.UpdateButtons();
 	}
 
 	private void UpdateTradingSlider() {
 		tradeController.UpdateTradingSlider();
 	}
 
-	private void SetSelectedItem(Item item) {
-		buyController.SetSelectedItem(item);
-		tradeController.SetSelectedItem(item);
+	private void SetSelectedItem(Item item, int index) {
+		buyController.SetSelectedItem(item, index);
+		tradeController.SetSelectedItem(item, index);
+	}
+
+	public NPC GetNPC() {
+		return npc;
 	}
 }

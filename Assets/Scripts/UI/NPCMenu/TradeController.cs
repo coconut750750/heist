@@ -20,6 +20,7 @@ public class TradeController : MonoBehaviour {
 	private Slider tradingSlider;
 
 	private Item selectedItem;
+	private int selectedIndex;
 	private Item tradingItem;
 	private bool willTrade;
 
@@ -28,13 +29,11 @@ public class TradeController : MonoBehaviour {
 		tradingItem = null;
 		willTrade = false;
 
+		selectedItem = null;
+		selectedIndex = -1;
+
 		tradingStash.OnAdded += TradeItemEntered;
 		tradingStash.OnRemoved += TradeItemRemoved;
-	}
-
-	void Start() {
-		UpdateButtons();
-		UpdateTradingSlider();
 	}
 
 	public bool Trade(Inventory npcInventory) {
@@ -43,7 +42,7 @@ public class TradeController : MonoBehaviour {
 		}
 
 		GameManager.instance.mainPlayer.AddItem(selectedItem);
-		npcInventory.RemoveItem(selectedItem);
+		npcInventory.RemoveItemAtIndex(selectedIndex);
 		npcInventory.AddItem(tradingItem);
 
 		tradingStash.RemoveItem(tradingItem);
@@ -123,8 +122,9 @@ public class TradeController : MonoBehaviour {
 		return selectedItem;
 	}
 
-	public void SetSelectedItem(Item item) {
+	public void SetSelectedItem(Item item, int index) {
 		selectedItem = item;
+		selectedIndex = index;
 	}
 
 	public void HideTradingStash() {

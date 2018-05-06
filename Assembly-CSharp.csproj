@@ -63,8 +63,10 @@
      <Compile Include="Assets\Scripts\Inventory\ItemStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\Pocket.cs" />
      <Compile Include="Assets\Scripts\Inventory\PocketEditor.cs" />
+     <Compile Include="Assets\Scripts\Inventory\SellingStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\SingletonStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\StashDisplayer.cs" />
+     <Compile Include="Assets\Scripts\Inventory\TradingStash.cs" />
      <Compile Include="Assets\Scripts\ItemManager.cs" />
      <Compile Include="Assets\Scripts\Items\Item.cs" />
      <Compile Include="Assets\Scripts\LightingController.cs" />
@@ -78,7 +80,6 @@
      <Compile Include="Assets\Scripts\Navigation\Nav2DObstacle.cs" />
      <Compile Include="Assets\Scripts\NPC\NPC.cs" />
      <Compile Include="Assets\Scripts\NPC\NPCSpawner.cs" />
-     <Compile Include="Assets\Scripts\NPC\TradingStash.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PrefabBrush.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />

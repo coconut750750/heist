@@ -29,9 +29,9 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string INVENTORY_ITEM_QUALITY = "SelectedInventoryItemQuality";
 
 	// called when an item is selected
-	public event Action<Item> OnSelected;
+	public event Action<Item, int> OnSelected;
 
-	public event Action<Item> OnDeselected;
+	public event Action OnDeselected;
 
 	public event Action<Item> OnDropped;
 
@@ -118,7 +118,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		selected = true;
 		
 		if (OnSelected != null) {
-			OnSelected(this.item);
+			OnSelected(this.item, index);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			itemBack.color = DEFAULT_COLOR;
 
 			if (OnDeselected != null) {
-				OnDeselected(this.item);
+				OnDeselected();
 			}
 		}
 	}

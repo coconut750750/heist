@@ -61239,7 +61239,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 478775701}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c78fed5977de4150afaa35fc07ab494, type: 3}
+  m_Script: {fileID: 11500000, guid: d3a786ffedd0045e083ab2e3c67e19ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   items:
@@ -61373,6 +61373,7 @@ MonoBehaviour:
   strengthText: {fileID: 51873706}
   buyController: {fileID: 311305016}
   tradeController: {fileID: 478775707}
+  sellController: {fileID: 831544937}
   itemSlots:
   - {fileID: 1594521720}
   - {fileID: 1433670802}
@@ -63531,7 +63532,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.23529412}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -63547,7 +63548,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 762873774}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 489586059}
+        m_MethodName: OnClickSell
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &762873774
@@ -63973,6 +63985,8 @@ GameObject:
   - component: {fileID: 831544936}
   - component: {fileID: 831544935}
   - component: {fileID: 831544934}
+  - component: {fileID: 831544938}
+  - component: {fileID: 831544937}
   m_Layer: 5
   m_Name: NPCSell
   m_TagString: Untagged
@@ -64056,6 +64070,35 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 831544932}
+--- !u!114 &831544937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 831544932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da9741dc4989f4f5db42bd5eba629af9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sellButton: {fileID: 762873773}
+  priceText: {fileID: 1380504856}
+  sellingStash: {fileID: 831544938}
+--- !u!114 &831544938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 831544932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd77f2599383243a8aee31c966db2ec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 0}
+  itemSlots:
+  - {fileID: 862623594}
 --- !u!1001 &838479905
 Prefab:
   m_ObjectHideFlags: 0
@@ -64334,6 +64377,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ddc2c10feb75840bcb83b403d9dbe63f, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &862623594 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114851727118913432, guid: ddc2c10feb75840bcb83b403d9dbe63f,
+    type: 2}
+  m_PrefabInternal: {fileID: 862623593}
+  m_Script: {fileID: 11500000, guid: 962f6b4cee18748b2972cf180155b0d7, type: 3}
 --- !u!1001 &864663525
 Prefab:
   m_ObjectHideFlags: 0

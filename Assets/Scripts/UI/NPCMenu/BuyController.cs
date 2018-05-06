@@ -14,18 +14,16 @@ public class BuyController : MonoBehaviour {
 	private Text priceText;
 
 	private Item selectedItem;
+	private int selectedIndex;
 
 	void Awake() {
 		ResetPriceText();
 		Disable();
 		selectedItem = null;
+		selectedIndex = -1;
 	}
 
-	void Start() {
-		UpdateButtons(false);
-	}
-
-	public bool Buy(Inventory from) {
+	public bool Buy(Inventory npcInventory) {
 		if (selectedItem == null) {
 			return false;
 		}
@@ -35,7 +33,7 @@ public class BuyController : MonoBehaviour {
 		if (playerMoney >= price) {
 			GameManager.instance.mainPlayer.SetMoney(playerMoney - price);
 			GameManager.instance.mainPlayer.AddItem(selectedItem);
-			from.RemoveItem(selectedItem);
+			npcInventory.RemoveItemAtIndex(selectedIndex);
 
 			return true;
 		}
@@ -82,7 +80,8 @@ public class BuyController : MonoBehaviour {
 		return selectedItem;
 	}
 
-	public void SetSelectedItem(Item item) {
+	public void SetSelectedItem(Item item, int index) {
 		selectedItem = item;
+		selectedIndex = index;
 	}
 }

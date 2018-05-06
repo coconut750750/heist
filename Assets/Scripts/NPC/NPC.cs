@@ -18,7 +18,7 @@ public class NPC : MovingObject {
 
 	private string npcName;
 	private Inventory inventory;
-	private int money;
+	private int money = 100;
 	
 	private Nav2DAgent agent {
 		get {
@@ -129,6 +129,14 @@ public class NPC : MovingObject {
 	protected void DestinationInvalid() {
 		Debug.Log("invalid dest");
 		isMoving = false;
+	}
+
+	public int GetMoney() {
+		return money;
+	}
+
+	public void SetMoney(int money) {
+		this.money = money;
 	}
 
     public override void Load()
