@@ -2,7 +2,7 @@ Android
 SceneListBegin?
 Assets/_Scenes/MainScene.unity
 SceneListEnd?
-d8bc35ddea77cfd4bc9b2d0f23311c28 Assembly-CSharp.dll:.GameManager
+8796c5209b1943708b2ac8bfb6aeac60 Assembly-CSharp.dll:.GameManager
 ca5ae5b20b6f6c503f44c6cdaa82d4a4 Assembly-CSharp.dll:.SavingContent
 5ad117d057b9798aebdf5cb18d295786 Assembly-CSharp.dll:.RandomGroundTile
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
@@ -86,7 +86,7 @@ c63db43c730fa2cbb8ca07de15898cb6 UnityEngine.UI.dll:UnityEngine.UI.Toggle
 f61c0793411f10cf5fbfa1473fef5ef2 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 86d36c43c53541d667100dc90b89cfba UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 1b8c02d0aa82fbf036a2b9b2d713eec3 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
-48050f170f465a34a8b67cadc4600e2d Assembly-CSharp.dll:.Item
+b0549d3ca777a4e65b40dff07ad80fe3 Assembly-CSharp.dll:.Item
 f32c12a11f82539319f445a95f49c58f Assembly-CSharp.dll:.PauseMenu
 897a2e8091625960fa61a001d23b6bcd Assembly-CSharp.dll:.Nav2DObstacle
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
@@ -127,7 +127,8 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 011eeee4e366f2686dee82af5327135c Assembly-CSharp.dll:.Pocket
 78ebae5ed9b3edeb216da437b99754a4 Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.Joystick
-3be291216dfd7cf959d49b69de7b9872 Assembly-CSharp.dll:.Nav2D
+a4fec1aba867101369e2ff88e98ede31 Assembly-CSharp.dll:.Nav2D
+011eeee4e366f2686dee82af5327135c Assembly-CSharp.dll:.TradingStash
 49cd62a578efc0a599b810a2b66cd49c Assembly-CSharp.dll:.ButtonA
 a2efb0db652b8114d1ae7dd9a600d626 Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.InputAxisScrollbar
 fe76270bd84ec3b6f2f6f92c69cf69da Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.AxisTouchButton
@@ -141,7 +142,7 @@ a7d3c6c6948d99dd4116e659ddcf5ac4 Assembly-CSharp-firstpass.dll:UnityStandardAsse
 3ac00ffbb75f63c50c1b819b0834d131 Assembly-CSharp.dll:.OverviewContent
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.MobileControlRig
 2cd8d0323ccfd01198f3dd566110d46c Assembly-CSharp.dll:.NPCSpawner
-853b7a9d3c8c5e73732537f0c771df01 Assembly-CSharp.dll:.Nav2DAgent
+cbccb8d86953e3467cee69f2f55fedcf Assembly-CSharp.dll:.Nav2DAgent
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.StartMenu
 fc1e0f4d8439d9928083474691511a13 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
@@ -159,6 +160,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 528ea1fd7c01796fc60c4e2f172ea229 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
 8fe70c61091d56c9af47dc8bda9730b3 Assembly-CSharp.dll:.Nav2DCompObstacle
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Desk
+197808626160ae2cb39e31e2082e7e30 Assembly-CSharp.dll:.NPCUI
 4fd2d7785a52b097cebdd8c6336cdcfe Assembly-CSharp.dll:.ItemManager
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.Callbacks.PlayModeRunnerCallback
 96d0fbde9fd209878a0a291f82c9bcdd UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.PlaymodeTestsController
@@ -175,5 +177,6 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 a8796ecdc9d5c260bbe32f30c4b10708 Assembly-CSharp-firstpass.dll:UnityStandardAssets.CrossPlatformInput.TouchPad
 5ad117d057b9798aebdf5cb18d295786 Assembly-CSharp.dll:.RoadMarkerTile
 76482fb9c8f89ee8eac4295de907a729 Assembly-CSharp.dll:.DismantleStash
-a4838bfb327d37364405f3cd2c330751 Assembly-CSharp.dll:.NPC
+be5fcbb442a5e3c710098a06fbcf091c Assembly-CSharp.dll:.NPC
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.NPCInteractable
 bc6a79164a2541cf5178485a49eec5d6 Assembly-CSharp.dll:.Player

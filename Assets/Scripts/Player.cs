@@ -157,6 +157,8 @@ public class Player : MovingObject {
 			this.health = 100;
 			this.exp = 0;
 		}
+
+		UpdateInfo();
     }
 }
 

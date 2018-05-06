@@ -37,7 +37,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
 	public void OnBeginDrag(PointerEventData eventData)
     {
-		if (parentSlot.IsEmpty()) {
+		if (!CanDrag()) {
 			return;
 		}
 
@@ -49,7 +49,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-		if (parentSlot.IsEmpty()) {
+		if (!CanDrag()) {
 			return;
 		}
         transform.position = Input.mousePosition;
@@ -57,9 +57,16 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
+		if (!CanDrag()) {
+			return;
+		}
 		transform.position = startPosition;
         itemBeingDragged = null;
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
 		
     }
+
+	public bool CanDrag() {
+		return !parentSlot.IsEmpty() && parentSlot.OutputAllowed();
+	}
 }

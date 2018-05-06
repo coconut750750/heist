@@ -179,10 +179,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		Image imageDragged = ItemDragger.itemBeingDragged.GetImage();
 		ItemSlot itemSlotOther = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
 		
-		if (!itemSlotOther.outputAllowed) {
-			return;
-		}
-
 		// swap images
 		Sprite tempSprite = itemImage.sprite;
 		bool tempEnabled = itemImage.enabled;
