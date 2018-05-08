@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class NPC : MovingObject {
 
+	public const float BOTTOM_END_TRADING_PERC = 0.85f;
+	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
+	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
+
+	public const float BUY_PERC = 0.85f;
+
 	public float newDestinationDelay;
 
+	public int closestDestinationSquared;
 	public int destinationRange;
 
 	private const string PLAYER_TAG = "Player";
 
 	private string npcName;
 	private Inventory inventory;
-	private int money;
+	private int money = 100;
 	
 	private Nav2DAgent agent {
 		get {
@@ -54,7 +61,9 @@ public class NPC : MovingObject {
 			if (searchForDest) {
 				Bounds nav2DBounds = agent.polyNav.masterBounds;
 				Vector2 newDest = GenerateRandomDest(nav2DBounds);
-				agent.SetDestination(newDest);
+				if ((newDest - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+					agent.SetDestination(newDest);
+				}
 			}
 		}
 	}
@@ -123,6 +132,14 @@ public class NPC : MovingObject {
 	protected void DestinationInvalid() {
 		Debug.Log("invalid dest");
 		isMoving = false;
+	}
+
+	public int GetMoney() {
+		return money;
+	}
+
+	public void SetMoney(int money) {
+		this.money = money;
 	}
 
     public override void Load()
