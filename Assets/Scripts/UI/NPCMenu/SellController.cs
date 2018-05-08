@@ -65,9 +65,7 @@ public class SellController : MonoBehaviour {
 		}
 
 		if (sellingItem != null) {
-			Debug.Log("here " + npc.GetMoney());
 			npcWillBuy = sellingPrice <= npc.GetMoney();
-			Debug.Log(npcWillBuy);
 			if (npcWillBuy) {
 				Enable();
 			}

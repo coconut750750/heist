@@ -34,8 +34,6 @@ public class NPCUI : MonoBehaviour {
 
 	private Item tradingItem = null;
 
-	private bool willTrade = false;
-
 	void Awake() {
 		if (instance == null) {
 			instance = this;
@@ -142,22 +140,8 @@ public class NPCUI : MonoBehaviour {
 		UpdateTradingSlider();
 	}
 
-	private void TradeItemEntered(Item item) {
-		tradingItem = item;
-
-		UpdateButtons();
-		UpdateTradingSlider();
-	}
-
-	private void TradeItemRemoved() {
-		tradingItem = null;
-
-		UpdateButtons();
-		UpdateTradingSlider();
-	}
-
 	private void UpdateButtons() {
-		buyController.UpdateButtons(tradingItem != null);
+		buyController.UpdateButtons(!tradeController.IsEmpty());
 		tradeController.UpdateButtons();
 		sellController.UpdateButtons();
 	}

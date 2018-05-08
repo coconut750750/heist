@@ -127,6 +127,10 @@ public class TradeController : MonoBehaviour {
 		selectedIndex = index;
 	}
 
+	public bool IsEmpty() {
+		return tradingItem == null;
+	}
+
 	public void HideTradingStash() {
 		tradingStash.Hide();
 	}

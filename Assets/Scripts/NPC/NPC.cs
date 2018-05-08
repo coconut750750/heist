@@ -12,6 +12,7 @@ public class NPC : MovingObject {
 
 	public float newDestinationDelay;
 
+	public int closestDestinationSquared;
 	public int destinationRange;
 
 	private const string PLAYER_TAG = "Player";
@@ -60,7 +61,9 @@ public class NPC : MovingObject {
 			if (searchForDest) {
 				Bounds nav2DBounds = agent.polyNav.masterBounds;
 				Vector2 newDest = GenerateRandomDest(nav2DBounds);
-				agent.SetDestination(newDest);
+				if ((newDest - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+					agent.SetDestination(newDest);
+				}
 			}
 		}
 	}

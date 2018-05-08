@@ -56,11 +56,13 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     }
 
     public void OnEndDrag(PointerEventData eventData)
-    {		
+    {	
+		if (!parentSlot.OutputAllowed()) {
+			return;
+		}
 		transform.position = startPosition;
         itemBeingDragged = null;
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
-		
     }
 
 	public bool CanDrag() {
