@@ -34,6 +34,11 @@ public abstract class MovingObject : MonoBehaviour {
 
 	protected string filename;
 
+	protected int health = 100;
+	protected int money = 100;
+	protected int exp = 0;
+	protected int strength = 0;
+
 	IEnumerator doorDelay() {
 		paused = true;
 		yield return new WaitForSeconds(DOOR_DELAY_SECONDS);
@@ -137,6 +142,22 @@ public abstract class MovingObject : MonoBehaviour {
 	public bool IsPaused() {
 		return paused;
 	}
+
+	public int GetMoney() { return money; }
+
+	public void SetMoney(int money) { this.money = money; }
+
+	public int GetHealth() { return health; }
+
+	public void SetHealth(int health) { this.health = health; }
+
+	public int GetExperience() { return exp; }
+
+	public void SetExperience(int exp) { this.exp = exp; }
+
+	public int GetStrength() { return strength; }
+
+	public void SetStrength(int strength) { this.strength = strength; }
 
 	public abstract void Save();
 

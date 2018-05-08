@@ -15,16 +15,11 @@ public class Player : MovingObject {
 
 	private Pocket mainItems;
 
-	protected int money = 200;
 	[SerializeField]
 	private Text moneyText;
 	
-	protected int health = 100;
 	[SerializeField]
 	private Text healthText;
-
-	protected int exp = 0;
-	protected int strength = 0;
 
 	protected override void Start () {
 		base.Start();
@@ -38,16 +33,6 @@ public class Player : MovingObject {
 			GameManager.instance.ShowFloor2();
 		}
 	}
-
-	public int GetMoney() { return money; }
-
-	public void SetMoney(int money) { this.money = money; UpdateInfo(); }
-
-	public int GetHealth() { return health; }
-
-	public int GetExperience() { return exp; }
-
-	public int GetStrength() { return strength; }
 
 	protected override void FixedUpdate() {
 		float moveHorizontal = 0;

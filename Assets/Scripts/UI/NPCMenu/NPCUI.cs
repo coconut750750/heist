@@ -16,6 +16,8 @@ public class NPCUI : MonoBehaviour {
 	private Text expText;
 	[SerializeField]
 	private Text strengthText;
+	[SerializeField]
+	private Text moneyText;
 
 	[SerializeField]
 	private BuyController buyController;
@@ -31,8 +33,6 @@ public class NPCUI : MonoBehaviour {
 
 	[SerializeField]
 	private ItemSlot[] itemSlots;
-
-	private Item tradingItem = null;
 
 	void Awake() {
 		if (instance == null) {
@@ -60,6 +60,10 @@ public class NPCUI : MonoBehaviour {
 		this.npc = npc;
 		npcInventory = npc.GetInventory();
 		npcInventory.SetDisplaying(true);
+
+		healthText.text = npc.GetHealth().ToString();
+		strengthText.text = npc.GetStrength().ToString();
+		expText.text = npc.GetExperience().ToString();
 
 		UpdateInventoryUI();
 	}
@@ -98,20 +102,20 @@ public class NPCUI : MonoBehaviour {
 	}
 
 	public void OnClickBuy() {
-		if (buyController.Buy(npcInventory)) {
+		if (buyController.Buy(npc)) {
 			UpdateInventoryUI();
 		}
 	}
 
 	public void OnClickTrade() {
-		if (tradeController.Trade(npcInventory)) {
+		if (tradeController.Trade(npc)) {
 			SetSelectedItem(null, -1);
 			UpdateInventoryUI();
 		}
 	}
 
 	public void OnClickSell() {
-		if (sellController.Sell()) {
+		if (sellController.Sell(npc)) {
 			sellController.UpdateButtons();
 			UpdateInventoryUI();
 		}
@@ -122,6 +126,8 @@ public class NPCUI : MonoBehaviour {
             itemSlots[i].Refresh();
             itemSlots[i].InsertItem(npcInventory.GetItem(i), npcInventory);
         }
+
+		moneyText.text = npc.GetMoney().ToString();
 	}
 
 	private void OnSelectedItem(Item item, int index) {

@@ -36,14 +36,14 @@ public class TradeController : MonoBehaviour {
 		tradingStash.OnRemoved += TradeItemRemoved;
 	}
 
-	public bool Trade(Inventory npcInventory) {
+	public bool Trade(NPC npc) {
 		if (selectedItem == null || tradingItem == null || !willTrade) {
 			return false;
 		}
 
 		GameManager.instance.mainPlayer.AddItem(selectedItem);
-		npcInventory.RemoveItemAtIndex(selectedIndex);
-		npcInventory.AddItem(tradingItem);
+		npc.GetInventory().RemoveItemAtIndex(selectedIndex);
+		npc.GetInventory().AddItem(tradingItem);
 
 		tradingStash.RemoveItem(tradingItem);
 		selectedItem = null;

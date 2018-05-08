@@ -23,7 +23,7 @@ public class BuyController : MonoBehaviour {
 		selectedIndex = -1;
 	}
 
-	public bool Buy(Inventory npcInventory) {
+	public bool Buy(NPC npc) {
 		if (selectedItem == null) {
 			return false;
 		}
@@ -33,7 +33,8 @@ public class BuyController : MonoBehaviour {
 		if (playerMoney >= price) {
 			GameManager.instance.mainPlayer.SetMoney(playerMoney - price);
 			GameManager.instance.mainPlayer.AddItem(selectedItem);
-			npcInventory.RemoveItemAtIndex(selectedIndex);
+			npc.GetInventory().RemoveItemAtIndex(selectedIndex);
+			npc.SetMoney(npc.GetMoney() + price);
 
 			return true;
 		}
