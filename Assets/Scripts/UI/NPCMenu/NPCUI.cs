@@ -86,17 +86,13 @@ public class NPCUI : MonoBehaviour {
 		GameManager.instance.UnpauseGame();
 	}
 
-	public void DeselectAllItemSlots() {
-		for (int i = 0; i < itemSlots.Length; i++) {
-            itemSlots[i].Deselect();
-        }
-	}
-
-	// Doesn't deselect item slots because player might be inputing a trading item so,
-	// don't want to clear price
 	public void DeselectAll() {
 		tradeController.DeselectAll();
 		sellController.DeselectAll();
+		
+		for (int i = 0; i < itemSlots.Length; i++) {
+            itemSlots[i].Deselect();
+        }
 	}
 
 	public Inventory GetNPCInventory() {

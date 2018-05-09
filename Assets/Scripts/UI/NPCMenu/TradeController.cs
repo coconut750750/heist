@@ -42,8 +42,11 @@ public class TradeController : MonoBehaviour {
 		}
 
 		GameManager.instance.mainPlayer.AddItem(selectedItem);
+		selectedItem.ChangedHands();
 		npc.GetInventory().RemoveItemAtIndex(selectedIndex);
+
 		npc.GetInventory().AddItem(tradingItem);
+		tradingItem.ChangedHands();
 
 		tradingStash.RemoveItem(tradingItem);
 		selectedItem = null;
