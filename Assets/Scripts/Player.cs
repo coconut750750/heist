@@ -15,16 +15,14 @@ public class Player : MovingObject {
 
 	private Pocket mainItems;
 
-	protected int money = 200;
 	[SerializeField]
 	private Text moneyText;
 	
-	protected int health = 100;
 	[SerializeField]
 	private Text healthText;
 
-	protected int exp = 0;
-	protected int strength = 0;
+	[SerializeField]
+	private Text expText;
 
 	protected override void Start () {
 		base.Start();
@@ -38,16 +36,6 @@ public class Player : MovingObject {
 			GameManager.instance.ShowFloor2();
 		}
 	}
-
-	public int GetMoney() { return money; }
-
-	public void SetMoney(int money) { this.money = money; UpdateInfo(); }
-
-	public int GetHealth() { return health; }
-
-	public int GetExperience() { return exp; }
-
-	public int GetStrength() { return strength; }
 
 	protected override void FixedUpdate() {
 		float moveHorizontal = 0;
@@ -120,19 +108,22 @@ public class Player : MovingObject {
 		return !mainItems.IsFull();
 	}
 
-	private void UpdateInfo() {
+	public void UpdateInfo() {
 		if (moneyText != null) {
-			moneyText.text = "" + money;
+			moneyText.text = money.ToString();
 		}
 
 		if (healthText != null) {
-			healthText.text = "" + health;
+			healthText.text = health.ToString();
+		}
+
+		if (expText != null) {
+			expText.text = exp.ToString();
 		}
 	}
 
     public override void Save() {
-        PlayerData data = new PlayerData(base.onStairs, base.floor, base.rb2D.transform.position, 
-		money, health, exp, strength);
+        PlayerData data = new PlayerData(this);
 		GameManager.Save(data, base.filename);
     }
 
@@ -145,10 +136,7 @@ public class Player : MovingObject {
 				GameManager.instance.ShowFloor2();
 				gameObject.layer = 17 - gameObject.layer;
 			}
-			this.money = data.money;
-			this.health = data.health;
-			this.exp = data.exp;
-			this.strength = data.strength;
+			
 		} else {
 			base.LoadFromData(new PlayerData(
 				0, 0, START_POS, 0, 0, 0, 0
@@ -161,16 +149,13 @@ public class Player : MovingObject {
 
 [System.Serializable]
 public class PlayerData : MovingObjectData {
-	public int money;
-	public int health;
-	public int exp;
-	public int strength;
 
-	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp, int strength): 
-		base(onStairs, floor, position) {
-		this.money = money;
-		this.health = health;
-		this.exp = exp;
-		this.strength = strength;
+	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp, int strength) {
+		base.SetPositionalData(onStairs, floor, position);
+		base.SetStats(money, health, exp, strength);
+	}
+
+	public PlayerData(Player player) : base(player) {
+
 	}
 }

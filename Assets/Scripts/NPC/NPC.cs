@@ -17,15 +17,15 @@ public class NPC : MovingObject {
 
 	private const string PLAYER_TAG = "Player";
 
-	private string npcName;
+	private string npcName = "Billy";
 	private Inventory inventory;
-	private int money = 100;
 	
 	private Nav2DAgent agent {
 		get {
 			return gameObject.GetComponent<Nav2DAgent>();
 		}
 	}
+
 	private Vector2 destination;
 	private bool isMoving;
 
@@ -39,11 +39,18 @@ public class NPC : MovingObject {
 		searchForDest = true;
 	}
 
-	protected override void Start () {
-		base.Start();
-		inventory = gameObject.GetComponent<Inventory>();
+	protected override void Awake() {
+		base.Awake();
 
+		inventory = gameObject.GetComponent<Inventory>();
+		inventory.SetIndependent(false);
+	}
+
+	protected override void Start() {
+		base.Start();
+		
 		agent.OnDestinationReached += NavArrived;
+		agent.OnSetVelocity += Move;
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
 		agent.maxSpeed = moveSpeed;
@@ -55,15 +62,11 @@ public class NPC : MovingObject {
 	}
 
 	protected override void FixedUpdate() {
-		if (isMoving) {
-			UpdateAnimator(new Vector3(rb2D.velocity.x, rb2D.velocity.y, 0));
-		} else {
-			if (searchForDest) {
-				Bounds nav2DBounds = agent.polyNav.masterBounds;
-				Vector2 newDest = GenerateRandomDest(nav2DBounds);
-				if ((newDest - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
-					agent.SetDestination(newDest);
-				}
+		if (!isMoving && searchForDest) {
+			Bounds nav2DBounds = agent.polyNav.masterBounds;
+			Vector2 newDest = GenerateRandomDest(nav2DBounds);
+			if ((newDest - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+				agent.SetDestination(newDest);
 			}
 		}
 	}
@@ -109,6 +112,10 @@ public class NPC : MovingObject {
 		return inventory;
 	}
 
+	public string GetName() {
+		return npcName;
+	}
+
 	protected void NavStarted() {
 		Debug.Log("started");
 		isMoving = true;
@@ -134,21 +141,33 @@ public class NPC : MovingObject {
 		isMoving = false;
 	}
 
-	public int GetMoney() {
-		return money;
-	}
-
-	public void SetMoney(int money) {
-		this.money = money;
-	}
+	public override void Save()
+    {
+        NPCData data = new NPCData(this);
+		GameManager.Save(data, base.filename);
+    }
 
     public override void Load()
     {
-        
+        NPCData data = GameManager.Load<NPCData>(base.filename);
+		
+        if (data != null) {
+			base.LoadFromData(data);
+			
+			ItemStashData inventoryData = data.inventoryData;
+			inventory.LoadFromInventoryData(inventoryData);
+		} else {
+			//Destroy(this);
+		}
     }
+}
 
-    public override void Save()
-    {
-        
-    }
+[System.Serializable]
+public class NPCData : MovingObjectData {
+
+	public ItemStashData inventoryData;
+
+	public NPCData(NPC npc) : base(npc) {
+		inventoryData = new ItemStashData(npc.GetInventory());
+	}
 }

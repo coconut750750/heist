@@ -36,12 +36,12 @@ public class SellController : MonoBehaviour {
 		Disable();
 	}
 
-	public bool Sell() {
+	public bool Sell(NPC npc) {
 		if (sellingItem == null || !npcWillBuy) {
 			return false;
 		}
 
-		NPC npc = NPCUI.instance.GetNPC();
+
 		int currentMoney = GameManager.instance.mainPlayer.GetMoney();
 		GameManager.instance.mainPlayer.SetMoney(currentMoney + sellingPrice);
 		npc.SetMoney(npc.GetMoney() - sellingPrice);

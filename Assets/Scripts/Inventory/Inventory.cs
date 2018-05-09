@@ -10,8 +10,12 @@ public class Inventory : ItemStash {
 
 	private bool isDisplaying;
 
+    // independent if inventory not attached to an npc
+    private bool independent;
+
 	public Inventory() {
 		isDisplaying = false;
+        independent = true;
 	}
 
 	void Awake () {
@@ -20,6 +24,14 @@ public class Inventory : ItemStash {
 
     public string GetName() {
         return inventoryName;
+    }
+
+    public bool IsIndependent() {
+        return independent;
+    }
+
+    public void SetIndependent(bool independent) {
+        this.independent = independent;
     }
 
     public override void SetDisplaying(bool isDisplaying) {
@@ -39,14 +51,22 @@ public class Inventory : ItemStash {
     }
 
     public override void Save() {
-        ItemStashData data = new ItemStashData(base.items, base.count, base.capacity);
-        GameManager.Save(data, base.filename);
+        if (independent) {
+            ItemStashData data = new ItemStashData(this);
+            GameManager.Save(data, base.filename);
+        }
     }
 
     public override void Load() {
-        ItemStashData data = GameManager.Load<ItemStashData>(base.filename);
+        if (independent) {
+            ItemStashData data = GameManager.Load<ItemStashData>(base.filename);
 
-		if (data != null) {
+            LoadFromInventoryData(data);
+        }
+    }
+
+    public void LoadFromInventoryData(ItemStashData data) {
+        if (data != null) {
 			base.LoadFromData(data);
             this.isDisplaying = false;
 		}

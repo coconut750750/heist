@@ -34,13 +34,18 @@ public abstract class MovingObject : MonoBehaviour {
 
 	protected string filename;
 
+	protected int health = 100;
+	protected int money = 100;
+	protected int exp = 0;
+	protected int strength = 0;
+
 	IEnumerator doorDelay() {
 		paused = true;
 		yield return new WaitForSeconds(DOOR_DELAY_SECONDS);
 		paused = false;
 	}
 
-	void Awake() {
+	protected virtual void Awake() {
 		rb2D = GetComponent<Rigidbody2D>();
 		rb2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 		rb2D.interpolation = RigidbodyInterpolation2D.Extrapolate;
@@ -68,7 +73,7 @@ public abstract class MovingObject : MonoBehaviour {
 		Move(new Vector3(0, 0, 0));		
 	}
 
-	protected void Move(Vector3 movement) {
+	protected void Move(Vector2 movement) {
 		if (!paused && !GameManager.instance.IsPaused()) {
 			rb2D.velocity = movement * moveSpeed;
 			UpdateAnimator(movement);
@@ -138,6 +143,30 @@ public abstract class MovingObject : MonoBehaviour {
 		return paused;
 	}
 
+	public int GetOnStairs() {
+		return onStairs;
+	}
+
+	public Vector3 GetPosition() {
+		return rb2D.transform.position;
+	}
+
+	public int GetMoney() { return money; }
+
+	public void SetMoney(int money) { this.money = money; }
+
+	public int GetHealth() { return health; }
+
+	public void SetHealth(int health) { this.health = health; }
+
+	public int GetExperience() { return exp; }
+
+	public void SetExperience(int exp) { this.exp = exp; }
+
+	public int GetStrength() { return strength; }
+
+	public void SetStrength(int strength) { this.strength = strength; }
+
 	public abstract void Save();
 
 	public abstract void Load();
@@ -146,23 +175,46 @@ public abstract class MovingObject : MonoBehaviour {
 		this.onStairs = data.onStairs;
 		this.floor = data.floor;
 		rb2D.transform.position = data.getPosition();
+
+		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = data.strength;
 	}
 }
 
 [System.Serializable]
-public class MovingObjectData : GameData{
+public class MovingObjectData : GameData {
 	public int onStairs;
 	public int floor;
 	public float xPos;
 	public float yPos;
 	public float zPos;
 
-	public MovingObjectData(int onStairs, int floor, Vector3 position) {
+	public int money;
+	public int health;
+	public int exp;
+	public int strength;
+
+	public MovingObjectData() {
+		
+	}
+
+	public MovingObjectData(MovingObject moveObj) {
+		SetPositionalData(moveObj.GetOnStairs(), moveObj.GetFloor() - 1, moveObj.GetPosition());
+		SetStats(moveObj.GetMoney(), moveObj.GetHealth(), moveObj.GetExperience(), moveObj.GetStrength());
+	}
+
+	protected void SetPositionalData(int onStairs, int floor, Vector3 position) {
 		this.onStairs = onStairs;
 		this.floor = floor;
 		this.xPos = position.x;
 		this.yPos = position.y;
 		this.zPos = position.z;
+	}
+
+	protected void SetStats(int money, int health, int exp, int strength) {
+		this.money = money;
+		this.health = health;
+		this.exp = exp;
+		this.strength = strength;
 	}
 
 	public Vector3 getPosition() {

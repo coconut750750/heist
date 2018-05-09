@@ -8,8 +8,7 @@ public abstract class Interactable : MonoBehaviour {
 
     protected static bool alreadyRemoved;
 
-    protected static GameObject buttonObj;
-    protected static ButtonA button;
+    protected static ButtonA buttonA;
     private const string BUTTON_A_TAG = "ButtonA";
 
     protected static Player player;
@@ -19,10 +18,10 @@ public abstract class Interactable : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-        if (buttonObj == null) {
-            buttonObj = GameObject.Find(BUTTON_A_TAG);
-            button = buttonObj.GetComponent<ButtonA>();
-            buttonObj.SetActive(false);
+        if (buttonA == null) {
+            GameObject buttonObj = GameObject.Find(BUTTON_A_TAG);
+            buttonA = buttonObj.GetComponent<ButtonA>();
+            buttonA.Disable();
         }
         if (player == null) {
             player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
@@ -39,8 +38,8 @@ public abstract class Interactable : MonoBehaviour {
     {
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
-            if (!buttonObj.activeSelf) {
-                buttonObj.SetActive(true);
+            if (!buttonA.IsInteractable()) {
+                buttonA.Enable();
             }
             PlayerInteract(player);
         }
@@ -52,8 +51,8 @@ public abstract class Interactable : MonoBehaviour {
         {
             PlayerLeave(player);
             
-            if (buttonObj.activeSelf && button.GetListeners() == 0) {
-                buttonObj.SetActive(false);
+            if (buttonA.IsInteractable() && buttonA.GetListeners() == 0) {
+                buttonA.Disable();
             }
         }
     }
@@ -63,17 +62,17 @@ public abstract class Interactable : MonoBehaviour {
             Interact(player);
         };
 
-        if (button.GetListeners() > 0) {
+        if (buttonA.GetListeners() > 0) {
             alreadyRemoved = true;
-            Interactable.button.RemoveAllListeners();
+            Interactable.buttonA.RemoveAllListeners();
         }
         
-        Interactable.button.AddListener(call);
+        Interactable.buttonA.AddListener(call);
     }
 
     public void PlayerLeave(Player player) {
         if (!alreadyRemoved) {
-            Interactable.button.RemoveListener(call);
+            Interactable.buttonA.RemoveListener(call);
         } else {
             alreadyRemoved = false;
         }

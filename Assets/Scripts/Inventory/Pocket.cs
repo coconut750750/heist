@@ -20,7 +20,7 @@ public class Pocket : SingletonStash {
 	}
 
 	public override void Save() {
-	ItemStashData data = new ItemStashData(base.items, base.count, base.capacity);
+	ItemStashData data = new ItemStashData(this);
 	GameManager.Save(data, base.filename);
 	}
 

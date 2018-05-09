@@ -26,4 +26,12 @@ public class ButtonA : Button {
 	public int GetListeners() {
 		return listeners;
 	}
+
+	public void Enable() {
+		interactable = true;
+	}
+
+	public void Disable() {
+		interactable = false;
+	}
 }

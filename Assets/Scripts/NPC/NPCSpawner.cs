@@ -39,6 +39,10 @@ public class NPCSpawner : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (GameManager.instance.IsPaused()) {
+			return;
+		}
+
 		int hour = GameManager.instance.GetHour();
 
 		if (END_BASE_HOUR <= hour && hour < END_PEAK_HOUR) {

@@ -125,7 +125,7 @@ public abstract class ItemStash : MonoBehaviour {
 	}
 
 	public override string ToString() {
-		string log = "" + count + " items: ";
+		string log = "" + gameObject.name + " " + count + " items: ";
 		for (int i = 0; i < capacity; i++) {
 			if (items[i] == null) {
 				log = log + "null ";
@@ -163,17 +163,22 @@ public class ItemStashData : GameData {
 	public int count = 0;
 	public int capacity = 0;
 
-	public ItemStashData(Item[] items, int count, int capacity) {
+	public ItemStashData(ItemStash stash) {
+		
+		Debug.Log(stash.ToString());
+
+		this.count = stash.GetNumItems();
+		this.capacity = stash.GetCapacity();
+
 		this.itemData = new ItemData[capacity];
 		for (int i = 0; i < capacity; i++) {
-			Item item = items[i];
+			Item item = stash.GetItem(i);
 			if (item == null) {
 				itemData[i] = null;
 			} else {
-				itemData[i] = new ItemData(items[i]);
+				itemData[i] = new ItemData(item);
 			}
 		}
-		this.count = count;
-		this.capacity = capacity;
+		
 	}
 }
