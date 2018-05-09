@@ -36,6 +36,8 @@ public class Nav2DAgent : MonoBehaviour{
 
 	///Raised when a new destination is started after path found
 	public event Action OnNavigationStarted;
+
+	public event Action<Vector2> OnSetVelocity;
 	///Raised when the destination is reached
 	public event Action OnDestinationReached;
 	///Raised when the destination is or becomes invalid
@@ -50,14 +52,16 @@ public class Nav2DAgent : MonoBehaviour{
 	private int requests              = 0;
 	private List<Vector2> _activePath = new List<Vector2>();
 
-	private Vector2 velocity {
-		get {
-			return rb2d.velocity;
-		}
-		set {
-			rb2d.velocity = value;
-		}
-	}
+	// private Vector2 velocity {
+	// 	get {
+	// 		return rb2d.velocity;
+	// 	}
+	// 	set {
+	// 		rb2d.velocity = value;
+	// 	}
+	// }
+
+	private Vector2 velocity = Vector2.zero;
 
 	private bool paused {
 		get {
@@ -126,19 +130,12 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	///The moving direction of the agent
-	public Vector2 movingDirection{
+	public Vector2 movingDirection {
 		get {
 			if (hasPath) {
 				return velocity.normalized;
 			}
 			return Vector2.zero;
-		}
-	}
-
-	///The current speed of the agent
-	public float currentSpeed{
-		get {
-			return velocity.magnitude;
 		}
 	}
 
@@ -198,8 +195,9 @@ public class Nav2DAgent : MonoBehaviour{
 	///Clears the path and as a result the agent is stop moving
 	public void Stop(){
 		activePath.Clear();
-		rb2d.velocity = Vector3.zero;
 		velocity = Vector2.zero;
+		OnSetVelocity(velocity);
+
 		requests = 0;
 		primeGoal = position;
 	}
@@ -225,7 +223,7 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	//main loop
-	void LateUpdate(){
+	void FixedUpdate(){
 		if (polyNav == null) {
 			return;
 		}
@@ -247,7 +245,7 @@ public class Nav2DAgent : MonoBehaviour{
 			velocity = Seek(nextPoint);
 		}
 
-		velocity = Truncate(velocity, maxSpeed);
+		OnSetVelocity(movingDirection);
 
 		//slow down if wall ahead
 		LookAhead();
@@ -360,8 +358,8 @@ public class Nav2DAgent : MonoBehaviour{
 			desiredVelocity *= reqSpeed / dist;
 		}
 
-		Vector2 steer= desiredVelocity - velocity;
-		steer = Truncate(steer, maxSpeed);
+		Vector2 steer = desiredVelocity - velocity;
+
 		return steer;
 	}
 
