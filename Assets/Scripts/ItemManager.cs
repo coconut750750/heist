@@ -20,7 +20,7 @@ public class ItemManager : MonoBehaviour {
 
 		itemSpriteDic = new Dictionary<string, Item>();
 		for (int i = 0; i < items.Length; i++) {
-			itemSpriteDic.Add(items[i].name, items[i]);
+			itemSpriteDic.Add(items[i].itemName, items[i]);
 		}
 	}
 
@@ -30,7 +30,7 @@ public class ItemManager : MonoBehaviour {
 	}
 
 	public Item GetItem(string name) {
-		return itemSpriteDic[name];
+		return Object.Instantiate(itemSpriteDic[name]);
 	}
 
 	public void Delete() {

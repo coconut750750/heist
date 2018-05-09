@@ -33,6 +33,8 @@ public class BuyController : MonoBehaviour {
 		if (playerMoney >= price) {
 			GameManager.instance.mainPlayer.SetMoney(playerMoney - price);
 			GameManager.instance.mainPlayer.AddItem(selectedItem);
+			selectedItem.ChangedHands();
+			
 			npc.GetInventory().RemoveItemAtIndex(selectedIndex);
 			npc.SetMoney(npc.GetMoney() + price);
 
