@@ -8,6 +8,7 @@ public class NPC : MovingObject {
 	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
 	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
 
+	public const float SELL_PERC = 1.10f;
 	public const float BUY_PERC = 0.85f;
 
 	public float newDestinationDelay;

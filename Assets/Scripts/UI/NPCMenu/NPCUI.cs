@@ -132,7 +132,6 @@ public class NPCUI : MonoBehaviour {
 	}
 
 	private void OnSelectedItem(Item item, int index) {
-		buyController.SetPriceText(item.price);
 		SetSelectedItem(item, index);
 
 		UpdateButtons();
@@ -140,7 +139,6 @@ public class NPCUI : MonoBehaviour {
 	}
 
 	private void OnDeselectedItem() {
-		buyController.ResetPriceText();
 		SetSelectedItem(null, -1);
 
 		UpdateButtons();
