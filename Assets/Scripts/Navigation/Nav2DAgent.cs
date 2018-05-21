@@ -116,7 +116,7 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	///The remaining distance of the active path. 0 if none
-	public float remainingDistance{
+	public float remainingDistance {
 		get {
 			if (!hasPath) {
 				return 0;
@@ -139,8 +139,8 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 	}
 
-	void OnEnable(){ allAgents.Add(this); }
-	void OnDisable(){ allAgents.Remove(this); }
+	void OnEnable() { allAgents.Add(this); }
+	void OnDisable() { allAgents.Remove(this); }
 	
 	void Awake(){ 
 		rb2d = gameObject.GetComponent<Rigidbody2D>();

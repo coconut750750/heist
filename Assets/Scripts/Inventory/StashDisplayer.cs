@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>  
+///		This is the Stash Displayer class.
+/// 	It manages the display of inventories when the player interacts with inventories. It takes
+///  an inventory and injects the data into the ItemSlot objects it holds.
+/// </summary>  
 public class StashDisplayer : MonoBehaviour {
     private static Inventory displayInventory;
     private static ItemSlot[] itemSlots;
     private static int capacity;
     private static Text nameText;
 
+    // set up the itemSlots
     void Awake() {
         Transform inventory = transform.Find("Inventory");
         capacity = inventory.childCount;
@@ -23,21 +29,23 @@ public class StashDisplayer : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
+    // injects an inventory into the item slots
     public static void SetInventory(Inventory displayInventory) {
         StashDisplayer.displayInventory = displayInventory;
         displayInventory.SetDisplaying(true);
 
         for (int i = 0; i < capacity; i++) {
-            itemSlots[i].Refresh();
-            itemSlots[i].InsertItem(displayInventory.GetItem(i), displayInventory);
+            itemSlots[i].ClearItem();
+            itemSlots[i].SetItem(displayInventory.GetItem(i), displayInventory);
         }
 
         nameText.text = displayInventory.GetName();
     }
 
+    // removes the inventory data from item slots
     public static void ClearInventory() {
         for (int i = 0; i < displayInventory.GetCapacity(); i++) {
-            itemSlots[i].ResetItem();
+            itemSlots[i].ClearItem();
         }
 
         displayInventory.SetDisplaying(false);
@@ -46,6 +54,7 @@ public class StashDisplayer : MonoBehaviour {
         nameText.text = "";
     }
 
+    // deselects all the item slots
     public void DeselectAll() {
         for (int i = 0; i < capacity; i++) {
             itemSlots[i].Deselect();

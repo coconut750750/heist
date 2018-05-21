@@ -6,6 +6,13 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
+/// <summary>  
+///		This is the abstract base ItemStash class.
+/// 	This class contains a list of Items, the number of items, and the capacity of the stash.
+///		SAVING and LOADING:
+/// 		saving: subclasses must override saving
+///			loading: subclasses load, but this class contains a helper function to load base class members
+/// </summary>  
 public abstract class ItemStash : MonoBehaviour {
 
 	private const string CLASS_NAME = "itemstash";

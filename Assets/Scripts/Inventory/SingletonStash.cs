@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Different from a regular inventory
-// Every time a UI holding a singleton stash opens up, the SAME item stash gets displayed
+/// <summary>  
+///		This is the SingletonStash class.
+/// 	
+/// 	This item stash is a single displaying item stash. Every time a UI holding a singleton stash 
+///  opens up, the SAME item stash gets displayed. (i.e. the Pocket, and pause menu stashes)
+/// 	SAVING and LOADING: must be overriden by sub classes.
+/// </summary>  
 public abstract class SingletonStash : ItemStash {
 
 	public ItemSlot[] itemSlots;
@@ -43,7 +48,7 @@ public abstract class SingletonStash : ItemStash {
 		bool success = base.RemoveItemAtIndex(index);
 
 		if (success) {
-			itemSlots[index].ResetItem();
+			itemSlots[index].ClearItem();
 		}
 			
 		return success;

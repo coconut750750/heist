@@ -72,7 +72,7 @@ public class NPCUI : MonoBehaviour {
 
 	public void Hide() {
 		for (int i = 0; i < npcInventory.GetCapacity(); i++) {
-            itemSlots[i].ResetItem();
+            itemSlots[i].ClearItem();
         }
 
 		npcInventory.SetDisplaying(false);
@@ -124,8 +124,8 @@ public class NPCUI : MonoBehaviour {
 
 	private void UpdateInventoryUI() {
 		for (int i = 0; i < itemSlots.Length; i++) {
-            itemSlots[i].Refresh();
-            itemSlots[i].InsertItem(npcInventory.GetItem(i), npcInventory);
+            itemSlots[i].ClearItem();
+            itemSlots[i].SetItem(npcInventory.GetItem(i), npcInventory);
         }
 
 		moneyText.text = npc.GetMoney().ToString();

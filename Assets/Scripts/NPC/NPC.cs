@@ -2,18 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>  
+///		This is the NPC class.
+/// 	Each NPC has a Nav2DAgent, which guides it around the map. The destination of the agent is
+///  set to a vector2 object. Upon arrival, the NPC delays for a predetermined time span. Then it will
+///	 generate another destination.
+///  	Each NPC also has an inventory and stats like the player. The player can interact with the
+///  inventory.
+///
+/// 	SAVING AND LOADING:
+/// 	Save: NPC's save themselves and their item stashes. Their item stashes do not save
+/// 	Load: NPC's have a function to load, but will be loaded by their spawner if they were created
+///			by one.
+/// </summary>  
 public class NPC : MovingObject {
 
 	public const float BOTTOM_END_TRADING_PERC = 0.85f;
 	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
 	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
 
-	public const float SELL_PERC = 1.10f;
-	public const float BUY_PERC = 0.85f;
+	public const float SELL_PERC = 1.10f; // sells an item at 110% of the price
+	public const float BUY_PERC = 0.85f; // buys an item at 85% of the price
 
+	// how long to wait before finding another destination
 	public float newDestinationDelay;
 
+	// closest destination npc will generate
 	public int closestDestinationSquared;
+	// range where the next destinations will generate
 	public int destinationRange;
 
 	private const string PLAYER_TAG = "Player";
@@ -28,12 +44,13 @@ public class NPC : MovingObject {
 	}
 
 	private Vector2 destination;
-	private bool isMoving;
+	private bool isMoving; // true if npc is moving
 
-	private int prevFloor;
+	private int prevFloor; // the floor before arriving at destination
 
-	private bool searchForDest;
+	private bool searchForDest; // true if npc may search for another destination
 
+	// called when NPC arrives at destination. toggles the searchForDest boolean
 	IEnumerator ArriveDelay() {
 		searchForDest = false;
 		yield return new WaitForSeconds(newDestinationDelay);
@@ -44,16 +61,18 @@ public class NPC : MovingObject {
 		base.Awake();
 
 		inventory = gameObject.GetComponent<Inventory>();
-		inventory.SetIndependent(false);
+		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
 	}
 
 	protected override void Start() {
 		base.Start();
 		
+		// add callback functions for the agent
 		agent.OnDestinationReached += NavArrived;
 		agent.OnSetVelocity += Move;
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
+
 		agent.maxSpeed = moveSpeed;
 
 		prevFloor = GetFloor();
@@ -77,6 +96,7 @@ public class NPC : MovingObject {
 		UpdateSortingLayer();
 	}
 
+	// depending on the floor the NPC is in, its sorting layer will change
 	protected void UpdateSortingLayer() {
 		if (GetFloor () == 1) {
 			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Elevated1";
@@ -126,6 +146,7 @@ public class NPC : MovingObject {
 		isMoving = true;
 	}
 
+	// if npc lands on stairs, it will either go up a floor or down a floor
 	protected void NavArrived() {
 		Debug.Log("arrived");
 		isMoving = false;

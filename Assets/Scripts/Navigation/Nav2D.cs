@@ -56,7 +56,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	//some initializing
-	void Start() {
+	void Awake() {
 		masterCollider = GetComponent<Collider2D>();
 		masterBounds = masterCollider.bounds;
 		masterCollider.enabled = false;

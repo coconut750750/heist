@@ -5,6 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
+/// <summary>  
+///		This is the Item Slot class.
+/// 	It holds the data of the item (the name and image) the background color and parent stash.
+/// </summary>  
 public class ItemSlot : MonoBehaviour, IDropHandler {
 	private Image itemImage;
 	private Image itemBack;
@@ -38,17 +42,13 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	public event Action OnRemoved;
 
 	void Awake() {
-		Refresh();
-	}
-
-	public void Refresh() {
 		if (nameText == null) {
 			nameText = GameObject.Find(INVENTORY_ITEM_TEXT).GetComponent<Text>();
 			qualityText = GameObject.Find(INVENTORY_ITEM_QUALITY).GetComponent<Text>();
 		}
 		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
 		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
-		ResetItem();
+		ClearItem();
 	}
 
 	public void SetIndex(int i) {
@@ -67,14 +67,14 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return parentStash;
 	}
 
-	public void InsertItem(Item item, ItemStash parent) {
+	public void SetItem(Item item, ItemStash parent) {
 		SetParentStash(parent);
 		SetItem(item);
 	}
 
 	public void SetItem(Item item) {
 		if (item == null) {
-			ResetItem();
+			ClearItem();
 			return;
 		}
 		
@@ -159,7 +159,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		this.outputAllowed = allowed;
 	}
 
-	public void ResetItem() {
+	public void ClearItem() {
 		itemImage.sprite = null;
 		itemImage.enabled = false;
 		this.item = null;

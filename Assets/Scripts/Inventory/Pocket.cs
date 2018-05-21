@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>  
+///		This is the Pocket class.
+/// 	The Pocket contains the 7 items that are readily accessible to the player.
+/// 	This item stash is a single displaying item stash attached to the player. When it displays (always is) 
+///  there is only one inventory to display, so it extends the singleton stash.
+/// 	SAVING and LOADING: done by this class
+/// </summary>  
 public class Pocket : SingletonStash {
 
 	public const int NUM_ITEMS = 7;
@@ -30,7 +37,7 @@ public class Pocket : SingletonStash {
 		if (data != null) {
 			base.LoadFromData(data);
 			for (int i = 0; i < base.capacity; i++) {
-				itemSlots[i].InsertItem(base.items[i], this);
+				itemSlots[i].SetItem(base.items[i], this);
 			}
 		}
 	}
