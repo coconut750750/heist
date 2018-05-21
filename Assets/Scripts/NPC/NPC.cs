@@ -8,6 +8,7 @@ public class NPC : MovingObject {
 	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
 	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
 
+	public const float SELL_PERC = 1.10f;
 	public const float BUY_PERC = 0.85f;
 
 	public float newDestinationDelay;
@@ -64,9 +65,9 @@ public class NPC : MovingObject {
 	protected override void FixedUpdate() {
 		if (!isMoving && searchForDest) {
 			Bounds nav2DBounds = agent.polyNav.masterBounds;
-			Vector2 newDest = GenerateRandomDest(nav2DBounds);
-			if ((newDest - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
-				agent.SetDestination(newDest);
+			destination = GenerateRandomDest(nav2DBounds);
+			if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+				agent.SetDestination(destination);
 			}
 		}
 	}
@@ -112,6 +113,10 @@ public class NPC : MovingObject {
 		return inventory;
 	}
 
+	public Vector2 GetDestination() {
+		return destination;
+	}
+
 	public string GetName() {
 		return npcName;
 	}
@@ -144,30 +149,60 @@ public class NPC : MovingObject {
 	public override void Save()
     {
         NPCData data = new NPCData(this);
+		data.SetMetadata(isMoving, prevFloor, searchForDest);
 		GameManager.Save(data, base.filename);
     }
 
     public override void Load()
     {
-        NPCData data = GameManager.Load<NPCData>(base.filename);
+        LoadFromFile(base.filename);
+    }
+
+	public void LoadFromFile(string filename) {
+		NPCData data = GameManager.Load<NPCData>(filename);
 		
         if (data != null) {
 			base.LoadFromData(data);
 			
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
+
+			destination = new Vector2(data.destX, data.destY);
+			isMoving = data.isMoving;
+			prevFloor = data.prevFloor;
+			searchForDest = data.searchForDest;
+			if (isMoving) {
+				agent.SetDestination(destination);
+			}
+			if (!searchForDest) {
+				StartCoroutine(ArriveDelay());
+			}
 		} else {
 			//Destroy(this);
 		}
-    }
+	}
 }
 
 [System.Serializable]
 public class NPCData : MovingObjectData {
 
 	public ItemStashData inventoryData;
+	public float destX;
+	public float destY;
+
+	public bool isMoving;
+	public int prevFloor;
+	public bool searchForDest;
 
 	public NPCData(NPC npc) : base(npc) {
 		inventoryData = new ItemStashData(npc.GetInventory());
+		destX = npc.GetDestination().x;
+		destY = npc.GetDestination().y;
+	}
+
+	public void SetMetadata(bool isMoving, int prevFloor, bool searchForDest) {
+		this.isMoving = isMoving;
+		this.prevFloor = prevFloor;
+		this.searchForDest = searchForDest;
 	}
 }

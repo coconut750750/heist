@@ -44,8 +44,10 @@ public class SellController : MonoBehaviour {
 
 		int currentMoney = GameManager.instance.mainPlayer.GetMoney();
 		GameManager.instance.mainPlayer.SetMoney(currentMoney + sellingPrice);
+
 		npc.SetMoney(npc.GetMoney() - sellingPrice);
 		npc.GetInventory().AddItem(sellingItem);
+		sellingItem.ChangedHands();
 
 		sellingStash.RemoveItem(sellingItem);
 		sellingItem = null;

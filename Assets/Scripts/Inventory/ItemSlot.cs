@@ -111,7 +111,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			parentStash.DeselectAll();
 		}
 		
-		nameText.text = item.name;
+		nameText.text = item.itemName;
 		qualityText.text = item.quality + "%";
 		itemBack.color = SELECTED_COLOR;
 

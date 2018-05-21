@@ -22,6 +22,7 @@ public abstract class ItemStash : MonoBehaviour {
 		for (int i = 0; i < capacity; i++) {
 			if (items[i] != null) {
 				count++;
+				items[i] = UnityEngine.Object.Instantiate(items[i]);
 			}
 		}
 
@@ -164,9 +165,6 @@ public class ItemStashData : GameData {
 	public int capacity = 0;
 
 	public ItemStashData(ItemStash stash) {
-		
-		Debug.Log(stash.ToString());
-
 		this.count = stash.GetNumItems();
 		this.capacity = stash.GetCapacity();
 

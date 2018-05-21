@@ -168,6 +168,12 @@ public class GameManager : MonoBehaviour {
 			movingObj.Save();
 		}
 
+		// NPC spawners
+		NPCSpawner[] spawners = FindObjectsOfType<NPCSpawner>();
+		foreach (NPCSpawner spawner in spawners) {
+			spawner.Save();
+		}
+
 		// manager itself
 		Save();
 	}

@@ -46,7 +46,7 @@ public class Inventory : ItemStash {
         if (isDisplaying && GameManager.instance.stashDisplayer.isActiveAndEnabled) {
             GameManager.instance.stashDisplayer.DeselectAll();
 		} else if (isDisplaying && NPCUI.instance.isActiveAndEnabled) {
-            NPCUI.instance.DeselectAllItemSlots();
+            NPCUI.instance.DeselectAll();
         }
     }
 

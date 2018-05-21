@@ -13,6 +13,8 @@ public class BuyController : MonoBehaviour {
 	[SerializeField]
 	private Text priceText;
 
+	private int price;
+
 	private Item selectedItem;
 	private int selectedIndex;
 
@@ -21,6 +23,8 @@ public class BuyController : MonoBehaviour {
 		Disable();
 		selectedItem = null;
 		selectedIndex = -1;
+
+		price = -1;
 	}
 
 	public bool Buy(NPC npc) {
@@ -28,11 +32,12 @@ public class BuyController : MonoBehaviour {
 			return false;
 		}
 		int playerMoney = GameManager.instance.mainPlayer.GetMoney();
-		int price = selectedItem.price;
 
 		if (playerMoney >= price) {
 			GameManager.instance.mainPlayer.SetMoney(playerMoney - price);
 			GameManager.instance.mainPlayer.AddItem(selectedItem);
+			selectedItem.ChangedHands();
+			
 			npc.GetInventory().RemoveItemAtIndex(selectedIndex);
 			npc.SetMoney(npc.GetMoney() + price);
 
@@ -69,11 +74,11 @@ public class BuyController : MonoBehaviour {
 		buyButton.interactable = false;
 	}
 
-	public void SetPriceText(int price) {
+	private void SetPriceText() {
 		priceText.text = price.ToString();
 	}
 
-	public void ResetPriceText() {
+	private void ResetPriceText() {
 		priceText.text = EMPTY_PRICE_TEXT;
 	}
 
@@ -84,5 +89,11 @@ public class BuyController : MonoBehaviour {
 	public void SetSelectedItem(Item item, int index) {
 		selectedItem = item;
 		selectedIndex = index;
+		if (item != null) {
+			price = Mathf.RoundToInt(selectedItem.GetValue() * NPC.SELL_PERC);
+			SetPriceText();
+		} else {
+			ResetPriceText();
+		}
 	}
 }

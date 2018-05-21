@@ -6,6 +6,8 @@ using System;
 [CreateAssetMenu]
 public class Item : ScriptableObject {
 
+	public const float CHANGE_HANDS_DECAY = 0.95f;
+
 	public string itemName;
 	public Sprite sprite;
 	public int quality; // out of 100
@@ -13,6 +15,10 @@ public class Item : ScriptableObject {
 
 	public float GetValue() {
 		return (float)(price * quality) / 100f;
+	}
+
+	public void ChangedHands() {
+		quality = Mathf.RoundToInt(quality * CHANGE_HANDS_DECAY);
 	}
 
 }
@@ -24,7 +30,7 @@ public class ItemData : GameData {
 	public int price;
 	
 	public ItemData(Item item) {
-		this.itemName = item.name;
+		this.itemName = item.itemName;
 		this.itemQuality = item.quality;
 		this.price = item.price;
 	}
