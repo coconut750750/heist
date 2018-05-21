@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NPCSpawner : MonoBehaviour {
 
+	private const string NPC_NAME = "NPC-";
+
 	public const int PEAK_MAX = 25;
 	public const int PEAK_MIN = 20;
 
@@ -19,13 +21,17 @@ public class NPCSpawner : MonoBehaviour {
 	public Nav2D polyNav;
 
 	public NPC[] npcsToSpawn;
+
 	private List<NPC> npcs;
+	private List<int> npcIndicies;
 
 	public int npcSize;
 	public int spawnRange;
 
 	public float spawnDelay;
 	private bool canSpawn;
+
+	private string filename;
 
 	IEnumerator SpawnDelay() {
 		canSpawn = false;
@@ -35,8 +41,22 @@ public class NPCSpawner : MonoBehaviour {
 
 	void Start () {
 		npcs = new List<NPC>();
+		npcIndicies = new List<int>();
 		StartCoroutine(SpawnDelay());
+
+		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
+		Load();
 	}
+
+	#if UNITY_EDITOR || UNITY_STANDALONE
+	protected void OnApplicationQuit() {
+		Save();
+	}
+	#elif UNITY_ANDROID || UNITY_IOS
+	protected void OnApplicationPause() {
+		Save();
+	}
+	#endif
 	
 	void Update () {
 		if (GameManager.instance.IsPaused()) {
@@ -60,6 +80,20 @@ public class NPCSpawner : MonoBehaviour {
 		} 
 	}
 
+	NPC InstantiateNPC(int index, Vector2 pos) {
+		NPC toSpawn = npcsToSpawn[index];
+		
+		NPC instance = Instantiate (toSpawn, (Vector2)pos, Quaternion.identity) as NPC;
+		instance.SetAgentNav(polyNav);
+		instance.transform.SetParent(transform);
+		instance.name = NPC_NAME + npcs.Count;
+
+		npcs.Add(instance);
+		npcIndicies.Add(index);
+
+		return instance;
+	}
+
 	void Spawn() {
 		if (!canSpawn) {
 			return;
@@ -69,23 +103,18 @@ public class NPCSpawner : MonoBehaviour {
 		if (pos == null) {
 			return;
 		}
-
-		NPC toSpawn = npcsToSpawn[Random.Range(0, npcsToSpawn.Length)];
 		
-		NPC instance = Instantiate (toSpawn, (Vector2)pos, Quaternion.identity) as NPC;
-		instance.SetAgentNav(polyNav);
-		instance.transform.SetParent(transform);
-
-		npcs.Add(instance);
+		InstantiateNPC(Random.Range(0, npcsToSpawn.Length), (Vector2)pos);
 
 		StartCoroutine(SpawnDelay());
 	}
 
 	void Recall() {
-		foreach (NPC npc in npcs) {
-			if (!NpcIsInRange(npc)) {
-				npcs.Remove(npc);
-				Destroy(npc);
+		for (int i = 0; i < npcs.Count; i++) {
+			if (!NpcIsInRange(npcs[i])) {
+				npcs.RemoveAt(i);
+				Destroy(npcs[i]);
+				npcIndicies.RemoveAt(i);
 				return;
 			}
 		}
@@ -129,5 +158,54 @@ public class NPCSpawner : MonoBehaviour {
 		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
 
 		return range.Contains((Vector2)(npc.transform.position));
+	}
+
+	public int NumNpcs() {
+		return npcs.Count;
+	}
+
+	public int[] GetNpcIndicies() {
+		return npcIndicies.ToArray();
+	}
+
+	public void Save()
+    {
+        NPCSpawnerData data = new NPCSpawnerData(this);
+		GameManager.Save(data, filename);
+    }
+
+    public void Load()
+    {
+        NPCSpawnerData data = GameManager.Load<NPCSpawnerData>(filename);
+		
+        if (data != null) {
+			int count = data.numNpcs;
+
+			for (int i = 0; i < count; i++) {
+				NPC toSpawn = npcsToSpawn[data.npcIndicies[i]];
+				toSpawn.LoadFromFile(NPC_NAME + i);
+		
+				NPC instance = Instantiate (toSpawn, (Vector2)toSpawn.transform.position, Quaternion.identity) as NPC;
+				instance.SetAgentNav(polyNav);
+				instance.transform.SetParent(transform);
+				instance.name = NPC_NAME + npcs.Count;
+
+				npcs.Add(instance);
+				npcIndicies.Add(data.npcIndicies[i]);
+			}
+		} else {
+			//Destroy(this);
+		}
+    }
+}
+
+[System.Serializable]
+public class NPCSpawnerData : GameData {
+	public int numNpcs;
+	public int[] npcIndicies;
+
+	public NPCSpawnerData(NPCSpawner spawner) {
+		numNpcs = spawner.NumNpcs();
+		npcIndicies = spawner.GetNpcIndicies();
 	}
 }
