@@ -162,16 +162,16 @@ public class GameManager : MonoBehaviour {
 			itemStash.Save();
 		}
 
-		// moving objects including player
-		MovingObject[] movingObjs = FindObjectsOfType<MovingObject>();
-		foreach (MovingObject movingObj in movingObjs) {
-			movingObj.Save();
-		}
-
 		// NPC spawners
 		NPCSpawner[] spawners = FindObjectsOfType<NPCSpawner>();
 		foreach (NPCSpawner spawner in spawners) {
 			spawner.Save();
+		}
+
+		// moving objects including player
+		MovingObject[] movingObjs = FindObjectsOfType<MovingObject>();
+		foreach (MovingObject movingObj in movingObjs) {
+			movingObj.Save();
 		}
 
 		// manager itself

@@ -11,7 +11,9 @@ using UnityEngine;
 ///  inventory.
 ///
 /// 	SAVING AND LOADING:
-/// 	Save: NPC's save themselves and their item stashes. Their item stashes do not save
+/// 	Save: INDEPENDENT NPCs save themselves and their item stashes. Their item stashes do not save
+///				DEPENDENT NPCs do not save themselves nor their item stashes. Their spawner saves them
+///						including their item stashes
 /// 	Load: NPC's have a function to load, but will be loaded by their spawner if they were created
 ///			by one.
 /// </summary>  
@@ -45,16 +47,18 @@ public class NPC : MovingObject {
 
 	private Vector2 destination;
 	private bool isMoving; // true if npc is moving
+	private bool canSearchForDest; // true if npc may search for another destination
 
 	private int prevFloor; // the floor before arriving at destination
 
-	private bool searchForDest; // true if npc may search for another destination
+	// independent if npc not spawned
+	private bool independent = true;
 
-	// called when NPC arrives at destination. toggles the searchForDest boolean
+	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
-		searchForDest = false;
+		canSearchForDest = false;
 		yield return new WaitForSeconds(newDestinationDelay);
-		searchForDest = true;
+		canSearchForDest = true;
 	}
 
 	protected override void Awake() {
@@ -76,13 +80,13 @@ public class NPC : MovingObject {
 		agent.maxSpeed = moveSpeed;
 
 		prevFloor = GetFloor();
-		searchForDest = true;
+		canSearchForDest = true;
 
 		UpdateSortingLayer();
 	}
 
 	protected override void FixedUpdate() {
-		if (!isMoving && searchForDest) {
+		if (!isMoving && canSearchForDest) {
 			Bounds nav2DBounds = agent.polyNav.masterBounds;
 			destination = GenerateRandomDest(nav2DBounds);
 			if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
@@ -141,6 +145,26 @@ public class NPC : MovingObject {
 		return npcName;
 	}
 
+	public bool IsMoving() {
+		return isMoving;
+	}
+
+	public bool CanSearchForDest() {
+		return canSearchForDest;
+	}
+
+	public int GetPrevFloor() {
+		return prevFloor;
+	}
+
+	public bool IsIndependent() {
+		return independent;
+	}
+
+	public void SetIndependent(bool independent) {
+		this.independent = independent;
+	}
+
 	protected void NavStarted() {
 		Debug.Log("started");
 		isMoving = true;
@@ -169,20 +193,28 @@ public class NPC : MovingObject {
 
 	public override void Save()
     {
-        NPCData data = new NPCData(this);
-		data.SetMetadata(isMoving, prevFloor, searchForDest);
-		GameManager.Save(data, base.filename);
+		if (independent) {
+			NPCData data = new NPCData(this);
+			GameManager.Save(data, base.filename);
+		}
     }
 
     public override void Load()
     {
+		// dont need to check for independence because if npc is not independent,
+		// the game object won't exist when game starts
         LoadFromFile(base.filename);
     }
 
-	public void LoadFromFile(string filename) {
+	public void LoadFromFile(string filename)
+	{
 		NPCData data = GameManager.Load<NPCData>(filename);
-		
-        if (data != null) {
+        LoadFromData(data);
+	}
+
+	public void LoadFromData(NPCData data)
+	{
+		if (data != null) {
 			base.LoadFromData(data);
 			
 			ItemStashData inventoryData = data.inventoryData;
@@ -190,12 +222,12 @@ public class NPC : MovingObject {
 
 			destination = new Vector2(data.destX, data.destY);
 			isMoving = data.isMoving;
+			canSearchForDest = data.canSearchForDest;
+
 			prevFloor = data.prevFloor;
-			searchForDest = data.searchForDest;
 			if (isMoving) {
 				agent.SetDestination(destination);
-			}
-			if (!searchForDest) {
+			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
 		} else {
@@ -212,18 +244,16 @@ public class NPCData : MovingObjectData {
 	public float destY;
 
 	public bool isMoving;
+	public bool canSearchForDest;
 	public int prevFloor;
-	public bool searchForDest;
 
 	public NPCData(NPC npc) : base(npc) {
 		inventoryData = new ItemStashData(npc.GetInventory());
 		destX = npc.GetDestination().x;
 		destY = npc.GetDestination().y;
-	}
 
-	public void SetMetadata(bool isMoving, int prevFloor, bool searchForDest) {
-		this.isMoving = isMoving;
-		this.prevFloor = prevFloor;
-		this.searchForDest = searchForDest;
+		this.isMoving = npc.IsMoving();
+		this.canSearchForDest = npc.CanSearchForDest();
+		this.prevFloor = npc.GetPrevFloor();
 	}
 }

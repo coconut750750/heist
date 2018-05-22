@@ -80,13 +80,12 @@ public class NPCSpawner : MonoBehaviour {
 		} 
 	}
 
-	NPC InstantiateNPC(int index, Vector2 pos) {
-		NPC toSpawn = npcsToSpawn[index];
-		
-		NPC instance = Instantiate (toSpawn, (Vector2)pos, Quaternion.identity) as NPC;
+	NPC InstantiateNPC(int index, Vector2 pos) {		
+		NPC instance = Instantiate (npcsToSpawn[index], (Vector2)pos, Quaternion.identity) as NPC;
 		instance.SetAgentNav(polyNav);
 		instance.transform.SetParent(transform);
 		instance.name = NPC_NAME + npcs.Count;
+		instance.SetIndependent(false);
 
 		npcs.Add(instance);
 		npcIndicies.Add(index);
@@ -112,11 +111,19 @@ public class NPCSpawner : MonoBehaviour {
 	void Recall() {
 		for (int i = 0; i < npcs.Count; i++) {
 			if (!NpcIsInRange(npcs[i])) {
-				npcs.RemoveAt(i);
 				Destroy(npcs[i]);
+				npcs.RemoveAt(i);
 				npcIndicies.RemoveAt(i);
 				return;
 			}
+		}
+	}
+
+	void RecallAllNpcs() {
+		for (int i = npcs.Count - 1; i >= 0; i--) {
+			Destroy(npcs[i]);
+			npcs.RemoveAt(i);
+			npcIndicies.RemoveAt(i);
 		}
 	}
 
@@ -168,6 +175,10 @@ public class NPCSpawner : MonoBehaviour {
 		return npcIndicies.ToArray();
 	}
 
+	public NPC[] GetNpcs() {
+		return npcs.ToArray();
+	}
+
 	public void Save()
     {
         NPCSpawnerData data = new NPCSpawnerData(this);
@@ -182,16 +193,9 @@ public class NPCSpawner : MonoBehaviour {
 			int count = data.numNpcs;
 
 			for (int i = 0; i < count; i++) {
-				NPC toSpawn = npcsToSpawn[data.npcIndicies[i]];
-				toSpawn.LoadFromFile(NPC_NAME + i);
-		
-				NPC instance = Instantiate (toSpawn, (Vector2)toSpawn.transform.position, Quaternion.identity) as NPC;
-				instance.SetAgentNav(polyNav);
-				instance.transform.SetParent(transform);
-				instance.name = NPC_NAME + npcs.Count;
+				NPC instance = InstantiateNPC(data.npcIndicies[i], Vector2.zero);
 
-				npcs.Add(instance);
-				npcIndicies.Add(data.npcIndicies[i]);
+				instance.LoadFromData(data.npcDatas[i]);
 			}
 		} else {
 			//Destroy(this);
@@ -203,9 +207,16 @@ public class NPCSpawner : MonoBehaviour {
 public class NPCSpawnerData : GameData {
 	public int numNpcs;
 	public int[] npcIndicies;
+	public NPCData[] npcDatas;
 
 	public NPCSpawnerData(NPCSpawner spawner) {
 		numNpcs = spawner.NumNpcs();
 		npcIndicies = spawner.GetNpcIndicies();
+
+		npcDatas = new NPCData[numNpcs];
+		NPC[] npcs = spawner.GetNpcs();
+		for (int i = 0; i < numNpcs; i++) {
+			npcDatas[i] = new NPCData(npcs[i]);
+		}
 	}
 }
