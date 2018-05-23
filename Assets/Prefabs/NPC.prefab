@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
-  newDestinationDelay: 5
+  newDestinationDelay: 3
   closestDestinationSquared: 1
   destinationRange: 15
 --- !u!114 &114654633985807300

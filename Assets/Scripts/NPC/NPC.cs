@@ -80,9 +80,12 @@ public class NPC : MovingObject {
 		agent.maxSpeed = moveSpeed;
 
 		prevFloor = GetFloor();
-		canSearchForDest = true;
 
 		UpdateSortingLayer();
+	}
+
+	void OnEnable() {
+		canSearchForDest = true;
 	}
 
 	protected override void FixedUpdate() {
