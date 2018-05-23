@@ -1,6 +1,3 @@
-Assets/Sprites/
-Assets/Sprites/items/
-Assets/Sprites/ui/
-Library/ShaderCache/
 
-Temp/
+Assets/Sprites/
+Library/*
