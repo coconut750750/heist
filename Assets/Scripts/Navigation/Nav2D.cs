@@ -271,31 +271,6 @@ public class Nav2D : MonoBehaviour {
 		DeleteSurrounded(alreadyAdded);
 	}
 
-	//mark and delete surrounded nodes
-	void DeleteSurrounded(List<Vector2> addedVectors) {
-		for (int n = 0; n < nodes.Count; n++) {
-			Vector2 left = nodes[n].pos + new Vector2(-1, 0);
-			Vector2 top = nodes[n].pos + new Vector2(0, 1);
-			Vector2 right = nodes[n].pos + new Vector2(1, 0);
-			Vector2 down = nodes[n].pos + new Vector2(0, -1);
-
-			bool leftBlocked = addedVectors.Contains(left) || !PointIsValid(left);
-			bool topBlocked = addedVectors.Contains(top) || !PointIsValid(top);
-			bool rightBlocked = addedVectors.Contains(right) || !PointIsValid(right);
-			bool downBlocked = addedVectors.Contains(down) || !PointIsValid(down);
-
-			nodes[n].surrounded = leftBlocked && topBlocked && rightBlocked && downBlocked;
-		}
-
-		List<PathNode> cleanedNodes = new List<PathNode>();
-		foreach (PathNode p in nodes) {
-			if (!p.surrounded) {
-				cleanedNodes.Add(p);
-			}
-		}
-		nodes = cleanedNodes;
-	}
-
 	//link the nodes provided
 	void LinkNodes(List<PathNode> nodeList) {
 		for (int i = 0; i < nodeList.Count; i++) {
@@ -335,17 +310,6 @@ public class Nav2D : MonoBehaviour {
 		}
 	}
 
-	//deletes nodes with no links
-	void DeleteLoneNodes() {
-		List<PathNode> nonLoneNodes = new List<PathNode>();
-		foreach (PathNode p in nodes) {
-			if (p.links.Count > 0) {
-				nonLoneNodes.Add(p);
-			}
-		}
-		nodes = nonLoneNodes; 
-	}
-
 	//delete links to nodes that were removed
 	void DeleteExternalLinks() {
 		for (int i = 0; i < nodes.Count; i++) {
@@ -357,6 +321,42 @@ public class Nav2D : MonoBehaviour {
 			}
 			nodes[i].links = freshLinks;
 		}
+	}
+
+	// delete nodes that are completely surrounded by other nodes and obstacles
+	// run after creating nodes
+	void DeleteSurrounded(List<Vector2> addedNodeCoords) {
+		List<PathNode> cleanedNodes = new List<PathNode>();
+
+		for (int n = 0; n < nodes.Count; n++) {
+			Vector2 left = nodes[n].pos + new Vector2(-1, 0);
+			Vector2 top = nodes[n].pos + new Vector2(0, 1);
+			Vector2 right = nodes[n].pos + new Vector2(1, 0);
+			Vector2 down = nodes[n].pos + new Vector2(0, -1);
+
+			bool leftBlocked = addedNodeCoords.Contains(left) || !PointIsValid(left);
+			bool topBlocked = addedNodeCoords.Contains(top) || !PointIsValid(top);
+			bool rightBlocked = addedNodeCoords.Contains(right) || !PointIsValid(right);
+			bool downBlocked = addedNodeCoords.Contains(down) || !PointIsValid(down);
+
+			if (!leftBlocked || !topBlocked || !rightBlocked || !downBlocked) {
+				cleanedNodes.Add(nodes[n]);
+			}
+		}
+
+		nodes = cleanedNodes;
+	}
+
+	// deletes nodes with no links
+	// run after linking nodes
+	void DeleteLoneNodes() {
+		List<PathNode> nonLoneNodes = new List<PathNode>();
+		foreach (PathNode p in nodes) {
+			if (p.links.Count > 0) {
+				nonLoneNodes.Add(p);
+			}
+		}
+		nodes = nonLoneNodes; 
 	}
 
 	///Determine if 2 points see each other.
@@ -577,11 +577,8 @@ public class Nav2D : MonoBehaviour {
 		public PathNode parent = null;
 		private int _heapIndex;
 
-		public bool surrounded; // true if node is surrounded (4 sides) by other nodes and colliders
-
 		public PathNode (Vector2 pos) {
 			this.pos = pos;	
-			surrounded = false;
 		}
 
 		public float fCost{
