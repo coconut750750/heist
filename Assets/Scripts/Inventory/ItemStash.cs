@@ -174,8 +174,8 @@ public abstract class ItemStash : MonoBehaviour {
 public class ItemStashData : GameData {
 	public ItemData[] itemData;
 
-	public int count = 0;
-	public int capacity = 0;
+	public int count;
+	public int capacity;
 
 	public ItemStashData(ItemStash stash) {
 		this.count = stash.GetNumItems();
