@@ -27,7 +27,7 @@ public class NPC : MovingObject {
 	public const float BUY_PERC = 0.85f; // buys an item at 85% of the price
 
 	// how long to wait before finding another destination
-	public float newDestinationDelay;
+	public float maxDestinationDelay;
 
 	// closest destination npc will generate
 	public int closestDestinationSquared;
@@ -57,7 +57,7 @@ public class NPC : MovingObject {
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
 		canSearchForDest = false;
-		yield return new WaitForSeconds(newDestinationDelay);
+		yield return new WaitForSeconds(Random.Range(0, maxDestinationDelay));
 		canSearchForDest = true;
 	}
 
