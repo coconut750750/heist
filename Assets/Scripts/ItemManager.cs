@@ -34,6 +34,6 @@ public class ItemManager : MonoBehaviour {
 
 	public Item GetRandomItem() {
 		int size = items.Length;
-		return items[Random.Range(0, size)];
+		return Object.Instantiate(items[Random.Range(0, size)]);
 	}
 }
