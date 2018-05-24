@@ -7,7 +7,10 @@ public class ItemManager : MonoBehaviour {
 
 	public static ItemManager instance = null;
 
-	private Dictionary<string, Item> itemSpriteDic; 
+	private Dictionary<string, Item> itemSpriteDic;
+
+	// Used for random item generator
+	private int totalRand;
 
 	[SerializeField]
 	private Item[] items;
@@ -22,6 +25,8 @@ public class ItemManager : MonoBehaviour {
 		itemSpriteDic = new Dictionary<string, Item>();
 		for (int i = 0; i < items.Length; i++) {
 			itemSpriteDic.Add(items[i].itemName, items[i]);
+
+			totalRand += items[i].chance;
 		}
 	}
 
@@ -33,7 +38,15 @@ public class ItemManager : MonoBehaviour {
 	}
 
 	public Item GetRandomItem() {
-		int size = items.Length;
-		return Object.Instantiate(items[Random.Range(0, size)]);
+		// gets a random item based on each item's probability
+		int rand = Random.Range(0, totalRand);
+        int sum = 0;
+        int i = 0;
+
+        while(sum < rand) {
+             sum = sum + items[i++].chance;
+        }
+
+        return Object.Instantiate(items[Mathf.Max(0, i - 1)]);
 	}
 }
