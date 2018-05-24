@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ItemManager : MonoBehaviour {
 
@@ -25,15 +26,14 @@ public class ItemManager : MonoBehaviour {
 	}
 
 	void Update() {
-		// finished loading items here so delete
-		Delete();
 	}
 
 	public Item GetItem(string name) {
 		return Object.Instantiate(itemSpriteDic[name]);
 	}
 
-	public void Delete() {
-		Destroy(instance);
+	public Item GetRandomItem() {
+		int size = items.Length;
+		return items[Random.Range(0, size)];
 	}
 }
