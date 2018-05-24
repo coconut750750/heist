@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   itemName: Apple
-  sprite: {fileID: 21300000, guid: 6181994a7d3a4495bad6f77ba4e3dc69, type: 3}
   quality: 100
+  sprite: {fileID: 21300000, guid: 6181994a7d3a4495bad6f77ba4e3dc69, type: 3}
   price: 5
+  chance: 100
