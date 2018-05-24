@@ -104,6 +104,12 @@ public abstract class ItemStash : MonoBehaviour {
 		}
 	}
 
+	public void RemoveAll() {
+		for (int i = 0; i < capacity; i++) {
+			RemoveItemAtIndex(i);
+		}
+	}
+
 	public void SwapItemPositions(int index1, int index2) {
 		Item temp = items[index1];
 		items[index1] = items[index2];
@@ -168,8 +174,8 @@ public abstract class ItemStash : MonoBehaviour {
 public class ItemStashData : GameData {
 	public ItemData[] itemData;
 
-	public int count = 0;
-	public int capacity = 0;
+	public int count;
+	public int capacity;
 
 	public ItemStashData(ItemStash stash) {
 		this.count = stash.GetNumItems();

@@ -82,10 +82,21 @@ public class NPC : MovingObject {
 		prevFloor = GetFloor();
 
 		UpdateSortingLayer();
+
+		if (isActiveAndEnabled) {
+			// need to populate when first started
+			PopulateInventory();
+		}
+		
 	}
 
 	void OnEnable() {
 		canSearchForDest = true;
+
+		if (inventory.GetCapacity() > 0) {
+			// need to populate when enabled, but not before start()
+			PopulateInventory();
+		}
 	}
 
 	protected override void FixedUpdate() {
@@ -132,6 +143,48 @@ public class NPC : MovingObject {
 		return new Vector2(x, y);
 	}
 
+	protected void NavStarted() {
+		isMoving = true;
+	}
+
+	// if npc lands on stairs, it will either go up a floor or down a floor
+	protected void NavArrived() {
+		isMoving = false;
+		StartCoroutine(ArriveDelay());
+
+		if (GetFloor() != prevFloor) {
+			prevFloor = GetFloor();
+			if (prevFloor == 1) {
+				SetAgentNav(GameManager.instance.groundNav);
+			} else if (prevFloor == 2) {
+				SetAgentNav(GameManager.instance.floor2Nav);
+			}
+		}
+	}
+
+	protected void DestinationInvalid() {
+		isMoving = false;
+	}
+
+	void PopulateInventory() {
+		int num = Random.Range(0, inventory.GetCapacity());
+		Debug.Log(num);
+		Debug.Log(inventory.GetNumItems());
+
+		for (int i = 0; i < num; i++) {
+			inventory.AddItem(ItemManager.instance.GetRandomItem());
+			Debug.Log("added item for " + gameObject.name);
+		}
+	}
+
+	public override void Save()
+    {
+		if (independent) {
+			NPCData data = new NPCData(this);
+			GameManager.Save(data, base.filename);
+		}
+    }
+
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
 	}
@@ -168,41 +221,7 @@ public class NPC : MovingObject {
 		this.independent = independent;
 	}
 
-	protected void NavStarted() {
-		Debug.Log("started");
-		isMoving = true;
-	}
-
-	// if npc lands on stairs, it will either go up a floor or down a floor
-	protected void NavArrived() {
-		Debug.Log("arrived");
-		isMoving = false;
-		StartCoroutine(ArriveDelay());
-
-		if (GetFloor() != prevFloor) {
-			prevFloor = GetFloor();
-			if (prevFloor == 1) {
-				SetAgentNav(GameManager.instance.groundNav);
-			} else if (prevFloor == 2) {
-				SetAgentNav(GameManager.instance.floor2Nav);
-			}
-		}
-	}
-
-	protected void DestinationInvalid() {
-		Debug.Log("invalid dest");
-		isMoving = false;
-	}
-
-	public override void Save()
-    {
-		if (independent) {
-			NPCData data = new NPCData(this);
-			GameManager.Save(data, base.filename);
-		}
-    }
-
-    public override void Load()
+   public override void Load()
     {
 		// dont need to check for independence because if npc is not independent,
 		// the game object won't exist when game starts
