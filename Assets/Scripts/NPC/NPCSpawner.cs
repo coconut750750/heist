@@ -25,11 +25,11 @@ public class NPCSpawner : MonoBehaviour {
 
 	private const string NPC_NAME = "NPC-";
 
-	public const int PEAK_MAX = 25;
-	public const int PEAK_MIN = 20;
+	public const int PEAK_MAX = 1;
+	public const int PEAK_MIN = 1;
 
-	public const int BASE_MAX = 7;
-	public const int BASE_MIN = 5;
+	public const int BASE_MAX = 0;
+	public const int BASE_MIN = 0;
 
 	public const int START_PEAK_HOUR = 9;
 	public const int END_PEAK_HOUR = 17;
@@ -112,7 +112,7 @@ public class NPCSpawner : MonoBehaviour {
 			return;
 		}
 
-		npc.gameObject.SetActive(true);
+		npc.Spawn();
 		npcAwake[npcIndex] = true;
 		numAwake++;
 	}
@@ -128,6 +128,8 @@ public class NPCSpawner : MonoBehaviour {
 		npcIndicies.Add(index);
 		npcAwake.Add(true);
 		numAwake++;
+
+		instance.Spawn();
 
 		return instance;
 	}

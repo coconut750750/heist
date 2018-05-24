@@ -81,22 +81,16 @@ public class NPC : MovingObject {
 
 		prevFloor = GetFloor();
 
-		UpdateSortingLayer();
-
-		if (isActiveAndEnabled) {
-			// need to populate when first started
-			PopulateInventory();
-		}
-		
+		UpdateSortingLayer();		
 	}
 
 	void OnEnable() {
 		canSearchForDest = true;
+	}
 
-		if (inventory.GetCapacity() > 0) {
-			// need to populate when enabled, but not before start()
-			PopulateInventory();
-		}
+	public void Spawn() {
+		RefreshInventory();
+		gameObject.SetActive(true);
 	}
 
 	protected override void FixedUpdate() {
@@ -168,13 +162,15 @@ public class NPC : MovingObject {
 
 	void PopulateInventory() {
 		int num = Random.Range(0, inventory.GetCapacity());
-		Debug.Log(num);
-		Debug.Log(inventory.GetNumItems());
 
 		for (int i = 0; i < num; i++) {
 			inventory.AddItem(ItemManager.instance.GetRandomItem());
-			Debug.Log("added item for " + gameObject.name);
 		}
+	}
+
+	void RefreshInventory() {
+		inventory.RemoveAll();
+		PopulateInventory();
 	}
 
 	public override void Save()
