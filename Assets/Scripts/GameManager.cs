@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour {
 	private int minute;
 	private int second;
 	private float lastChange = 0f;
-	private const float CHANGE_RATE_SECS = 0.5f; // in seconds
+	private const float CHANGE_RATE_SECS = 0.005f; // in seconds
 	public Text timeText;
 
 	private bool isPaused;
