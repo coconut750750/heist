@@ -104,6 +104,12 @@ public abstract class ItemStash : MonoBehaviour {
 		}
 	}
 
+	public void RemoveAll() {
+		for (int i = 0; i < capacity; i++) {
+			RemoveItemAtIndex(i);
+		}
+	}
+
 	public void SwapItemPositions(int index1, int index2) {
 		Item temp = items[index1];
 		items[index1] = items[index2];
