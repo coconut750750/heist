@@ -5,3 +5,5 @@ Builds/*
 Temp/*
 
 Library/
+
+*.csproj
