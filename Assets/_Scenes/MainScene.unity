@@ -81733,10 +81733,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   polyNav: {fileID: 1937691461}
-  npcPrefab: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
-    type: 2}
-  npcAnimators:
-  - {fileID: 9100000, guid: e63c198b28922411382ae8fa881d4457, type: 2}
   npcSize: 1
   spawnRange: 20
   alterDelay: 3
@@ -81853,6 +81849,22 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 429847293}
   m_Script: {fileID: 11500000, guid: 94edc6001a1844177ba3c1eab47e860e, type: 3}
+--- !u!114 &1610415460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1610415457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a810438dbe44b599045b1feb67988d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcPrefab: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
+    type: 2}
+  npcAnimators:
+  - {fileID: 9100000, guid: e63c198b28922411382ae8fa881d4457, type: 2}
+  npcTypes: 0
 --- !u!1001 &1610999350
 Prefab:
   m_ObjectHideFlags: 0
