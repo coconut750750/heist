@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private Camera mainCamera;
 
+	[SerializeField]
+	public Canvas canvas;
+
 	public Nav2D groundNav;
 	public Nav2D floor2Nav;
 
@@ -33,7 +36,7 @@ public class GameManager : MonoBehaviour {
 	private int minute;
 	private int second;
 	private float lastChange = 0f;
-	private const float CHANGE_RATE_SECS = 0.005f; // in seconds
+	private const float CHANGE_RATE_SECS = 0.5f; // in seconds
 	public Text timeText;
 
 	private bool isPaused;

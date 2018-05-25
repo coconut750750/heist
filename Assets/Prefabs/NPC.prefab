@@ -41,7 +41,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1928241464923502}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 11, y: 11, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -101,7 +101,7 @@ Animator:
   m_GameObject: {fileID: 1928241464923502}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e63c198b28922411382ae8fa881d4457, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -120,6 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6099e3f52ce24c9292579e4f98472ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverNameText: {fileID: 1980335926935052, guid: 4d054bcc8916a4aca9be301cf609f4f5,
+    type: 2}
 --- !u!114 &114431858986268764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -131,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71fd5d6e4c676477486f62ee22ff36ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 0.5
   maxDestinationDelay: 5
   closestDestinationSquared: 1
   destinationRange: 15

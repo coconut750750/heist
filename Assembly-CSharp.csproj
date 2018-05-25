@@ -51,8 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CameraController.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Dynamic\MovingObject.cs" />
+     <Compile Include="Assets\Scripts\Dynamic\NPC\NPC.cs" />
+     <Compile Include="Assets\Scripts\Dynamic\NPC\NPCSpawner.cs" />
+     <Compile Include="Assets\Scripts\Dynamic\Player.cs" />
      <Compile Include="Assets\Scripts\Interactables\Desk.cs" />
      <Compile Include="Assets\Scripts\Interactables\Door.cs" />
      <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
@@ -67,10 +69,12 @@
      <Compile Include="Assets\Scripts\Inventory\SingletonStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\StashDisplayer.cs" />
      <Compile Include="Assets\Scripts\Inventory\TradingStash.cs" />
-     <Compile Include="Assets\Scripts\ItemManager.cs" />
      <Compile Include="Assets\Scripts\Items\Item.cs" />
-     <Compile Include="Assets\Scripts\LightingController.cs" />
-     <Compile Include="Assets\Scripts\MovingObject.cs" />
+     <Compile Include="Assets\Scripts\Managers\CameraController.cs" />
+     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\ItemManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\LightingController.cs" />
+     <Compile Include="Assets\Scripts\Managers\NPCManager.cs" />
      <Compile Include="Assets\Scripts\Navigation\AStar.cs" />
      <Compile Include="Assets\Scripts\Navigation\Heap.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2D.cs" />
@@ -78,10 +82,6 @@
      <Compile Include="Assets\Scripts\Navigation\Nav2DCompObstacle.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DInspector.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DObstacle.cs" />
-     <Compile Include="Assets\Scripts\NPC\NPC.cs" />
-     <Compile Include="Assets\Scripts\NPC\NPCSpawner.cs" />
-     <Compile Include="Assets\Scripts\Player.cs" />
-     <Compile Include="Assets\Scripts\PrefabBrush.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RoadMarkerTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\ShadowTile.cs" />
