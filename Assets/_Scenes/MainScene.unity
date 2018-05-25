@@ -41637,8 +41637,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1011646331}
-  - {fileID: 1079095670}
   - {fileID: 1685586798}
+  - {fileID: 1079095670}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -62475,6 +62475,15 @@ Prefab:
       propertyPath: polyNav
       value: 
       objectReference: {fileID: 1937691461}
+    - target: {fileID: 95697019048126960, guid: b5324eb211a224545b2ba8792862873f,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928241464923502, guid: b5324eb211a224545b2ba8792862873f, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b5324eb211a224545b2ba8792862873f, type: 2}
   m_IsPrefabParent: 0
@@ -81711,7 +81720,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1584607320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81724,8 +81733,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   polyNav: {fileID: 1937691461}
-  npcsToSpawn:
-  - {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f, type: 2}
+  npcPrefab: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
+    type: 2}
+  npcAnimators:
+  - {fileID: 9100000, guid: e63c198b28922411382ae8fa881d4457, type: 2}
   npcSize: 1
   spawnRange: 20
   alterDelay: 3
@@ -82675,7 +82686,7 @@ RectTransform:
   - {fileID: 883915696}
   - {fileID: 312024168}
   m_Father: {fileID: 363386101}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}

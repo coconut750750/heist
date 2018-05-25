@@ -39,7 +39,8 @@ public class NPCSpawner : MonoBehaviour {
 
 	public Nav2D polyNav;
 
-	public NPC[] npcsToSpawn;
+	public NPC npcPrefab;
+	public RuntimeAnimatorController[] npcAnimators;
 
 	private List<NPC> npcs;
 	private List<int> npcIndicies;
@@ -118,9 +119,10 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	NPC InstantiateNPC(int index, Vector2 pos) {		
-		NPC instance = Instantiate (npcsToSpawn[index], (Vector2)pos, Quaternion.identity) as NPC;
+		NPC instance = Instantiate (npcPrefab, (Vector2)pos, Quaternion.identity) as NPC;
 		instance.SetAgentNav(polyNav);
 		instance.transform.SetParent(transform);
+		instance.GetComponent<Animator>().runtimeAnimatorController = npcAnimators[index];
 		instance.name = NPC_NAME + npcs.Count;
 		instance.SetIndependent(false);
 
@@ -145,7 +147,7 @@ public class NPCSpawner : MonoBehaviour {
 		}
 		
 		if (npcs.Count <= PEAK_MAX) {
-			InstantiateNPC(Random.Range(0, npcsToSpawn.Length), (Vector2)pos);
+			InstantiateNPC(Random.Range(0, npcAnimators.Length), (Vector2)pos);
 			StartCoroutine(AlterDelay());
 		} else {
 			int npcIndex = Random.Range(0, npcAwake.Count);
