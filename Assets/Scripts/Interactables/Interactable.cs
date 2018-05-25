@@ -34,6 +34,7 @@ public abstract class Interactable : MonoBehaviour {
 		
 	}
 
+    // when another "thing" enters the trigger area
     protected void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag(PLAYER_TAG))
@@ -42,14 +43,17 @@ public abstract class Interactable : MonoBehaviour {
                 buttonA.Enable();
             }
             PlayerInteract(player);
+            EnterRange(player);
         }
     }
 
+    // when "thing" exits the trigger area
     protected void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
             PlayerLeave(player);
+            ExitRange(player);
             
             if (buttonA.IsInteractable() && buttonA.GetListeners() == 0) {
                 buttonA.Disable();
@@ -57,6 +61,7 @@ public abstract class Interactable : MonoBehaviour {
         }
     }
 
+    // enable the button to be interactable with the new method
     public void PlayerInteract(Player player) {
         call = delegate {
             Interact(player);
@@ -70,6 +75,7 @@ public abstract class Interactable : MonoBehaviour {
         Interactable.buttonA.AddListener(call);
     }
 
+    // resets the button so it is cleared the next time "thing" enters
     public void PlayerLeave(Player player) {
         if (!alreadyRemoved) {
             Interactable.buttonA.RemoveListener(call);
@@ -80,5 +86,12 @@ public abstract class Interactable : MonoBehaviour {
         call = null;
     }
 
+    // called when player is in trigger area
+    public abstract void EnterRange(Player player);
+
+    // called when player leaves trigger area
+    public abstract void ExitRange(Player player);
+
+    // called when button is pressed
     public abstract void Interact(Player player);
 }

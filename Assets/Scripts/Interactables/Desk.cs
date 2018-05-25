@@ -18,4 +18,12 @@ public class Desk : Interactable {
 
         GameManager.instance.stashDisplayer.DisplayInventory(items);
     }
+
+    public override void EnterRange(Player player)
+    {
+    }
+
+    public override void ExitRange(Player player)
+    {
+    }
 }
