@@ -101,7 +101,7 @@ Animator:
   m_GameObject: {fileID: 1928241464923502}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e63c198b28922411382ae8fa881d4457, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -122,6 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverNameText: {fileID: 1980335926935052, guid: 4d054bcc8916a4aca9be301cf609f4f5,
     type: 2}
+  speechBubble: {fileID: 0}
 --- !u!114 &114431858986268764
 MonoBehaviour:
   m_ObjectHideFlags: 1
