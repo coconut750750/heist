@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class NPCInteractable : Interactable {
 
     public GameObject hoverNameText;
-    private GameObject hoverTextInstance = null;
-    private Vector3 NAME_OFFSET = new Vector3(0, 0.75f, 0); // In game tile space, not pixel space
+    private HoverName hoverTextInstance = null;
 
     public GameObject speechBubble;
     private GameObject speechBubbleInstance = null;
@@ -22,12 +21,11 @@ public class NPCInteractable : Interactable {
 
     void Update () {
         if (hoverTextInstance != null) {
-            hoverTextInstance.transform.position = Camera.main.WorldToScreenPoint(
-                                                gameObject.transform.position + NAME_OFFSET);
+            hoverTextInstance.UpdatePosition(gameObject.transform.position);
         }
         if (speechBubbleInstance != null) {
             speechBubbleInstance.transform.position = Camera.main.WorldToScreenPoint(
-                                                gameObject.transform.position + NAME_OFFSET);
+                                                gameObject.transform.position);
         }
     }
 	
@@ -44,15 +42,15 @@ public class NPCInteractable : Interactable {
 
     public override void EnterRange(Player player)
     {
-        hoverTextInstance = Instantiate(hoverNameText);
+        GameObject instance = Instantiate(hoverNameText);
+        hoverTextInstance = instance.GetComponent<HoverName>();
+        hoverTextInstance.Display(GetComponent<NPC>().GetName(),GameManager.instance.canvas.transform);
     
-        hoverTextInstance.GetComponentInChildren<Text>().text = GetComponent<NPC>().GetName();
-        hoverTextInstance.transform.SetParent(GameManager.instance.canvas.transform, false);
     }
 
     public override void ExitRange(Player player)
     {
-        Destroy(hoverTextInstance);
+        hoverTextInstance.Destroy();
         hoverTextInstance = null;
     }
 }

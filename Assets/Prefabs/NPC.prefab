@@ -122,7 +122,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverNameText: {fileID: 1980335926935052, guid: 4d054bcc8916a4aca9be301cf609f4f5,
     type: 2}
-  speechBubble: {fileID: 0}
+  speechBubble: {fileID: 1899993529761884, guid: 6a2019d4eb49d4ee5a40466746892b22,
+    type: 2}
 --- !u!114 &114431858986268764
 MonoBehaviour:
   m_ObjectHideFlags: 1

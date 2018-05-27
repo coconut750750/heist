@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114586051296728564}
   - component: {fileID: 114698790889243764}
   - component: {fileID: 114917346333584086}
+  - component: {fileID: 114945796267849422}
   m_Layer: 5
   m_Name: HoverNameText
   m_TagString: Untagged
@@ -171,6 +172,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &114945796267849422
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1980335926935052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c202d0228ed56474ca6e17a11740881b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &222229065083052834
 CanvasRenderer:
   m_ObjectHideFlags: 1
