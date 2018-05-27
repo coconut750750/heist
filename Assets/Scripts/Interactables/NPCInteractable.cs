@@ -25,7 +25,7 @@ public class NPCInteractable : Interactable {
     }
 	
 	public override void Interact(Player player) {
-        GameManager.instance.npcDisplayer.Display(npcObject);
+        //GameManager.instance.npcDisplayer.Display(npcObject);
     }
 
     public override void EnterRange(Player player)
