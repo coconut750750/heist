@@ -120,9 +120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6099e3f52ce24c9292579e4f98472ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverNameText: {fileID: 1980335926935052, guid: 4d054bcc8916a4aca9be301cf609f4f5,
+  hoverNameText: {fileID: 114945796267849422, guid: 4d054bcc8916a4aca9be301cf609f4f5,
     type: 2}
-  speechBubble: {fileID: 1899993529761884, guid: 6a2019d4eb49d4ee5a40466746892b22,
+  speechBubble: {fileID: 114670406659044544, guid: 6a2019d4eb49d4ee5a40466746892b22,
+    type: 2}
+  npcOptions: {fileID: 114247933864861212, guid: 6c5b5deec783847f39f04761488e3851,
     type: 2}
 --- !u!114 &114431858986268764
 MonoBehaviour:

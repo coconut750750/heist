@@ -12,17 +12,23 @@ using UnityEngine.UI;
 /// </summary>  
 public class NPCInteractable : Interactable {
 
-    public GameObject hoverNameText;
+    public HoverName hoverNameText;
     private HoverName hoverTextInstance = null;
 
-    public GameObject speechBubble;
+    public SpeechBubble speechBubble;
     private SpeechBubble speechBubbleInstance = null;
 
+    public NPCOptions npcOptions;
+    private NPCOptions npcOptionsInstance = null;
+
 	private NPC npcObject;
+
+    private bool interacted;
 
     // Use this for initialization
     void Start () {
 		npcObject = gameObject.GetComponent<NPC>();
+        interacted = false;
 	}
 
     void Update () {
@@ -32,21 +38,27 @@ public class NPCInteractable : Interactable {
         if (speechBubbleInstance != null) {
             speechBubbleInstance.UpdatePosition(gameObject.transform.position);
         }
+        if (npcOptionsInstance != null) {
+            npcOptionsInstance.UpdatePosition(gameObject.transform.position);
+        }
     }
 	
 	public override void Interact(Player player) {
-        // open inventory
-        // GameManager.instance.npcDisplayer.Display(npcObject);
-
         // greet player
         npcObject.Pause();
 
-        if (speechBubbleInstance == null) {
-            GameObject instance = Instantiate(speechBubble);
-            speechBubbleInstance = instance.GetComponent<SpeechBubble>();
+        if (!interacted) {
+            speechBubbleInstance = Instantiate(speechBubble);
+            speechBubbleInstance.Display(GameManager.instance.canvas.transform);
+
+            npcOptionsInstance = Instantiate(npcOptions);
+            npcOptionsInstance.Display(GameManager.instance.canvas.transform);
+            npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
+
+            interacted = true;
         }
 
-        speechBubbleInstance.Display(npcObject.Greet(), GameManager.instance.canvas.transform);
+        speechBubbleInstance.UpdateText(npcObject.Greet());
 
         if (hoverTextInstance != null) {
             hoverTextInstance.Destroy();
@@ -58,19 +70,34 @@ public class NPCInteractable : Interactable {
         if (speechBubbleInstance != null) {
             return;
         }
-        GameObject instance = Instantiate(hoverNameText);
 
-        hoverTextInstance = instance.GetComponent<HoverName>();
+        hoverTextInstance = Instantiate(hoverNameText);
         hoverTextInstance.Display(npcObject.GetName(), GameManager.instance.canvas.transform);
     }
 
     public override void ExitRange(Player player)
     {
-        if (speechBubbleInstance != null) {
+        if (interacted) {
             speechBubbleInstance.Destroy();
+            speechBubbleInstance = null;
+            npcOptionsInstance.Destroy();
+
             npcObject.Resume();
+            interacted = false;
         } else {
             hoverTextInstance.Destroy();
         }
+    }
+
+    public void ShowInventory() {
+        GameManager.instance.npcDisplayer.Display(npcObject);
+    }
+
+    public void ShowQuest() {
+
+    }
+
+    public void ShowInfo() {
+
     }
 }

@@ -9,33 +9,45 @@ using UnityEngine.UI;
 ///
 /// 	SAVING AND LOADING: None
 /// </summary>  
-public class SpeechBubble : MonoBehaviour {
+public class SpeechBubble : PopUp {
 
 	// In game tile space, not pixel space
-	// will set X offset later
-	private Vector3 speechOffset = new Vector3(-0.25f, 0.5f, 0);
+	private static Vector3 speechOffset = new Vector3(-0.25f, 0.5f, 0);
 	private bool startFade = false;
-	private float durationToDisappear = 5f;
+	private float DURATION_TO_DISAPPEAR = 5f;
+	private float durationToDisappear;
+	private Vector3 finalPos;
+	private float startAlpha;
 
-	public void Display(string speech, Transform parent) {
-		GetComponentInChildren<Text>().text = speech;
-        transform.SetParent(parent, false);
+    public SpeechBubble() : base(speechOffset)
+    {
+		durationToDisappear = DURATION_TO_DISAPPEAR;
+    }
+
+	void Start() {
+		startAlpha = GetComponent<Image>().color.a;
 	}
 
-	public void UpdatePosition(Vector3 rootPosition) {
-		transform.position = Camera.main.WorldToScreenPoint(rootPosition + speechOffset);
+	public void UpdateText(string speech) {
+		GetComponentInChildren<Text>().text = speech;
 	}
 
 	void Update() {
 		if (startFade) {
+			UpdatePosition(finalPos);
+
 			durationToDisappear -= Time.fixedDeltaTime;
+
+			GetComponent<Image>().color = new Color(1f, 1f, 1f, startAlpha * durationToDisappear / DURATION_TO_DISAPPEAR);
+			GetComponentInChildren<Text>().color = new Color(0, 0, 0, durationToDisappear / DURATION_TO_DISAPPEAR);
 			if (durationToDisappear <= 0) {
 				Destroy(gameObject);
 			}
 		}
 	}
 
-	public void Destroy() {
+	public override void Destroy() {
 		startFade = true;
+		finalPos = Camera.main.ScreenToWorldPoint(transform.position) - speechOffset;
 	}
 }
