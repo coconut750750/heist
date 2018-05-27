@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>  
+///		This is the NPCInteractable class.
+/// 	When players come into range with an NPC, a hover name object appears.
+///     When players interact with an NPC, a speech bubble object appears that hides the hover name.
+///     Only one pop up can be visible at a time.
+/// 	SAVING AND LOADING: None
+/// </summary>  
 public class NPCInteractable : Interactable {
 
     public GameObject hoverNameText;
@@ -32,29 +39,38 @@ public class NPCInteractable : Interactable {
         // GameManager.instance.npcDisplayer.Display(npcObject);
 
         // greet player
-        GetComponent<NPC>().Pause();
-        GameObject instance = Instantiate(speechBubble);
+        npcObject.Pause();
 
-        speechBubbleInstance = instance.GetComponent<SpeechBubble>();
-        speechBubbleInstance.Display(GetComponent<NPC>().Greet(), GameManager.instance.canvas.transform);
+        if (speechBubbleInstance == null) {
+            GameObject instance = Instantiate(speechBubble);
+            speechBubbleInstance = instance.GetComponent<SpeechBubble>();
+        }
+
+        speechBubbleInstance.Display(npcObject.Greet(), GameManager.instance.canvas.transform);
+
+        if (hoverTextInstance != null) {
+            hoverTextInstance.Destroy();
+        }
     }
 
     public override void EnterRange(Player player)
     {
+        if (speechBubbleInstance != null) {
+            return;
+        }
         GameObject instance = Instantiate(hoverNameText);
 
         hoverTextInstance = instance.GetComponent<HoverName>();
-        hoverTextInstance.Display(GetComponent<NPC>().GetName(), GameManager.instance.canvas.transform);
+        hoverTextInstance.Display(npcObject.GetName(), GameManager.instance.canvas.transform);
     }
 
     public override void ExitRange(Player player)
     {
-        hoverTextInstance.Destroy();
-        hoverTextInstance = null;
-
         if (speechBubbleInstance != null) {
             speechBubbleInstance.Destroy();
-            GetComponent<NPC>().Resume();
+            npcObject.Resume();
+        } else {
+            hoverTextInstance.Destroy();
         }
     }
 }

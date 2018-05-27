@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>  
+///		This is the SpeechBubble class.
+/// 	Pops up when players interact with an NPC. Will cover the hover name object.
+///
+/// 	SAVING AND LOADING: None
+/// </summary>  
 public class SpeechBubble : MonoBehaviour {
 
 	// In game tile space, not pixel space
 	// will set X offset later
-	private Vector3 speechOffset = new Vector3(0f, 0.5f, 0);
+	private Vector3 speechOffset = new Vector3(-0.25f, 0.5f, 0);
 	private bool startFade = false;
 	private float durationToDisappear = 5f;
 
