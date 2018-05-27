@@ -25,6 +25,7 @@ public class NPCInteractable : Interactable {
     }
 	
 	public override void Interact(Player player) {
+        // open inventory
         GameManager.instance.npcDisplayer.Display(npcObject);
     }
 
