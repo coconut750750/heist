@@ -139,7 +139,7 @@ public class NPC : MovingObject {
 
 	public string Greet() {
 		// TODO: change greetings randomly and depending on npc's opinion of player
-		return "Hello there!";
+		return "Hello there!!!!!!!!!!";
 	}
 
 	protected void NavStarted() {

@@ -139,6 +139,14 @@ public abstract class MovingObject : MonoBehaviour {
 		return floor + 1;
 	}
 
+	public void Pause() {
+		paused = true;
+	}
+
+	public void Resume() {
+		paused = false;
+	}
+
 	public bool IsPaused() {
 		return paused;
 	}

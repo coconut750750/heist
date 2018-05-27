@@ -9,8 +9,7 @@ public class NPCInteractable : Interactable {
     private HoverName hoverTextInstance = null;
 
     public GameObject speechBubble;
-    private GameObject speechBubbleInstance = null;
-    private Vector3 SPEECH_OFFSET = new Vector3(0, 0, 0);
+    private SpeechBubble speechBubbleInstance = null;
 
 	private NPC npcObject;
 
@@ -24,8 +23,7 @@ public class NPCInteractable : Interactable {
             hoverTextInstance.UpdatePosition(gameObject.transform.position);
         }
         if (speechBubbleInstance != null) {
-            speechBubbleInstance.transform.position = Camera.main.WorldToScreenPoint(
-                                                gameObject.transform.position);
+            speechBubbleInstance.UpdatePosition(gameObject.transform.position);
         }
     }
 	
@@ -34,23 +32,29 @@ public class NPCInteractable : Interactable {
         // GameManager.instance.npcDisplayer.Display(npcObject);
 
         // greet player
-        speechBubbleInstance = Instantiate(speechBubble);
+        GetComponent<NPC>().Pause();
+        GameObject instance = Instantiate(speechBubble);
 
-        speechBubbleInstance.GetComponentInChildren<Text>().text = GetComponent<NPC>().Greet();
-        speechBubbleInstance.transform.SetParent(GameManager.instance.canvas.transform, false);
+        speechBubbleInstance = instance.GetComponent<SpeechBubble>();
+        speechBubbleInstance.Display(GetComponent<NPC>().Greet(), GameManager.instance.canvas.transform);
     }
 
     public override void EnterRange(Player player)
     {
         GameObject instance = Instantiate(hoverNameText);
+
         hoverTextInstance = instance.GetComponent<HoverName>();
-        hoverTextInstance.Display(GetComponent<NPC>().GetName(),GameManager.instance.canvas.transform);
-    
+        hoverTextInstance.Display(GetComponent<NPC>().GetName(), GameManager.instance.canvas.transform);
     }
 
     public override void ExitRange(Player player)
     {
         hoverTextInstance.Destroy();
         hoverTextInstance = null;
+
+        if (speechBubbleInstance != null) {
+            speechBubbleInstance.Destroy();
+            GetComponent<NPC>().Resume();
+        }
     }
 }
