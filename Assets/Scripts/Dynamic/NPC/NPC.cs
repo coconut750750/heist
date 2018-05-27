@@ -137,6 +137,11 @@ public class NPC : MovingObject {
 		return new Vector2(x, y);
 	}
 
+	public string Greet() {
+		// TODO: change greetings randomly and depending on npc's opinion of player
+		return "Hello there";
+	}
+
 	protected void NavStarted() {
 		isMoving = true;
 	}
