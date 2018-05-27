@@ -8,7 +8,7 @@ public abstract class Interactable : MonoBehaviour {
 
     protected static bool alreadyRemoved;
 
-    protected static ButtonA buttonA;
+    protected static ActionButton buttonA;
     private const string BUTTON_A_TAG = "ButtonA";
 
     protected static Player player;
@@ -20,7 +20,7 @@ public abstract class Interactable : MonoBehaviour {
 	void Awake () {
         if (buttonA == null) {
             GameObject buttonObj = GameObject.Find(BUTTON_A_TAG);
-            buttonA = buttonObj.GetComponent<ButtonA>();
+            buttonA = buttonObj.GetComponent<ActionButton>();
             buttonA.Disable();
         }
         if (player == null) {

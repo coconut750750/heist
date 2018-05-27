@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class ButtonA : Button {
+public class ActionButton : Button {
 
 	private int listeners = 0;
 
