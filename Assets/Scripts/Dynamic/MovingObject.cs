@@ -13,7 +13,7 @@ public abstract class MovingObject : MonoBehaviour {
 
 	private const float DOOR_DELAY_SECONDS = 0.02f;
 
-	private const string STAIRS_TAG = "Stairs";
+	public const string STAIRS_TAG = "Stairs";
 	protected int onStairs = 0;
 
 	protected int floor = 0;
@@ -89,6 +89,13 @@ public abstract class MovingObject : MonoBehaviour {
 		}
 
 		AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+		if (stateInfo.fullPathHash != forwardStateHash &&
+			stateInfo.fullPathHash != backStateHash &&
+			stateInfo.fullPathHash != leftStateHash &&
+			stateInfo.fullPathHash != rightStateHash) {
+				return;
+			}
 
 		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
 			if (movement.y <= 0) {

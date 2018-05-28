@@ -73,12 +73,18 @@ public class Player : MovingObject {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		if (GetFloor () == 1) {
-			GameManager.instance.HideFloor2();
-		} else if (GetFloor () == 2) {
-			GameManager.instance.ShowFloor2();
+		if (other.gameObject.CompareTag(MovingObject.STAIRS_TAG)) {
+			if (GetFloor () == 1) {
+				GameManager.instance.HideFloor2();
+			} else if (GetFloor () == 2) {
+				GameManager.instance.ShowFloor2();
+			}
+		} else if (other.gameObject.CompareTag(NPC_TAG)) {
+			Debug.Log("herlloo");
 		}
+		
 
+		// TODO: remove
 		money += 10;
 		UpdateInfo(); 
 	}
