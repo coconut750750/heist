@@ -29,6 +29,7 @@ public abstract class MovingObject : MonoBehaviour {
 	private int backHash = Animator.StringToHash("Back");
 	private int leftHash = Animator.StringToHash("Left");
 	private int rightHash = Animator.StringToHash("Right");
+	private int punchHash = Animator.StringToHash("Punch");
 
 	protected Animator animator;
 
@@ -110,6 +111,10 @@ public abstract class MovingObject : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void Punch() {
+		animator.SetTrigger(punchHash);
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
