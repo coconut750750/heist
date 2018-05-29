@@ -26,7 +26,10 @@ public abstract class Interactable : MonoBehaviour {
         if (player == null) {
             player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
         }
-        currentInteractables = new Stack<Interactable>();
+
+        if (currentInteractables == null) {
+            currentInteractables = new Stack<Interactable>();
+        }
 	}
 
 	// Update is called once per frame
