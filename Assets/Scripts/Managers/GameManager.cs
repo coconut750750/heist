@@ -22,10 +22,10 @@ public class GameManager : MonoBehaviour {
 	public NPCUI npcDisplayer;
 
 	[SerializeField]
-	private Camera mainCamera;
-
-	[SerializeField]
 	public Canvas canvas;
+
+	private GameObject groundFloor;
+	private GameObject floor2;
 
 	public Nav2D groundNav;
 	public Nav2D floor2Nav;
@@ -60,8 +60,9 @@ public class GameManager : MonoBehaviour {
 
 	void InitGame() {
 		Debug.Log("Game Started");
-		Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Ground"), LayerMask.NameToLayer("Floor2"), true);
-		HideFloor2();
+
+		groundFloor = GameObject.Find("GroundFloor");
+		floor2 = GameObject.Find("SecondFloor");
 	}
 
 	#if UNITY_EDITOR || UNITY_STANDALONE
@@ -132,12 +133,21 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowFloor2() {
-		mainCamera.cullingMask = -1;
+		floor2.SetActive(true);
+		SetGroundFloor(false);
 	}
 
 	public void HideFloor2() {
-		mainCamera.cullingMask = -1 ^ 1 << LayerMask.NameToLayer("Floor2");
+		SetGroundFloor(true);
+		floor2.SetActive(false);
 	}
+
+	public void SetGroundFloor (bool active) {
+    	foreach (Collider2D c in groundFloor.GetComponentsInChildren<Collider2D>()) {
+        	c.enabled = active;
+    	}
+	}
+
 
 	public Rect GetCurrentPlayerRange(int range) {
 		Rect rect = new Rect();

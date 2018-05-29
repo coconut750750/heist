@@ -131,7 +131,7 @@ public abstract class MovingObject : MonoBehaviour {
 
 				transform.position = new Vector3 (transform.position.x, transform.position.y, 
 					0 - (float)floor / 10);
-				gameObject.layer = 17 - gameObject.layer;
+
 				onStairs += 2;
 			}
 		}
