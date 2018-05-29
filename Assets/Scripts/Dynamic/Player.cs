@@ -71,6 +71,30 @@ public class Player : MovingObject {
 		Move(movement.normalized);
 	}
 
+	public override void Punch() {
+		Vector3 direction = Vector2.zero;
+
+		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+		if (stateHash == forwardStateHash) {
+			direction = Vector2.down;
+		} else if (stateHash == backStateHash) {
+			direction = Vector2.up;
+		} else if (stateHash == leftStateHash) {
+			direction = Vector2.left;
+		} else if (stateHash == rightStateHash) {
+			direction = Vector2.right;
+		}
+
+		if (direction.sqrMagnitude != 0) {
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f, 1024);
+			if (hit.collider != null && hit.collider.CompareTag(NPC_TAG)) {
+				Debug.Log(hit.collider.gameObject.name);
+			}
+		}
+		
+		base.Punch();
+	}
+
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (other.gameObject.CompareTag(MovingObject.STAIRS_TAG)) {
