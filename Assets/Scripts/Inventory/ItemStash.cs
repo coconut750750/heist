@@ -74,6 +74,10 @@ public abstract class ItemStash : MonoBehaviour {
 		}
 	}
 
+	public void SetItemAtIndex(Item itemToSet, int index) {
+		items[index] = itemToSet;
+	}
+
 	public Item GetItem(int index) {
 		if (index >= 0 && index < capacity) {
 			return items[index];

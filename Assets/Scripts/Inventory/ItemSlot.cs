@@ -92,7 +92,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return this.itemImage;
 	}
 
-	public void Select() {
+	private void DeselectAllStashes() {
 		if (parentStash != GameManager.instance.stashDisplayer) {
 			GameManager.instance.stashDisplayer.DeselectAll();
 		}
@@ -110,6 +110,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		if (parentStash != null) {
 			parentStash.DeselectAll();
 		}
+	}
+
+	public void Select() {
+		DeselectAllStashes();
 		
 		nameText.text = item.itemName;
 		qualityText.text = item.quality + "%";
@@ -176,36 +180,23 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		if (!inputAllowed) {
 			return;
 		}
-		Image imageDragged = ItemDragger.itemBeingDragged.GetImage();
-		ItemSlot itemSlotOther = imageDragged.GetComponent<ItemDragger>().GetParentSlot();
-		
-		// swap images
-		Sprite tempSprite = itemImage.sprite;
-		bool tempEnabled = itemImage.enabled;
-		itemImage.sprite = imageDragged.sprite;
-		itemImage.enabled = true;
 
-		imageDragged.sprite = tempSprite;
-		imageDragged.enabled = tempEnabled;
+		ItemSlot itemSlotOther = ItemDragger.itemBeingDragged.GetParentSlot();
 
 		// swap item slot items
-		Item tempItem1 = GetItem();
-		Item tempItem2 = itemSlotOther.GetItem();
+		Item prevItem = GetItem();
+		Item prevOtherItem = itemSlotOther.GetItem();
 
-		SetItem(tempItem2);
-		itemSlotOther.SetItem(tempItem1);
+		SetItem(prevOtherItem);
+		itemSlotOther.SetItem(prevItem);
 		
 		// swap parent stash positions
 		int indexOther = itemSlotOther.GetIndex();
 		if (parentStash == itemSlotOther.GetParentStash()) {
 			parentStash.SwapItemPositions(indexOther, index);
 		} else if (itemSlotOther.GetParentStash() != null && parentStash != null) { 
-			// different parent stashes, so item slot other should be deselected
-			itemSlotOther.GetParentStash().RemoveItemAtIndex(indexOther);
-			itemSlotOther.GetParentStash().AddItemAtIndex(tempItem1, indexOther);
-
-			parentStash.RemoveItemAtIndex(index);
-			parentStash.AddItemAtIndex(tempItem2, index);
+			itemSlotOther.GetParentStash().SetItemAtIndex(prevItem, indexOther);
+			parentStash.SetItemAtIndex(prevOtherItem, index);
 		}
 
 		itemSlotOther.Deselect();
@@ -215,7 +206,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			OnDropped(this.item);
 		}
 
-		if (itemSlotOther.GetItem() == null && itemSlotOther.OnRemoved != null) {
+		if (itemSlotOther.OnRemoved != null && itemSlotOther.GetItem() == null) {
 			itemSlotOther.OnRemoved();
 		}
     }
