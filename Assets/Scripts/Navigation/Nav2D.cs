@@ -156,11 +156,9 @@ public class Nav2D : MonoBehaviour {
 
 	///Generate the map
 	public void GenerateMap(bool generateMaster) {
-		Debug.Log("starting... " + gameObject.name);
 		CreatePolyMap(generateMaster);
 		CreateNodes();
 		LinkNodes(nodes);
-		Debug.Log("finished " + gameObject.name);
 	}
 
 	//helper function

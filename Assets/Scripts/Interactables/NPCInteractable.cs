@@ -79,16 +79,33 @@ public class NPCInteractable : Interactable {
 
     public override void ExitRange(Player player)
     {
-        if (interacted) {
-            speechBubbleInstance.Destroy();
-            speechBubbleInstance = null;
-            npcOptionsInstance.Destroy();
+        HideAllPopUps();
+    }
 
+    private void HideAllPopUps() {
+        if (interacted) {
+            if (speechBubbleInstance != null) {
+                speechBubbleInstance.Destroy();
+                speechBubbleInstance = null;
+            }
+            if (npcOptionsInstance != null) {
+                npcOptionsInstance.Destroy();
+                npcOptionsInstance = null;
+            }
+            
             npcObject.Resume();
             interacted = false;
         } else {
-            hoverTextInstance.Destroy();
+            if (hoverTextInstance != null) {
+                hoverTextInstance.Destroy();
+                hoverTextInstance = null;
+            }
         }
+    }
+
+    public override void Disable() {
+        base.Disable();
+        HideAllPopUps();
     }
 
     public void ShowInventory() {

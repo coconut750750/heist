@@ -16,7 +16,7 @@ public abstract class Interactable : MonoBehaviour {
 
     private UnityAction call = null;
 
-    public new bool enabled = true;
+    private new bool enabled = true;
 
 	// Use this for initialization
 	void Awake () {
@@ -85,7 +85,7 @@ public abstract class Interactable : MonoBehaviour {
 
     // resets the button so it is cleared the next time "thing" enters
     public void PlayerLeave(Player player) {
-        if (currentInteractables.Pop() == this) {
+        if (currentInteractables.Count > 0 && currentInteractables.Pop() == this) {
             Interactable.buttonA.RemoveAllListeners();
 
             if (currentInteractables.Count > 0) {
@@ -95,6 +95,22 @@ public abstract class Interactable : MonoBehaviour {
         }
         
         call = null;
+    }
+
+    public void SetEnabled(bool enabled) {
+        if (enabled) {
+            Enable();
+        } else {
+            Disable();
+        }
+    }
+
+    public virtual void Enable() {
+        enabled = true;
+    }
+
+    public virtual void Disable() {
+        enabled = false;
     }
 
     // called when player is in trigger area

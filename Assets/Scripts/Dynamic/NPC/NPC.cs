@@ -105,15 +105,12 @@ public class NPC : MovingObject {
 			}
 		}
 
-		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visible) {
-			SetVisibility(false);
-		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visible) {
-			SetVisibility(true);
-		}
+		UpdateVisibility();
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
+		UpdateVisibility();
 		UpdateSortingLayer();
 	}
 
@@ -196,11 +193,19 @@ public class NPC : MovingObject {
 		}
 	}
 
+	private void UpdateVisibility() {
+		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visible) {
+			SetVisibility(false);
+		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visible) {
+			SetVisibility(true);
+		}
+	}
+
 	private void SetVisibility(bool visible) {
 		this.visible = visible;
 		GetComponent<SpriteRenderer>().enabled = visible;
 		GetComponent<Animator>().enabled = visible;
-		GetComponent<NPCInteractable>().enabled = visible;
+		GetComponent<NPCInteractable>().SetEnabled(visible);
 	}
 
 	public Inventory GetInventory() {
@@ -275,7 +280,7 @@ public class NPC : MovingObject {
 			UpdateAgentNav();
 
 			if (isMoving) {
-				agent.SetDestination(new Vector2(-10f, 12f));
+				agent.SetDestination(destination);
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
