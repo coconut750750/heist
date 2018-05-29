@@ -26,7 +26,6 @@ public abstract class Interactable : MonoBehaviour {
         if (player == null) {
             player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
         }
-
         if (currentInteractables == null) {
             currentInteractables = new Stack<Interactable>();
         }
