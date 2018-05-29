@@ -4,12 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.Events;
 
 public class Player : MovingObject {
 
 	private const string NPC_TAG = "NPC";
+
+	// Button B Interaction
+	protected static ActionButton buttonB;
+    private const string BUTTON_B_TAG = "ButtonB";
 
 	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
 
@@ -28,6 +32,12 @@ public class Player : MovingObject {
 		base.Start();
 		mainItems = FindObjectOfType<Pocket>();
 
+		GameObject buttonObj = GameObject.Find(BUTTON_B_TAG);
+		buttonB = buttonObj.GetComponent<ActionButton>();
+		buttonB.AddListener(delegate {
+            Punch();
+        });
+
 		UpdateInfo();
 
 		if (GetFloor() == 1) {
@@ -35,6 +45,8 @@ public class Player : MovingObject {
 		} else if (GetFloor() == 2) {
 			GameManager.instance.ShowFloor2();
 		}
+
+		//GetComponent<Animator>().runtimeAnimatorController = CharAnimationManager.instance.GetNewAnimator();
 	}
 
 	protected override void FixedUpdate() {
@@ -61,12 +73,18 @@ public class Player : MovingObject {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		if (GetFloor () == 1) {
-			GameManager.instance.HideFloor2();
-		} else if (GetFloor () == 2) {
-			GameManager.instance.ShowFloor2();
+		if (other.gameObject.CompareTag(MovingObject.STAIRS_TAG)) {
+			if (GetFloor () == 1) {
+				GameManager.instance.HideFloor2();
+			} else if (GetFloor () == 2) {
+				GameManager.instance.ShowFloor2();
+			}
+		} else if (other.gameObject.CompareTag(NPC_TAG)) {
+			Debug.Log("herlloo");
 		}
+		
 
+		// TODO: remove
 		money += 10;
 		UpdateInfo(); 
 	}

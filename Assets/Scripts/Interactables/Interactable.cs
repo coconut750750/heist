@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
 
-    protected static bool alreadyRemoved;
+    private static Stack<Interactable> currentInteractables;
 
     protected static ActionButton buttonA;
     private const string BUTTON_A_TAG = "ButtonA";
@@ -26,7 +26,7 @@ public abstract class Interactable : MonoBehaviour {
         if (player == null) {
             player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
         }
-        alreadyRemoved = false;
+        currentInteractables = new Stack<Interactable>();
 	}
 
 	// Update is called once per frame
@@ -67,20 +67,21 @@ public abstract class Interactable : MonoBehaviour {
             Interact(player);
         };
 
-        if (buttonA.GetListeners() > 0) {
-            alreadyRemoved = true;
-            Interactable.buttonA.RemoveAllListeners();
-        }
-        
+        Interactable.buttonA.RemoveAllListeners();
         Interactable.buttonA.AddListener(call);
+
+        currentInteractables.Push(this);
     }
 
     // resets the button so it is cleared the next time "thing" enters
     public void PlayerLeave(Player player) {
-        if (!alreadyRemoved) {
-            Interactable.buttonA.RemoveListener(call);
-        } else {
-            alreadyRemoved = false;
+        if (currentInteractables.Pop() == this) {
+            Interactable.buttonA.RemoveAllListeners();
+
+            if (currentInteractables.Count > 0) {
+                Interactable next = currentInteractables.Peek();
+                Interactable.buttonA.AddListener(next.call);
+            }
         }
         
         call = null;
