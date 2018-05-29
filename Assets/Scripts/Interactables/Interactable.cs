@@ -16,6 +16,8 @@ public abstract class Interactable : MonoBehaviour {
 
     private UnityAction call = null;
 
+    public new bool enabled = true;
+
 	// Use this for initialization
 	void Awake () {
         if (buttonA == null) {
@@ -39,6 +41,9 @@ public abstract class Interactable : MonoBehaviour {
     // when another "thing" enters the trigger area
     protected void OnTriggerEnter2D(Collider2D other)
     {
+        if (!enabled) {
+            return;
+        }
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
             if (!buttonA.IsInteractable()) {
@@ -52,6 +57,9 @@ public abstract class Interactable : MonoBehaviour {
     // when "thing" exits the trigger area
     protected void OnTriggerExit2D(Collider2D other)
     {
+        if (!enabled) {
+            return;
+        }
         if (other.gameObject.CompareTag(PLAYER_TAG))
         {
             PlayerLeave(player);

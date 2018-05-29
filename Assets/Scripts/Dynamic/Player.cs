@@ -104,6 +104,9 @@ public class Player : MovingObject {
 				GameManager.instance.ShowFloor2();
 			}
 		} else if (other.gameObject.CompareTag(NPC_TAG)) {
+			if (!other.gameObject.GetComponent<NPC>().visible) {
+				return;
+			}
 			Debug.Log("herlloo");
 		}
 		

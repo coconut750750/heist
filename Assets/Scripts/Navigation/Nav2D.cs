@@ -5,8 +5,10 @@ using System.Linq;
 using System;
 
 [AddComponentMenu("Navigation/Nav2D")]
-
 public class Nav2D : MonoBehaviour {
+
+	[SerializeField]
+	private GameObject floor;
 
 	public bool drawNodes;
 	public bool drawNodesAndEdges;
@@ -23,7 +25,7 @@ public class Nav2D : MonoBehaviour {
 	public float inflateRadius = 0.5f;
 
 	///A Flag to tell PolyNav to regenerate the map
-	public bool regenerateFlag;
+	public bool regenerateFlag = false;
 
 	private PolyMap map;
 	private List<PathNode> nodes = new List<PathNode>();
@@ -57,6 +59,9 @@ public class Nav2D : MonoBehaviour {
 
 	//some initializing
 	void Awake() {
+		navObstacles = floor.GetComponentsInChildren<Nav2DObstacle>().ToList();
+		compObstacles = floor.GetComponentsInChildren<Nav2DCompObstacle>().ToList();
+
 		masterCollider = GetComponent<Collider2D>();
 		masterBounds = masterCollider.bounds;
 		masterCollider.enabled = false;
@@ -91,7 +96,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	void LateUpdate() {
-		if (regenerateFlag == true) {
+		if (regenerateFlag) {
 			regenerateFlag = false;
 			GenerateMap(false);
 		}
@@ -151,9 +156,11 @@ public class Nav2D : MonoBehaviour {
 
 	///Generate the map
 	public void GenerateMap(bool generateMaster) {
+		Debug.Log("starting... " + gameObject.name);
 		CreatePolyMap(generateMaster);
 		CreateNodes();
 		LinkNodes(nodes);
+		Debug.Log("finished " + gameObject.name);
 	}
 
 	//helper function

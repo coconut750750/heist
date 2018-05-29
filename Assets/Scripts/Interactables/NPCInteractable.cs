@@ -22,7 +22,6 @@ public class NPCInteractable : Interactable {
     private NPCOptions npcOptionsInstance = null;
 
 	private NPC npcObject;
-
     private bool interacted;
 
     // Use this for initialization
@@ -32,6 +31,9 @@ public class NPCInteractable : Interactable {
 	}
 
     void Update () {
+        if (!base.enabled) {
+            return;
+        }
         if (hoverTextInstance != null) {
             hoverTextInstance.UpdatePosition(gameObject.transform.position);
         }

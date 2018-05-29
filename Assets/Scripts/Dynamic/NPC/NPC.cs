@@ -54,6 +54,9 @@ public class NPC : MovingObject {
 	// independent if npc not spawned
 	private bool independent = true;
 
+	// true if visible by camera
+	public bool visible = true;
+	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
 		canSearchForDest = false;
@@ -100,6 +103,12 @@ public class NPC : MovingObject {
 			if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
 				agent.SetDestination(destination);
 			}
+		}
+
+		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visible) {
+			SetVisibility(false);
+		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visible) {
+			SetVisibility(true);
 		}
 	}
 
@@ -153,15 +162,12 @@ public class NPC : MovingObject {
 
 		if (GetFloor() != prevFloor) {
 			prevFloor = GetFloor();
-			if (prevFloor == 1) {
-				SetAgentNav(GameManager.instance.groundNav);
-			} else if (prevFloor == 2) {
-				SetAgentNav(GameManager.instance.floor2Nav);
-			}
+			UpdateAgentNav();
 		}
 	}
 
 	protected void DestinationInvalid() {
+		Debug.Log("invalid");
 		isMoving = false;
 	}
 
@@ -178,16 +184,23 @@ public class NPC : MovingObject {
 		PopulateInventory();
 	}
 
-	public override void Save()
-    {
-		if (independent) {
-			NPCData data = new NPCData(this);
-			GameManager.Save(data, base.filename);
-		}
-    }
-
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
+	}
+
+	private void UpdateAgentNav() {
+		if (GetFloor() == 1) {
+			SetAgentNav(GameManager.instance.groundNav);
+		} else if (GetFloor() == 2) {
+			SetAgentNav(GameManager.instance.floor2Nav);
+		}
+	}
+
+	private void SetVisibility(bool visible) {
+		this.visible = visible;
+		GetComponent<SpriteRenderer>().enabled = visible;
+		GetComponent<Animator>().enabled = visible;
+		GetComponent<NPCInteractable>().enabled = visible;
 	}
 
 	public Inventory GetInventory() {
@@ -222,6 +235,14 @@ public class NPC : MovingObject {
 		this.independent = independent;
 	}
 
+	public override void Save()
+    {
+		if (independent) {
+			NPCData data = new NPCData(this);
+			GameManager.Save(data, base.filename);
+		}
+    }
+
    public override void Load()
     {
 		// dont need to check for independence because if npc is not independent,
@@ -248,8 +269,13 @@ public class NPC : MovingObject {
 			canSearchForDest = data.canSearchForDest;
 
 			prevFloor = data.prevFloor;
+			visible = data.visible;
+			SetVisibility(visible);
+
+			UpdateAgentNav();
+
 			if (isMoving) {
-				agent.SetDestination(destination);
+				agent.SetDestination(new Vector2(-10f, 12f));
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
@@ -269,6 +295,7 @@ public class NPCData : MovingObjectData {
 	public bool isMoving;
 	public bool canSearchForDest;
 	public int prevFloor;
+	public bool visible;
 
 	public NPCData(NPC npc) : base(npc) {
 		inventoryData = new ItemStashData(npc.GetInventory());
@@ -278,5 +305,6 @@ public class NPCData : MovingObjectData {
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();
 		this.prevFloor = npc.GetPrevFloor();
+		this.visible = npc.visible;
 	}
 }

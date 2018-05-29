@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 [AddComponentMenu("Navigation/Nav2DCompObstacle")]
 ///Place on a game object to act as an obstacle
 public class Nav2DCompObstacle : MonoBehaviour {
@@ -47,10 +46,6 @@ public class Nav2DCompObstacle : MonoBehaviour {
 		}
 	}
 
-	void Awake() {
-		this.polyNav.AddObstacle(this);
-	}
-
 	void OnEnable(){
 		lastPos = transform.position;
 		lastRot = transform.rotation;
@@ -59,8 +54,9 @@ public class Nav2DCompObstacle : MonoBehaviour {
 	}
 
 	void Update(){
-		if (_transform.position != lastPos || _transform.rotation != lastRot || _transform.localScale != lastScale)
+		if (_transform.position != lastPos || _transform.rotation != lastRot || _transform.localScale != lastScale) {
 			polyNav.regenerateFlag = true;
+		}
 
 		lastPos = _transform.position;
 		lastRot = _transform.rotation;

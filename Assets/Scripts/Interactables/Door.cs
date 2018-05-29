@@ -27,7 +27,9 @@ public class Door : MonoBehaviour {
 		if (other.gameObject.CompareTag (PLAYER_TAG)) {
 			other.gameObject.GetComponent<Player>().StartDoorDelay();
 		} else if (other.gameObject.CompareTag (NPC_TAG)) {
-			other.gameObject.GetComponent<NPC>().StartDoorDelay();
+			if (other.gameObject.GetComponent<NPC>().visible) {
+				other.gameObject.GetComponent<NPC>().StartDoorDelay();
+			}
 		}
 	}
 

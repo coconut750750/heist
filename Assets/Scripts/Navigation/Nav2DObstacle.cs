@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 [AddComponentMenu("Navigation/Nav2DObstacle")]
 ///Place on a game object to act as an obstacle
 public class Nav2DObstacle : MonoBehaviour {
@@ -56,10 +55,6 @@ public class Nav2DObstacle : MonoBehaviour {
 		if (GetComponent<SpriteRenderer>() != null) {
 			invertPolygon = true;
 		}
-	}
-
-	void Awake() {
-		this.polyNav.AddObstacle(this);
 	}
 
 	void OnEnable(){

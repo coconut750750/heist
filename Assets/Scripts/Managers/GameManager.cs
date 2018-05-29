@@ -144,10 +144,15 @@ public class GameManager : MonoBehaviour {
 
 	public void SetGroundFloor (bool active) {
     	foreach (Collider2D c in groundFloor.GetComponentsInChildren<Collider2D>()) {
-        	c.enabled = active;
+			if (!c.gameObject.CompareTag(MovingObject.STAIRS_TAG)) {
+				c.enabled = active;
+			}
     	}
 	}
 
+	public int GetVisibleFloor() {
+		return mainPlayer.GetFloor();
+	}
 
 	public Rect GetCurrentPlayerRange(int range) {
 		Rect rect = new Rect();
