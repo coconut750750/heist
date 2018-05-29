@@ -86,7 +86,8 @@ public class Player : MovingObject {
 		}
 
 		if (direction.sqrMagnitude != 0) {
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f, 1024);
+			float z = transform.position.z;
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f, 1024, z, z);
 			if (hit.collider != null && hit.collider.CompareTag(NPC_TAG)) {
 				Debug.Log(hit.collider.gameObject.name);
 			}
