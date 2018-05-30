@@ -57,7 +57,6 @@ public class NPC : Character {
 	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
-		canSearchForDest = false;
 		yield return new WaitForSeconds(Random.Range(0, maxDestinationDelay));
 		canSearchForDest = true;
 	}
@@ -96,11 +95,7 @@ public class NPC : Character {
 
 	protected override void FixedUpdate() {
 		if (!isMoving && canSearchForDest) {
-			Bounds nav2DBounds = agent.polyNav.masterBounds;
-			destination = GenerateRandomDest(nav2DBounds);
-			if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
-				agent.SetDestination(destination);
-			}
+			SetNewDestination();
 		}
 
 		UpdateVisibility();
@@ -148,10 +143,19 @@ public class NPC : Character {
 		return "Hello there";
 	}
 
+	public override void GetHitBy(Character other) {
+		base.GetHitBy(other);
+
+		// ensure that npc is moving when it gets hit
+		SetNewDestination();
+		Resume();
+	}
+
 	/// NAVIGATION ///
 
 	protected void NavStarted() {
 		isMoving = true;
+		canSearchForDest = false;
 	}
 
 	// if npc lands on stairs, it will either go up a floor or down a floor
@@ -169,6 +173,16 @@ public class NPC : Character {
 		Debug.Log("invalid");
 		isMoving = false;
 	}
+
+	protected void SetNewDestination() {
+		Bounds nav2DBounds = agent.polyNav.masterBounds;
+		destination = GenerateRandomDest(nav2DBounds);
+		if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+			agent.SetDestination(destination);
+		}
+	}
+
+	/// INVENTORY ///
 
 	void PopulateInventory() {
 		int num = Random.Range(0, inventory.GetCapacity());
