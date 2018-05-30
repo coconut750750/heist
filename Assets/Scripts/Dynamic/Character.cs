@@ -7,11 +7,12 @@ using UnityStandardAssets.CrossPlatformInput;
 public abstract class Character : MonoBehaviour {
 
 	private const string CLASS_NAME = "movingobj";
+	private const float DOOR_DELAY_SECONDS = 0.05f;
+	private const float GET_HIT_BLINK_SECONDS = 0.1f;
+	private const int GET_HIT_BLINK_NUM = 10;
 
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
-
-	private const float DOOR_DELAY_SECONDS = 0.02f;
 
 	protected int onStairs = 0;
 
@@ -39,10 +40,19 @@ public abstract class Character : MonoBehaviour {
 	protected int exp = 0;
 	protected int strength = 0;
 
-	IEnumerator doorDelay() {
+	IEnumerator DoorDelay() {
 		paused = true;
 		yield return new WaitForSeconds(DOOR_DELAY_SECONDS);
 		paused = false;
+	}
+
+	IEnumerator Blink() {
+		bool spriteEnabled = false;
+		for (int i = 0; i < GET_HIT_BLINK_NUM; i++) {
+			GetComponent<SpriteRenderer>().enabled = spriteEnabled;
+			spriteEnabled = !spriteEnabled;
+			yield return new WaitForSeconds(GET_HIT_BLINK_SECONDS);
+		}
 	}
 
 	protected virtual void Awake() {
@@ -125,6 +135,7 @@ public abstract class Character : MonoBehaviour {
 
 	public virtual void GetHitBy(Character other) {
 		health -= other.strength;
+		StartCoroutine(Blink());
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
@@ -147,7 +158,7 @@ public abstract class Character : MonoBehaviour {
 	}
 
 	public void StartDoorDelay() {
-		StartCoroutine (doorDelay ());
+		StartCoroutine (DoorDelay ());
 	}
 
 	public int GetFloor() {
