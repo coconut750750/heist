@@ -1,0 +1,27 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public abstract class Constants {
+
+	/// TAGS
+	public const string PLAYER_TAG = "Player";
+	public const string NPC_TAG = "NPC";
+
+	public const string STAIRS_TAG = "Stairs";
+
+	public const string BUTTON_B_TAG = "ButtonB";
+
+
+	/// LAYERS
+	public const int NPC_ONLY_LAYER = 1024;
+
+
+	/// SPRITE LAYERS
+	public const string ELEVATED1 = "Elevated1";
+	public const string ELEVATED2 = "Elevated2";
+
+	/// INPUT AXIS
+	public const string HORIZONTAL = "Horizontal";
+	public const string VERTICAL = "Vertical";
+}

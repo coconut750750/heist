@@ -102,7 +102,7 @@ public class NPCUI : MonoBehaviour {
 	public void OnClickBuy() {
 		if (buyController.Buy(npc)) {
 			UpdateInventoryUI();
-			GameManager.instance.mainPlayer.UpdateInfo();
+			GameManager.instance.mainPlayer.UpdateUIInfo();
 		}
 	}
 
@@ -110,7 +110,7 @@ public class NPCUI : MonoBehaviour {
 		if (tradeController.Trade(npc)) {
 			SetSelectedItem(null, -1);
 			UpdateInventoryUI();
-			GameManager.instance.mainPlayer.UpdateInfo();
+			GameManager.instance.mainPlayer.UpdateUIInfo();
 		}
 	}
 
@@ -118,7 +118,7 @@ public class NPCUI : MonoBehaviour {
 		if (sellController.Sell(npc)) {
 			sellController.UpdateButtons();
 			UpdateInventoryUI();
-			GameManager.instance.mainPlayer.UpdateInfo();
+			GameManager.instance.mainPlayer.UpdateUIInfo();
 		}
 	}
 

@@ -13,15 +13,21 @@ public class SpeechBubble : PopUp {
 
 	// In game tile space, not pixel space
 	private static Vector3 speechOffset = new Vector3(-0.25f, 0.5f, 0);
-	private bool startFade = false;
-	private float DURATION_TO_DISAPPEAR = 5f;
-	private float durationToDisappear;
+	private const float FADE_RATE = 0.01f;
 	private Vector3 finalPos;
 	private float startAlpha;
 
-    public SpeechBubble() : base(speechOffset)
-    {
-		durationToDisappear = DURATION_TO_DISAPPEAR;
+	IEnumerator Fade() {
+		for (float f = 1f; f >= 0; f -= FADE_RATE) {
+			UpdatePosition(finalPos);
+			GetComponent<Image>().color = new Color(1f, 1f, 1f, startAlpha * f);
+			GetComponentInChildren<Text>().color = new Color(0, 0, 0, f);
+			yield return null;
+		}
+		Destroy(gameObject);
+	}
+
+    public SpeechBubble() : base(speechOffset) {
     }
 
 	void Start() {
@@ -32,22 +38,8 @@ public class SpeechBubble : PopUp {
 		GetComponentInChildren<Text>().text = speech;
 	}
 
-	void Update() {
-		if (startFade) {
-			UpdatePosition(finalPos);
-
-			durationToDisappear -= Time.fixedDeltaTime;
-
-			GetComponent<Image>().color = new Color(1f, 1f, 1f, startAlpha * durationToDisappear / DURATION_TO_DISAPPEAR);
-			GetComponentInChildren<Text>().color = new Color(0, 0, 0, durationToDisappear / DURATION_TO_DISAPPEAR);
-			if (durationToDisappear <= 0) {
-				Destroy(gameObject);
-			}
-		}
-	}
-
 	public override void Destroy() {
-		startFade = true;
 		finalPos = Camera.main.ScreenToWorldPoint(transform.position) - speechOffset;
+		StartCoroutine(Fade());
 	}
 }

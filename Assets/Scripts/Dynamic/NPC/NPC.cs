@@ -17,7 +17,7 @@ using UnityEngine;
 /// 	Load: NPC's have a function to load, but will be loaded by their spawner if they were created
 ///			by one.
 /// </summary>  
-public class NPC : MovingObject {
+public class NPC : Character {
 
 	public const float BOTTOM_END_TRADING_PERC = 0.85f;
 	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
@@ -33,8 +33,6 @@ public class NPC : MovingObject {
 	public int closestDestinationSquared;
 	// range where the next destinations will generate
 	public int destinationRange;
-
-	private const string PLAYER_TAG = "Player";
 
 	private string npcName = "Billy";
 	private Inventory inventory;
@@ -59,7 +57,6 @@ public class NPC : MovingObject {
 	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
-		canSearchForDest = false;
 		yield return new WaitForSeconds(Random.Range(0, maxDestinationDelay));
 		canSearchForDest = true;
 	}
@@ -98,11 +95,7 @@ public class NPC : MovingObject {
 
 	protected override void FixedUpdate() {
 		if (!isMoving && canSearchForDest) {
-			Bounds nav2DBounds = agent.polyNav.masterBounds;
-			destination = GenerateRandomDest(nav2DBounds);
-			if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
-				agent.SetDestination(destination);
-			}
+			SetNewDestination();
 		}
 
 		UpdateVisibility();
@@ -117,9 +110,9 @@ public class NPC : MovingObject {
 	// depending on the floor the NPC is in, its sorting layer will change
 	protected void UpdateSortingLayer() {
 		if (GetFloor () == 1) {
-			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Elevated1";
+			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = Constants.ELEVATED1;
 		} else if (GetFloor () == 2) {
-			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Elevated2";
+			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = Constants.ELEVATED2;
 		}
 	}
 
@@ -143,13 +136,26 @@ public class NPC : MovingObject {
 		return new Vector2(x, y);
 	}
 
+	/// INTERACTION ///
+
 	public string Greet() {
 		// TODO: change greetings randomly and depending on npc's opinion of player
 		return "Hello there";
 	}
 
+	public override void GetHitBy(Character other) {
+		base.GetHitBy(other);
+
+		// ensure that npc is moving when it gets hit
+		SetNewDestination();
+		Resume();
+	}
+
+	/// NAVIGATION ///
+
 	protected void NavStarted() {
 		isMoving = true;
+		canSearchForDest = false;
 	}
 
 	// if npc lands on stairs, it will either go up a floor or down a floor
@@ -167,6 +173,16 @@ public class NPC : MovingObject {
 		Debug.Log("invalid");
 		isMoving = false;
 	}
+
+	protected void SetNewDestination() {
+		Bounds nav2DBounds = agent.polyNav.masterBounds;
+		destination = GenerateRandomDest(nav2DBounds);
+		if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+			agent.SetDestination(destination);
+		}
+	}
+
+	/// INVENTORY ///
 
 	void PopulateInventory() {
 		int num = Random.Range(0, inventory.GetCapacity());
@@ -291,7 +307,7 @@ public class NPC : MovingObject {
 }
 
 [System.Serializable]
-public class NPCData : MovingObjectData {
+public class NPCData : CharacterData {
 
 	public ItemStashData inventoryData;
 	public float destX;

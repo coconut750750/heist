@@ -7,13 +7,13 @@ using System;
 using System.IO;
 using UnityEngine.Events;
 
-public class Player : MovingObject {
+public class Player : Character {
 
-	private const string NPC_TAG = "NPC";
+	private const float PUNCH_DISTANCE = 0.5f;
+	private const float PUNCH_DELAY_SECONDS = 0.5f;
 
 	// Button B Interaction
 	protected static ActionButton buttonB;
-    private const string BUTTON_B_TAG = "ButtonB";
 
 	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
 
@@ -28,25 +28,28 @@ public class Player : MovingObject {
 	[SerializeField]
 	private Text expText;
 
+	private bool canPunch = true;
+	IEnumerator punchDelay() {
+		canPunch = false;
+		yield return new WaitForSeconds(PUNCH_DELAY_SECONDS);
+		canPunch = true;
+	}
+
 	protected override void Start () {
 		base.Start();
 		mainItems = FindObjectOfType<Pocket>();
 
-		GameObject buttonObj = GameObject.Find(BUTTON_B_TAG);
+		GameObject buttonObj = GameObject.Find(Constants.BUTTON_B_TAG);
 		buttonB = buttonObj.GetComponent<ActionButton>();
 		buttonB.AddListener(delegate {
             Punch();
         });
 
-		UpdateInfo();
+		// TODO: Remove
+		strength = 10;
 
-		if (GetFloor() == 1) {
-			GameManager.instance.HideFloor2();
-		} else if (GetFloor() == 2) {
-			GameManager.instance.ShowFloor2();
-		}
-
-		//GetComponent<Animator>().runtimeAnimatorController = CharAnimationManager.instance.GetNewAnimator();
+		UpdateUIInfo();
+		UpdateFloorWithGameManager();
 	}
 
 	protected override void FixedUpdate() {
@@ -56,14 +59,14 @@ public class Player : MovingObject {
 		Vector3 movement;
 		#if UNITY_STANDALONE || UNITY_WEBPLAYER
 
-		moveHorizontal = Input.GetAxis ("Horizontal");
-		moveVertical = Input.GetAxis ("Vertical");
+		moveHorizontal = Input.GetAxis (Constants.HORIZONTAL);
+		moveVertical = Input.GetAxis (Constants.VERTICAL);
 		movement = new Vector3(moveHorizontal, moveVertical, 0f);
 
 		#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 
-		moveHorizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-		moveVertical = CrossPlatformInputManager.GetAxis("Vertical");
+		moveHorizontal = CrossPlatformInputManager.GetAxis(Constants.HORIZONTAL);
+		moveVertical = CrossPlatformInputManager.GetAxis(Constants.VERTICAL);
 		movement = new Vector3(moveHorizontal, moveVertical, 0f);
 
 		#endif
@@ -72,6 +75,10 @@ public class Player : MovingObject {
 	}
 
 	public override void Punch() {
+		if (!canPunch) {
+			return;
+		}
+
 		Vector3 direction = Vector2.zero;
 
 		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
@@ -87,38 +94,43 @@ public class Player : MovingObject {
 
 		if (direction.sqrMagnitude != 0) {
 			float z = transform.position.z;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1f, 1024, z, z);
-			if (hit.collider != null && hit.collider.CompareTag(NPC_TAG)) {
-				Debug.Log(hit.collider.gameObject.name);
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
+												 Constants.NPC_ONLY_LAYER, z, z);
+			if (hit.collider != null && hit.collider.CompareTag(Constants.NPC_TAG)) {
+				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
 			}
 		}
 		
 		base.Punch();
+		StartCoroutine(punchDelay());
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		if (other.gameObject.CompareTag(MovingObject.STAIRS_TAG)) {
-			if (GetFloor () == 1) {
-				GameManager.instance.HideFloor2();
-			} else if (GetFloor () == 2) {
-				GameManager.instance.ShowFloor2();
-			}
-		} else if (other.gameObject.CompareTag(NPC_TAG)) {
+		if (other.gameObject.CompareTag(Constants.STAIRS_TAG)) {
+			UpdateFloorWithGameManager();
+		} else if (other.gameObject.CompareTag(Constants.NPC_TAG)) {
 			if (!other.gameObject.GetComponent<NPC>().visible) {
 				return;
 			}
 			Debug.Log("herlloo");
 		}
-		
 
 		// TODO: remove
 		money += 10;
-		UpdateInfo(); 
+		UpdateUIInfo(); 
 	}
 
 	protected override void OnTriggerExit2D(Collider2D other) {
 		base.OnTriggerExit2D (other);
+	}
+
+	private void UpdateFloorWithGameManager() {
+		if (GetFloor() == 1) {
+			GameManager.instance.HideFloor2();
+		} else if (GetFloor() == 2) {
+			GameManager.instance.ShowFloor2();
+		}
 	}
 
 	public string GetName() {
@@ -154,7 +166,7 @@ public class Player : MovingObject {
 		return !mainItems.IsFull();
 	}
 
-	public void UpdateInfo() {
+	public void UpdateUIInfo() {
 		if (moneyText != null) {
 			moneyText.text = money.ToString();
 		}
@@ -178,23 +190,19 @@ public class Player : MovingObject {
 		
         if (data != null) {
 			base.LoadFromData(data);
-			if (GetFloor () == 2) {
-				GameManager.instance.ShowFloor2();
-				gameObject.layer = 17 - gameObject.layer;
-			}
-			
+			UpdateFloorWithGameManager();			
 		} else {
 			base.LoadFromData(new PlayerData(
 				0, 0, START_POS, 0, 0, 0, 0
 			));
 		}
 
-		UpdateInfo();
+		UpdateUIInfo();
     }
 }
 
 [System.Serializable]
-public class PlayerData : MovingObjectData {
+public class PlayerData : CharacterData {
 
 	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp, int strength) {
 		base.SetPositionalData(onStairs, floor, position);

@@ -22,15 +22,13 @@ public class Nav2DAgent : MonoBehaviour{
 	///Speed to rotate at
 	public float rotateSpeed         = 350;
 	///The avoidance radius of the agent. 0 for no avoidance	
-	public float avoidRadius         = 0;
+	public float avoidRadius         = 0.5f;
 	///The lookahead distance for Slowing down and agent avoidance. Set to 0 to eliminate the slowdown but the avoidance too, as well as increase performance.
 	public float lookAheadDistance    = 1;
 	///Should the agent repath? Disable for performance.
 	public bool repath 				  = false;
 	///Should the agent be forced restricted within valid areas? Disable for performance.
 	public bool restrict 			  = false;
-	///Go to closer point if requested destination is invalid? Disable for performance.
-	public bool closerPointOnInvalid  = false;
 	///Will debug the path (gizmos). Disable for performance.
 	public bool debugPath            = true;
 
@@ -65,7 +63,7 @@ public class Nav2DAgent : MonoBehaviour{
 
 	private bool paused {
 		get {
-			return gameObject.GetComponent<MovingObject>().IsPaused() || GameManager.instance.IsPaused();
+			return gameObject.GetComponent<Character>().IsPaused() || GameManager.instance.IsPaused();
 		}
 	}
 	
@@ -170,14 +168,10 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 
 		//check if goal is valid
-		if (!polyNav.PointIsValid(goal)){
-			if (closerPointOnInvalid){
-				SetDestination(polyNav.GetCloserEdgePoint(goal), callback);
-				return true;
-			} else {
-				OnInvalid();
-				return false;
-			}
+		if (!polyNav.PointIsValid(goal)) {
+			// Go to closer point if requested destination is invalid
+			SetDestination(polyNav.GetCloserEdgePoint(goal), callback);
+			return true;
 		}
 
 		//if a path is pending dont calculate new path
