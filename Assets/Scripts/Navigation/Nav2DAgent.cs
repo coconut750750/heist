@@ -65,7 +65,7 @@ public class Nav2DAgent : MonoBehaviour{
 
 	private bool paused {
 		get {
-			return gameObject.GetComponent<MovingObject>().IsPaused() || GameManager.instance.IsPaused();
+			return gameObject.GetComponent<Character>().IsPaused() || GameManager.instance.IsPaused();
 		}
 	}
 	

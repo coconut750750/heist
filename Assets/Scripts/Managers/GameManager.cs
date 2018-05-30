@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SetGroundFloor (bool active) {
     	foreach (Collider2D c in groundFloor.GetComponentsInChildren<Collider2D>()) {
-			if (!c.gameObject.CompareTag(MovingObject.STAIRS_TAG)) {
+			if (!c.gameObject.CompareTag(Constants.STAIRS_TAG)) {
 				c.enabled = active;
 			}
     	}
@@ -186,9 +186,9 @@ public class GameManager : MonoBehaviour {
 		}
 
 		// moving objects including player
-		MovingObject[] movingObjs = FindObjectsOfType<MovingObject>();
-		foreach (MovingObject movingObj in movingObjs) {
-			movingObj.Save();
+		Character[] characterObjs = FindObjectsOfType<Character>();
+		foreach (Character c in characterObjs) {
+			c.Save();
 		}
 
 		// manager itself
@@ -213,9 +213,9 @@ public class GameManager : MonoBehaviour {
 		}
 
 		// moving objects including player
-		MovingObject[] movingObjs = FindObjectsOfType<MovingObject>();
-		foreach (MovingObject movingObj in movingObjs) {
-			movingObj.Load();
+		Character[] characterObjs = FindObjectsOfType<Character>();
+		foreach (Character c in characterObjs) {
+			c.Load();
 		}
 
 		// manager itself

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 
-public abstract class MovingObject : MonoBehaviour {
+public abstract class Character : MonoBehaviour {
 
 	private const string CLASS_NAME = "movingobj";
 
@@ -13,7 +13,6 @@ public abstract class MovingObject : MonoBehaviour {
 
 	private const float DOOR_DELAY_SECONDS = 0.02f;
 
-	public const string STAIRS_TAG = "Stairs";
 	protected int onStairs = 0;
 
 	protected int floor = 0;
@@ -124,8 +123,12 @@ public abstract class MovingObject : MonoBehaviour {
 		animator.SetTrigger(punchHash);
 	}
 
+	public virtual void GetHitBy(Character other) {
+		health -= other.strength;
+	}
+
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.CompareTag (STAIRS_TAG)) {
+		if (other.gameObject.CompareTag (Constants.STAIRS_TAG)) {
 			if (onStairs == 0) {
 				floor = 1 - floor;
 
@@ -138,7 +141,7 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
-		if (other.gameObject.CompareTag (STAIRS_TAG) && onStairs > 0) {
+		if (other.gameObject.CompareTag (Constants.STAIRS_TAG) && onStairs > 0) {
 			onStairs -= 1;
 		}
 	}
@@ -191,7 +194,7 @@ public abstract class MovingObject : MonoBehaviour {
 
 	public abstract void Load();
 
-	protected void LoadFromData(MovingObjectData data) {
+	protected void LoadFromData(CharacterData data) {
 		this.onStairs = data.onStairs;
 		this.floor = data.floor;
 		rb2D.transform.position = data.getPosition();
@@ -201,7 +204,7 @@ public abstract class MovingObject : MonoBehaviour {
 }
 
 [System.Serializable]
-public class MovingObjectData : GameData {
+public class CharacterData : GameData {
 	public int onStairs;
 	public int floor;
 	public float xPos;
@@ -213,11 +216,11 @@ public class MovingObjectData : GameData {
 	public int exp;
 	public int strength;
 
-	public MovingObjectData() {
+	public CharacterData() {
 		
 	}
 
-	public MovingObjectData(MovingObject moveObj) {
+	public CharacterData(Character moveObj) {
 		SetPositionalData(moveObj.GetOnStairs(), moveObj.GetFloor() - 1, moveObj.GetPosition());
 		SetStats(moveObj.GetMoney(), moveObj.GetHealth(), moveObj.GetExperience(), moveObj.GetStrength());
 	}
