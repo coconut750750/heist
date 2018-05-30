@@ -7,9 +7,8 @@ using UnityStandardAssets.CrossPlatformInput;
 public abstract class Character : MonoBehaviour {
 
 	private const string CLASS_NAME = "movingobj";
+
 	private const float DOOR_DELAY_SECONDS = 0.05f;
-	private const float GET_HIT_BLINK_SECONDS = 0.1f;
-	private const int GET_HIT_BLINK_NUM = 10;
 
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
@@ -46,6 +45,14 @@ public abstract class Character : MonoBehaviour {
 		paused = false;
 	}
 
+	/// GET HIT VARIABLES ///
+	private const float GET_HIT_EFFECT_TIME = 1.5f;
+	private const float GET_HIT_BLINK_SECONDS = 0.15f;
+	private const int GET_HIT_BLINK_NUM = 10;
+	private const float GET_HIT_SPEEDUP = 1.5f;
+
+	private bool isEffectedByHit = false;
+
 	IEnumerator Blink() {
 		bool spriteEnabled = false;
 		for (int i = 0; i < GET_HIT_BLINK_NUM; i++) {
@@ -54,6 +61,16 @@ public abstract class Character : MonoBehaviour {
 			yield return new WaitForSeconds(GET_HIT_BLINK_SECONDS);
 		}
 	}
+
+	IEnumerator GetHitSpeedUp() {
+		moveSpeed *= GET_HIT_SPEEDUP;
+		yield return new WaitForSeconds(GET_HIT_EFFECT_TIME);
+		moveSpeed /= GET_HIT_SPEEDUP;
+
+		isEffectedByHit = false;
+	}
+
+	/// END MEMBERS
 
 	protected virtual void Awake() {
 		rb2D = GetComponent<Rigidbody2D>();
@@ -135,7 +152,11 @@ public abstract class Character : MonoBehaviour {
 
 	public virtual void GetHitBy(Character other) {
 		health -= other.strength;
-		StartCoroutine(Blink());
+		if (!isEffectedByHit) {
+			StartCoroutine(Blink());
+			StartCoroutine(GetHitSpeedUp());
+			isEffectedByHit = true;
+		}
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
