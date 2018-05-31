@@ -22,12 +22,10 @@ public class NPCInteractable : Interactable {
     private NPCOptions npcOptionsInstance = null;
 
 	private NPC npcObject;
-    private bool interacted;
 
     // Use this for initialization
     void Start () {
 		npcObject = gameObject.GetComponent<NPC>();
-        interacted = false;
 	}
 
     void Update () {
@@ -49,15 +47,22 @@ public class NPCInteractable : Interactable {
         // greet player
         npcObject.Pause();
 
-        if (!interacted) {
+        if (speechBubbleInstance == null) {
             speechBubbleInstance = Instantiate(speechBubble);
             speechBubbleInstance.Display(GameManager.instance.canvas.transform);
+        }
 
+        if (npcOptionsInstance == null) {
             npcOptionsInstance = Instantiate(npcOptions);
             npcOptionsInstance.Display(GameManager.instance.canvas.transform);
             npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
 
-            interacted = true;
+            player.Pause();
+        } else {
+            npcOptionsInstance.Destroy();
+            npcOptionsInstance = null;
+
+            player.Resume();
         }
 
         speechBubbleInstance.UpdateText(npcObject.Greet());
@@ -80,27 +85,24 @@ public class NPCInteractable : Interactable {
     public override void ExitRange(Player player)
     {
         HideAllPopUps();
+        player.Resume();
     }
 
-    private void HideAllPopUps() {
-        if (interacted) {
-            if (speechBubbleInstance != null) {
-                speechBubbleInstance.Destroy();
-                speechBubbleInstance = null;
-            }
-            if (npcOptionsInstance != null) {
-                npcOptionsInstance.Destroy();
-                npcOptionsInstance = null;
-            }
-            
-            npcObject.Resume();
-            interacted = false;
-        } else {
-            if (hoverTextInstance != null) {
-                hoverTextInstance.Destroy();
-                hoverTextInstance = null;
-            }
+    public void HideAllPopUps() {
+        if (speechBubbleInstance != null) {
+            speechBubbleInstance.Destroy();
+            speechBubbleInstance = null;
         }
+        if (npcOptionsInstance != null) {
+            npcOptionsInstance.Destroy();
+            npcOptionsInstance = null;
+        }
+        if (hoverTextInstance != null) {
+            hoverTextInstance.Destroy();
+            hoverTextInstance = null;
+        }
+            
+        npcObject.Resume();
     }
 
     public override void Disable() {

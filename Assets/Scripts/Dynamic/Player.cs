@@ -9,7 +9,6 @@ using UnityEngine.Events;
 
 public class Player : Character {
 
-	private const float PUNCH_DISTANCE = 0.5f;
 	private const float PUNCH_DELAY_SECONDS = 0.5f;
 
 	// Button B Interaction
@@ -45,9 +44,6 @@ public class Player : Character {
             Punch();
         });
 
-		// TODO: Remove
-		strength = 10;
-
 		UpdateUIInfo();
 		UpdateFloorWithGameManager();
 	}
@@ -74,35 +70,20 @@ public class Player : Character {
 		Move(movement.normalized);
 	}
 
-	public override void Punch() {
+	/// INTERACTABLES ///
+
+	public void Punch() {
 		if (!canPunch) {
 			return;
 		}
 
-		Vector3 direction = Vector2.zero;
-
-		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-		if (stateHash == forwardStateHash) {
-			direction = Vector2.down;
-		} else if (stateHash == backStateHash) {
-			direction = Vector2.up;
-		} else if (stateHash == leftStateHash) {
-			direction = Vector2.left;
-		} else if (stateHash == rightStateHash) {
-			direction = Vector2.right;
-		}
-
-		if (direction.sqrMagnitude != 0) {
-			float z = transform.position.z;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
-												 Constants.NPC_ONLY_LAYER, z, z);
-			if (hit.collider != null && hit.collider.CompareTag(Constants.NPC_TAG)) {
-				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
-			}
-		}
-		
-		base.Punch();
+		base.Punch(Constants.NPC_ONLY_LAYER);
 		StartCoroutine(punchDelay());
+	}
+
+	public override void GetHitBy(Character other) {
+		base.GetHitBy(other);
+		UpdateUIInfo();
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {

@@ -25,11 +25,11 @@ public class NPCSpawner : MonoBehaviour {
 
 	private const string NPC_NAME = "NPC-";
 
-	public const int PEAK_MAX = 1;
-	public const int PEAK_MIN = 1;
+	public int PEAK_MAX = 1;
+	public int PEAK_MIN = 1;
 
-	public const int BASE_MAX = 0;
-	public const int BASE_MIN = 0;
+	public int BASE_MAX = 0;
+	public int BASE_MIN = 0;
 
 	public const int START_PEAK_HOUR = 9;
 	public const int END_PEAK_HOUR = 17;
@@ -124,6 +124,8 @@ public class NPCSpawner : MonoBehaviour {
 		instance.name = NPC_NAME + npcs.Count;
 		instance.SetIndependent(false);
 
+		instance.OnDeath += Remove;
+
 		npcs.Add(instance);
 		npcIndicies.Add(index);
 		npcAwake.Add(true);
@@ -172,7 +174,16 @@ public class NPCSpawner : MonoBehaviour {
 		npcs[npcIndex].gameObject.SetActive(false);
 		npcAwake[npcIndex] = false;
 		numAwake--;
-		return;
+	}
+
+	// removes npc from npc list (maybe because they cease to exist)
+	void Remove(NPC npc) {
+		Debug.Log("removing...");
+		int index = npcs.IndexOf(npc);
+		npcs.RemoveAt(index);
+		npcAwake.RemoveAt(index);
+		npcIndicies.RemoveAt(index);
+		numAwake--;
 	}
 
 	// returns a vector 2 position out of range 
@@ -255,7 +266,6 @@ public class NPCSpawner : MonoBehaviour {
 				if (!data.npcAwake[i]) {
 					Recall(i);
 				}
-				
 			}
 		} else {
 			//Destroy(this);

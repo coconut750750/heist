@@ -124,7 +124,7 @@ MonoBehaviour:
     type: 2}
   speechBubble: {fileID: 114670406659044544, guid: 6a2019d4eb49d4ee5a40466746892b22,
     type: 2}
-  npcOptions: {fileID: 114247933864861212, guid: 6c5b5deec783847f39f04761488e3851,
+  npcOptions: {fileID: 114696464334595614, guid: 6c5b5deec783847f39f04761488e3851,
     type: 2}
 --- !u!114 &114431858986268764
 MonoBehaviour:
@@ -183,7 +183,6 @@ MonoBehaviour:
   lookAheadDistance: 1
   repath: 0
   restrict: 0
-  closerPointOnInvalid: 0
   debugPath: 1
   polyNav: {fileID: 0}
 --- !u!212 &212406970877011668
