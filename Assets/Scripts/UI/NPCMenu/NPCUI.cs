@@ -53,7 +53,8 @@ public class NPCUI : MonoBehaviour {
 	}
 	
 	public void Display(NPC npc) {
-		GameManager.instance.PauseGame();
+		// dont need to pause game because initial interaction (npcinteractable)
+		// will pause the game
 
 		gameObject.SetActive(true);
 
@@ -83,7 +84,7 @@ public class NPCUI : MonoBehaviour {
 		sellController.HideSellingStash();
 
 		gameObject.SetActive(false);
-		GameManager.instance.UnpauseGame();
+		// dont need to unpause the game because, again, npcinteractable will unpause
 	}
 
 	public void DeselectAll() {

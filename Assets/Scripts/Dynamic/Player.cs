@@ -72,6 +72,14 @@ public class Player : Character {
 
 	/// INTERACTABLES ///
 
+	public void DisableButtonB() {
+		buttonB.enabled = false;
+	}
+
+	public void EnableButtonB() {
+		buttonB.enabled = true;
+	}
+
 	public void Punch() {
 		if (!canPunch) {
 			return;

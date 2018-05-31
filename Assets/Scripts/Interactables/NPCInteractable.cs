@@ -22,6 +22,7 @@ public class NPCInteractable : Interactable {
     private NPCOptions npcOptionsInstance = null;
 
 	private NPC npcObject;
+    private bool interacted = false;
 
     // Use this for initialization
     void Start () {
@@ -32,49 +33,53 @@ public class NPCInteractable : Interactable {
         if (!base.enabled) {
             return;
         }
+
+        // updates hovername's position so that it follows the npc
         if (hoverTextInstance != null) {
             hoverTextInstance.UpdatePosition(gameObject.transform.position);
-        }
-        if (speechBubbleInstance != null) {
-            speechBubbleInstance.UpdatePosition(gameObject.transform.position);
-        }
-        if (npcOptionsInstance != null) {
-            npcOptionsInstance.UpdatePosition(gameObject.transform.position);
         }
     }
 	
 	public override void Interact(Player player) {
-        // greet player
-        npcObject.Pause();
+        interacted = !interacted;
+        if (!interacted) { 
+            // interacted twice so resume game, hide pop ups, and enable button b
+            player.EnableButtonB();
+            GameManager.instance.UnpauseGame();
+            HideSpeechBubble();
+            HideNPCOptions();
+            return;
+        } else {
+            // disable button b so player can't attack
+            // there isnt a cover when player interacts with npc
+            player.DisableButtonB();
+            GameManager.instance.PauseGame();
+        }
 
+        // greet player
         if (speechBubbleInstance == null) {
             speechBubbleInstance = Instantiate(speechBubble);
             speechBubbleInstance.Display(GameManager.instance.canvas.transform);
+            speechBubbleInstance.UpdateText(npcObject.Greet());
+            speechBubbleInstance.UpdatePosition(gameObject.transform.position);
         }
 
         if (npcOptionsInstance == null) {
             npcOptionsInstance = Instantiate(npcOptions);
             npcOptionsInstance.Display(GameManager.instance.canvas.transform);
             npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
-
-            player.Pause();
-        } else {
-            npcOptionsInstance.Destroy();
-            npcOptionsInstance = null;
-
-            player.Resume();
+            npcOptionsInstance.UpdatePosition(gameObject.transform.position);
         }
 
-        speechBubbleInstance.UpdateText(npcObject.Greet());
-
-        if (hoverTextInstance != null) {
-            hoverTextInstance.Destroy();
-        }
+        // destory hover name so that it doesn't overlap with speech bubble
+        HideHoverText();
     }
 
     public override void EnterRange(Player player)
     {
         if (speechBubbleInstance != null) {
+            // if there is a speech bubble already, don't want to overlap it
+            // with a hovername
             return;
         }
 
@@ -84,25 +89,34 @@ public class NPCInteractable : Interactable {
 
     public override void ExitRange(Player player)
     {
-        HideAllPopUps();
-        player.Resume();
+        HideHoverText();
     }
 
-    public void HideAllPopUps() {
-        if (speechBubbleInstance != null) {
-            speechBubbleInstance.Destroy();
-            speechBubbleInstance = null;
-        }
-        if (npcOptionsInstance != null) {
-            npcOptionsInstance.Destroy();
-            npcOptionsInstance = null;
-        }
+    public void HideHoverText() {
         if (hoverTextInstance != null) {
             hoverTextInstance.Destroy();
             hoverTextInstance = null;
         }
+    }
+
+    public void HideSpeechBubble() {
+        if (speechBubbleInstance != null) {
+            speechBubbleInstance.Destroy();
+            speechBubbleInstance = null;
+        }
+    }
+
+    public void HideNPCOptions() {
+        if (npcOptionsInstance != null) {
+            npcOptionsInstance.Destroy();
+            npcOptionsInstance = null;
+        }
+    }
             
-        npcObject.Resume();
+    public void HideAllPopUps() {
+        HideHoverText();
+        HideSpeechBubble();
+        HideNPCOptions();
     }
 
     public override void Disable() {

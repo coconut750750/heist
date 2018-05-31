@@ -21,6 +21,14 @@ public class NPCOptions : PopUp {
     public NPCOptions() : base(optionsOffset) {
     }
 
+	public override void Display(Transform parent) {
+		base.Display(parent);
+	}
+
+	public override void Destroy() {
+		base.Destroy();
+	}
+
 	public void SetCallbacks(Action OnClickInventory, Action OnClickQuest, Action OnClickInfo) {
 		this.OnClickInventory = OnClickInventory;
 		this.OnClickQuest = OnClickQuest;
