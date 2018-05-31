@@ -12,7 +12,6 @@ public class PopUp : MonoBehaviour {
 
 	public virtual void Display(Transform parent) {
         transform.SetParent(parent, false);
-		transform.SetSiblingIndex(0);
 	}
 
 	public virtual void UpdatePosition(Vector3 rootPosition) {
