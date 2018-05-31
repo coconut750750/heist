@@ -15,6 +15,7 @@ public abstract class Constants {
 
 	/// LAYERS
 	public const int NPC_ONLY_LAYER = 1024;
+	public const int PLAYER_ONLY_LAYER = 2048;
 
 
 	/// SPRITE LAYERS

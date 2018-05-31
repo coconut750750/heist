@@ -95,7 +95,7 @@ public class NPC : Character {
 
 	protected override void FixedUpdate() {
 		if (!isMoving && canSearchForDest) {
-			SetNewDestination();
+			SetNewRandomDestination();
 		}
 
 		UpdateVisibility();
@@ -147,8 +147,11 @@ public class NPC : Character {
 		base.GetHitBy(other);
 
 		// ensure that npc is moving when it gets hit
-		SetNewDestination();
 		Resume();
+
+		// fight back
+		SetNewDestination(other.transform.position);
+		Punch(Constants.PLAYER_ONLY_LAYER);
 	}
 
 	/// NAVIGATION ///
@@ -170,11 +173,14 @@ public class NPC : Character {
 	}
 
 	protected void DestinationInvalid() {
-		Debug.Log("invalid");
 		isMoving = false;
 	}
 
-	protected void SetNewDestination() {
+	protected void SetNewDestination(Vector2 newDest) {
+		agent.SetDestination(newDest);
+	}
+
+	protected void SetNewRandomDestination() {
 		Bounds nav2DBounds = agent.polyNav.masterBounds;
 		destination = GenerateRandomDest(nav2DBounds);
 		if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
@@ -296,7 +302,7 @@ public class NPC : Character {
 			UpdateAgentNav();
 
 			if (isMoving) {
-				agent.SetDestination(destination);
+				SetNewDestination(destination);
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}

@@ -49,9 +49,6 @@ public class CharAnimationManager : MonoBehaviour {
 			}
 		}
 		overrideAnimator.ApplyOverrides(clipOverrides);
-		foreach (AnimationClip anim in overrideAnimator.animationClips) {
-			Debug.Log(anim.name);
-		}
 	}
 
 	public RuntimeAnimatorController GetNewAnimator() {

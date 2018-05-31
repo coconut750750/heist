@@ -9,6 +9,7 @@ public abstract class Character : MonoBehaviour {
 	private const string CLASS_NAME = "movingobj";
 
 	private const float DOOR_DELAY_SECONDS = 0.05f;
+	private const float PUNCH_DISTANCE = 0.5f;
 
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
@@ -37,7 +38,7 @@ public abstract class Character : MonoBehaviour {
 	protected int health = 100;
 	protected int money = 100;
 	protected int exp = 0;
-	protected int strength = 0;
+	protected int strength = 10;
 
 	IEnumerator DoorDelay() {
 		paused = true;
@@ -146,8 +147,30 @@ public abstract class Character : MonoBehaviour {
 		}
 	}
 
-	public virtual void Punch() {
-		animator.SetTrigger(punchHash);
+	protected virtual void Punch(int layer) {
+		Vector3 direction = Vector2.zero;
+
+		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+		if (stateHash == forwardStateHash) {
+			direction = Vector2.down;
+		} else if (stateHash == backStateHash) {
+			direction = Vector2.up;
+		} else if (stateHash == leftStateHash) {
+			direction = Vector2.left;
+		} else if (stateHash == rightStateHash) {
+			direction = Vector2.right;
+		}
+
+		if (direction.sqrMagnitude != 0) {
+			float z = transform.position.z;
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
+												 layer, z, z);
+			if (hit.collider != null) {
+				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
+			}
+
+			animator.SetTrigger(punchHash);
+		}
 	}
 
 	public virtual void GetHitBy(Character other) {
