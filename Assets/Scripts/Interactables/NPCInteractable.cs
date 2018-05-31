@@ -82,7 +82,7 @@ public class NPCInteractable : Interactable {
         HideAllPopUps();
     }
 
-    private void HideAllPopUps() {
+    public void HideAllPopUps() {
         if (interacted) {
             if (speechBubbleInstance != null) {
                 speechBubbleInstance.Destroy();

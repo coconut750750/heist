@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /// <summary>  
 ///		This is the NPC class.
@@ -52,14 +53,32 @@ public class NPC : Character {
 	// independent if npc not spawned
 	private bool independent = true;
 
+	// called when npc dies
+	public event Action<NPC> OnDeath;
+
 	// true if visible by camera
 	public bool visible = true;
 	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
-		yield return new WaitForSeconds(Random.Range(0, maxDestinationDelay));
+		yield return new WaitForSeconds(UnityEngine.Random.Range(0, maxDestinationDelay));
 		canSearchForDest = true;
 	}
+
+	// fighting member variables
+	public const float PUNCH_BACK_DELAY = 0.5f;
+
+	private bool fighting = false;
+	private Character opponent = null;
+
+	IEnumerator Retaliate() {
+		yield return new WaitForSeconds(PUNCH_BACK_DELAY);
+		Punch(Constants.PLAYER_ONLY_LAYER);
+		fighting = false;
+		canSearchForDest = true;
+	}
+
+	/// END MEMBER VARIABLES
 
 	protected override void Awake() {
 		base.Awake();
@@ -94,7 +113,7 @@ public class NPC : Character {
 	}
 
 	protected override void FixedUpdate() {
-		if (!isMoving && canSearchForDest) {
+		if (!fighting && !isMoving && canSearchForDest) {
 			SetNewRandomDestination();
 		}
 
@@ -130,8 +149,8 @@ public class NPC : Character {
 		float minY = Mathf.Max(bound.min.y, posMinY);
 		float maxY = Mathf.Min(bound.max.y, posMaxY);
 
-		float x = Mathf.Round(Random.Range(minX, maxX));
-		float y = Mathf.Round(Random.Range(minY, maxY));
+		float x = Mathf.Round(UnityEngine.Random.Range(minX, maxX));
+		float y = Mathf.Round(UnityEngine.Random.Range(minY, maxY));
 
 		return new Vector2(x, y);
 	}
@@ -145,13 +164,24 @@ public class NPC : Character {
 
 	public override void GetHitBy(Character other) {
 		base.GetHitBy(other);
+		if (health <= 0) {
+			if (OnDeath != null) {
+				OnDeath(this);
+			}
+			Destroy(gameObject);
+		}
 
 		// ensure that npc is moving when it gets hit
 		Resume();
 
 		// fight back
-		SetNewDestination(other.transform.position);
-		Punch(Constants.PLAYER_ONLY_LAYER);
+		fighting = true;
+		opponent = other;
+
+		SetNewDestination(opponent.transform.position);
+
+		// hide all pop ups
+		GetComponent<NPCInteractable>().HideAllPopUps();
 	}
 
 	/// NAVIGATION ///
@@ -163,8 +193,13 @@ public class NPC : Character {
 
 	// if npc lands on stairs, it will either go up a floor or down a floor
 	protected void NavArrived() {
+		if (fighting) {
+			StartCoroutine(Retaliate());
+		} else {
+			StartCoroutine(ArriveDelay());
+		}
+
 		isMoving = false;
-		StartCoroutine(ArriveDelay());
 
 		if (GetFloor() != prevFloor) {
 			prevFloor = GetFloor();
@@ -191,7 +226,7 @@ public class NPC : Character {
 	/// INVENTORY ///
 
 	void PopulateInventory() {
-		int num = Random.Range(0, inventory.GetCapacity());
+		int num = UnityEngine.Random.Range(0, inventory.GetCapacity());
 
 		for (int i = 0; i < num; i++) {
 			inventory.AddItem(ItemManager.instance.GetRandomItem());

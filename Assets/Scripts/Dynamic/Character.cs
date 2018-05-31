@@ -48,9 +48,9 @@ public abstract class Character : MonoBehaviour {
 
 	/// GET HIT VARIABLES ///
 	private const float GET_HIT_EFFECT_TIME = 1.5f;
-	private const float GET_HIT_BLINK_SECONDS = 0.15f;
-	private const int GET_HIT_BLINK_NUM = 10;
-	private const float GET_HIT_SPEEDUP = 1.5f;
+	private const float GET_HIT_BLINK_SECONDS = 0.075f;
+	private const int GET_HIT_BLINK_NUM = 20;
+	private const float GET_HIT_SPEEDUP = 1.25f;
 
 	private bool isEffectedByHit = false;
 
