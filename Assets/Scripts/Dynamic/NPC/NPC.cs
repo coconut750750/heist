@@ -93,23 +93,26 @@ public class NPC : Character {
 		Debug.Log(displacement);
 		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 			if (displacement.x > 0) {
-				Face(AnimationDirection.Right);
+				Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
 			} else {
-				Face(AnimationDirection.Left);
+				Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
 			}
 		} else {
 			// if at 0, looks nice if npc facing back (punching into screen)
 			if (displacement.y >= 0) {
-				Face(AnimationDirection.Backward);
+				Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
 			} else {
-				Face(AnimationDirection.Forward);
+				Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
 			}
 		}
-		Debug.Log(animator.GetCurrentAnimatorStateInfo(0).fullPathHash == forwardStateHash);
 
-		Punch(Constants.PLAYER_ONLY_LAYER);
+		// don't let npc search for dest because we want npc to remain still for a bit
+		// need to explicitly set to false because it may have turned true
+		// (which is does after maxDestinationDelay on arrival)
+		canSearchForDest = false;
 		fighting = false;
 		opponent = null;
+		
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
 		EndRetaliateAnimator();
 		canSearchForDest = true;

@@ -20,8 +20,12 @@ public abstract class Character : MonoBehaviour {
 
 	public float moveSpeed;
 
+	// keep tack of previous directions to get rid of random outliers
+	// only used in Move() but updated in Face()
+	private AnimationDirection prevDir = AnimationDirection.Forward;
+
 	protected enum AnimationDirection {
-		Forward, Right, Backward, Left
+		Forward, Right, Back, Left, None
 	}
 
 	protected int forwardStateHash = Animator.StringToHash("Base Layer.Forward");
@@ -119,21 +123,25 @@ public abstract class Character : MonoBehaviour {
 			case AnimationDirection.Forward:
 				if (currentAnimStateHash != forwardStateHash) {
 					animator.SetTrigger(forwardHash);
+					prevDir = AnimationDirection.Forward;
 				}
 				return;
-			case AnimationDirection.Backward:
+			case AnimationDirection.Back:
 				if (currentAnimStateHash != backStateHash) {
 					animator.SetTrigger(backHash);
+					prevDir = AnimationDirection.Back;
 				}
 				return;
 			case AnimationDirection.Left:
 				if (currentAnimStateHash != leftStateHash) {
 					animator.SetTrigger(leftHash);
+					prevDir = AnimationDirection.Left;
 				}
 				return;
 			case AnimationDirection.Right:
 				if (currentAnimStateHash != rightStateHash) {
 					animator.SetTrigger(rightHash);
+					prevDir = AnimationDirection.Right;
 				}
 				return;
 		}
@@ -158,44 +166,71 @@ public abstract class Character : MonoBehaviour {
 				return;
 			}
 
+		AnimationDirection dirToFace = AnimationDirection.None;
 		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
 			if (movement.y <= 0) {
-				Face(AnimationDirection.Forward);
+				dirToFace = AnimationDirection.Forward;				
 			} else {
-				Face(AnimationDirection.Backward);
+				dirToFace = AnimationDirection.Back;		
 			}
 		} else {
 			if (movement.x <= 0) {
-				Face(AnimationDirection.Left);
+				dirToFace = AnimationDirection.Left;		
 			} else {
-				Face(AnimationDirection.Right);
+				dirToFace = AnimationDirection.Right;		
 			}
+		}
+
+		if (dirToFace == AnimationDirection.None) {
+			return;
+		}
+
+		if (prevDir == dirToFace) {
+			Face(dirToFace);
+		} else {
+			prevDir = dirToFace;
 		}
 	}
 
-	protected virtual void Punch(int layer) {
-		Vector3 direction = Vector2.zero;
-
-		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-		if (stateHash == forwardStateHash) {
-			direction = Vector2.down;
-		} else if (stateHash == backStateHash) {
-			direction = Vector2.up;
-		} else if (stateHash == leftStateHash) {
-			direction = Vector2.left;
-		} else if (stateHash == rightStateHash) {
-			direction = Vector2.right;
+	protected virtual void Punch(AnimationDirection animDirection, int layer) {
+		Vector3 direction = Vector3.zero;
+		switch (animDirection) {
+			case AnimationDirection.Forward:
+				direction = Vector3.down;
+				break;
+			case AnimationDirection.Back:
+				direction = Vector3.up;
+				break;
+			case AnimationDirection.Left:
+				direction = Vector3.left;
+				break;
+			case AnimationDirection.Right:
+				direction = Vector3.right;
+				break;
 		}
 
 		if (direction.sqrMagnitude != 0) {
 			float z = transform.position.z;
 			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
-												 layer, z, z);
+													layer, z, z);
 			if (hit.collider != null) {
 				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
 			}
 
 			animator.SetTrigger(punchHash);
+		}
+	}
+
+	protected virtual void Punch(int layer) {
+		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+		if (stateHash == forwardStateHash) {
+			Punch(AnimationDirection.Forward, layer);
+		} else if (stateHash == backStateHash) {
+			Punch(AnimationDirection.Back, layer);
+		} else if (stateHash == leftStateHash) {
+			Punch(AnimationDirection.Left, layer);
+		} else if (stateHash == rightStateHash) {
+			Punch(AnimationDirection.Right, layer);
 		}
 	}
 
