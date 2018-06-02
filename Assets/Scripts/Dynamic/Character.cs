@@ -141,7 +141,6 @@ public abstract class Character : MonoBehaviour {
 
 	protected void Face(AnimationDirection direction) {
 		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-		Debug.Log(direction);
 		Face(direction, stateHash);
 	}
 
@@ -281,7 +280,7 @@ public abstract class Character : MonoBehaviour {
 		this.floor = data.floor;
 		rb2D.transform.position = data.getPosition();
 
-		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = data.strength;
+		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = 0;//data.strength;
 	}
 }
 

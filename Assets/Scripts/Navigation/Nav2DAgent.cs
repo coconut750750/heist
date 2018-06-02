@@ -14,7 +14,7 @@ public class Nav2DAgent : MonoBehaviour{
 	///The distance to stop at from the goal
 	public float stoppingDistance    = 0.05f;
 	///The distance to start slowing down
-	public float slowingDistance     = 0.5f;
+	public float slowingDistance     = 0f;
 	///The rate at which it will slow down
 	public float decelerationRate    = 10;
 	///Rotate transform as well?

@@ -90,6 +90,7 @@ public class NPC : Character {
 	IEnumerator Retaliate() {
 		// need to face the correct direction otherwise punch will be missed
 		Vector3 displacement = opponent.transform.position - transform.position;
+		Debug.Log(displacement);
 		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 			if (displacement.x > 0) {
 				Face(AnimationDirection.Right);
@@ -97,18 +98,20 @@ public class NPC : Character {
 				Face(AnimationDirection.Left);
 			}
 		} else {
-			if (displacement.y > 0) {
+			// if at 0, looks nice if npc facing back (punching into screen)
+			if (displacement.y >= 0) {
 				Face(AnimationDirection.Backward);
 			} else {
 				Face(AnimationDirection.Forward);
 			}
 		}
+		Debug.Log(animator.GetCurrentAnimatorStateInfo(0).fullPathHash == forwardStateHash);
 
 		Punch(Constants.PLAYER_ONLY_LAYER);
 		fighting = false;
 		opponent = null;
-		EndRetaliateAnimator();
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
+		EndRetaliateAnimator();
 		canSearchForDest = true;
 	}
 
@@ -164,13 +167,14 @@ public class NPC : Character {
 			}
 
 			if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
-				// this means npc farther than the 1 pixel box around opponent so update dest
+				// this means npc far enough to update dest
 				if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 					displacement.y = 0;
 				} else {
 					displacement.x = 0;
 				}
-				Vector3 offset = displacement / displacement.magnitude * PUNCH_DISTANCE;
+				// mag == x + y since either one is a non-zero and the other is 0
+				Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
 
 				SetNewDestination(opponent.transform.position - offset);
 			}
@@ -266,7 +270,6 @@ public class NPC : Character {
 		canSearchForDest = false;
 	}
 
-	
 	protected void NavArrived() {
 		if (fighting) {
 			// if fighting and arrived and dest, hit the opponent
