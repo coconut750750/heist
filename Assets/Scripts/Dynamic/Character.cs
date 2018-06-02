@@ -8,8 +8,8 @@ public abstract class Character : MonoBehaviour {
 
 	private const string CLASS_NAME = "movingobj";
 
-	private const float DOOR_DELAY_SECONDS = 0.05f;
-	private const float PUNCH_DISTANCE = 0.5f;
+	public const float DOOR_DELAY_SECONDS = 0.05f;
+	public const float PUNCH_DISTANCE = 0.5f;
 
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
@@ -19,6 +19,10 @@ public abstract class Character : MonoBehaviour {
 	protected int floor = 0;
 
 	public float moveSpeed;
+
+	protected enum AnimationDirection {
+		Forward, Right, Backward, Left
+	}
 
 	protected int forwardStateHash = Animator.StringToHash("Base Layer.Forward");
 	protected int backStateHash = Animator.StringToHash("Base Layer.Back");
@@ -110,6 +114,37 @@ public abstract class Character : MonoBehaviour {
 		}
 	}
 
+	private void Face(AnimationDirection direction, int currentAnimStateHash) {
+		switch (direction) {
+			case AnimationDirection.Forward:
+				if (currentAnimStateHash != forwardStateHash) {
+					animator.SetTrigger(forwardHash);
+				}
+				return;
+			case AnimationDirection.Backward:
+				if (currentAnimStateHash != backStateHash) {
+					animator.SetTrigger(backHash);
+				}
+				return;
+			case AnimationDirection.Left:
+				if (currentAnimStateHash != leftStateHash) {
+					animator.SetTrigger(leftHash);
+				}
+				return;
+			case AnimationDirection.Right:
+				if (currentAnimStateHash != rightStateHash) {
+					animator.SetTrigger(rightHash);
+				}
+				return;
+		}
+	}
+
+	protected void Face(AnimationDirection direction) {
+		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+		Debug.Log(direction);
+		Face(direction, stateHash);
+	}
+
 	protected void UpdateAnimator(Vector3 movement) {
 		if (movement.sqrMagnitude == 0) {
 			return;
@@ -126,23 +161,15 @@ public abstract class Character : MonoBehaviour {
 
 		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
 			if (movement.y <= 0) {
-				if (stateHash != forwardStateHash) {
-					animator.SetTrigger(forwardHash);
-				}
+				Face(AnimationDirection.Forward);
 			} else {
-				if (stateHash != backStateHash) {
-					animator.SetTrigger(backHash);
-				}
+				Face(AnimationDirection.Backward);
 			}
 		} else {
 			if (movement.x <= 0) {
-				if (stateHash != leftStateHash) {
-					animator.SetTrigger(leftHash);
-				}
+				Face(AnimationDirection.Left);
 			} else {
-				if (stateHash != rightStateHash) {
-					animator.SetTrigger(rightHash);
-				}
+				Face(AnimationDirection.Right);
 			}
 		}
 	}
