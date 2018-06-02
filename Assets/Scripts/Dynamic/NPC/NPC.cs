@@ -35,6 +35,9 @@ public class NPC : Character {
 	// range where the next destinations will generate
 	public int destinationRange;
 
+	// the floor to start on. used for debugging
+	public int startFloor = 1;
+
 	private string npcName = "Billy";
 	private Inventory inventory;
 	
@@ -47,8 +50,6 @@ public class NPC : Character {
 	private Vector2 destination;
 	private bool isMoving; // true if npc is moving
 	private bool canSearchForDest; // true if npc may search for another destination
-
-	private int prevFloor; // the floor before arriving at destination
 
 	// independent if npc not spawned
 	private bool independent = true;
@@ -138,9 +139,8 @@ public class NPC : Character {
 
 		agent.maxSpeed = moveSpeed;
 
-		prevFloor = GetFloor();
-
-		UpdateSortingLayer();		
+		// floor = startFloor - 1;
+		// OnFloorChanged();
 	}
 
 	void OnEnable() {
@@ -191,17 +191,7 @@ public class NPC : Character {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		UpdateVisibility();
-		UpdateSortingLayer();
-	}
-
-	// depending on the floor the NPC is in, its sorting layer will change
-	protected void UpdateSortingLayer() {
-		if (GetFloor () == 1) {
-			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = Constants.ELEVATED1;
-		} else if (GetFloor () == 2) {
-			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = Constants.ELEVATED2;
-		}
+		OnFloorChanged();
 	}
 
 	// Generates random destination within bound and within the destination range
@@ -283,11 +273,7 @@ public class NPC : Character {
 
 		isMoving = false;
 
-		// if npc lands on stairs, it will either go up a floor or down a floor
-		if (GetFloor() != prevFloor) {
-			prevFloor = GetFloor();
-			UpdateAgentNav();
-		}
+		// if npc lands on stairs, it will enter trigger
 	}
 
 	protected void DestinationInvalid() {
@@ -321,10 +307,19 @@ public class NPC : Character {
 		PopulateInventory();
 	}
 
+	// called when npc enters trigger (could be stairs)
+	// called when first loads
+	private void OnFloorChanged() {
+		UpdateAgentNav();
+		UpdateSortingLayer();
+	}
+
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
 	}
 
+	// called when floor changes
+	// changes agent nav to correct floor
 	private void UpdateAgentNav() {
 		if (GetFloor() == 1) {
 			SetAgentNav(GameManager.instance.groundNav);
@@ -333,6 +328,18 @@ public class NPC : Character {
 		}
 	}
 
+	// called only when floor changes
+	// depending on the floor the NPC is in, its sorting layer will change
+	protected void UpdateSortingLayer() {
+		if (GetFloor () == 1) {
+			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = Constants.ELEVATED1;
+		} else if (GetFloor () == 2) {
+			gameObject.GetComponent<SpriteRenderer>().sortingLayerName = Constants.ELEVATED2;
+		}
+	}
+
+	// called every frame
+	// if npc and player not on same floor, hide npc
 	private void UpdateVisibility() {
 		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visible) {
 			SetVisibility(false);
@@ -366,10 +373,6 @@ public class NPC : Character {
 
 	public bool CanSearchForDest() {
 		return canSearchForDest;
-	}
-
-	public int GetPrevFloor() {
-		return prevFloor;
 	}
 
 	public bool IsIndependent() {
@@ -413,14 +416,11 @@ public class NPC : Character {
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
 
-			prevFloor = data.prevFloor;
-			visible = data.visible;
-			SetVisibility(visible);
-
-			UpdateAgentNav();
+			SetVisibility(data.visible);
+			OnFloorChanged();
 
 			if (isMoving) {
-				SetNewDestination(destination);
+				SetNewDestination(new Vector2(-1, 11)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
@@ -439,7 +439,6 @@ public class NPCData : CharacterData {
 
 	public bool isMoving;
 	public bool canSearchForDest;
-	public int prevFloor;
 	public bool visible;
 
 	public NPCData(NPC npc) : base(npc) {
@@ -449,7 +448,6 @@ public class NPCData : CharacterData {
 
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();
-		this.prevFloor = npc.GetPrevFloor();
 		this.visible = npc.visible;
 	}
 }

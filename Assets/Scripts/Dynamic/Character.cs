@@ -212,7 +212,7 @@ public abstract class Character : MonoBehaviour {
 		if (direction.sqrMagnitude != 0) {
 			float z = transform.position.z;
 			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
-													layer, z, z);
+												 layer, z, z);
 			if (hit.collider != null) {
 				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
 			}

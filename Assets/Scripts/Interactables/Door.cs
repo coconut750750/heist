@@ -17,6 +17,11 @@ public class Door : MonoBehaviour {
 	}
 	
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
+		// different floors so don't interact
+		if (other.transform.position.z != transform.position.z) {
+			return;
+		}
+
 		count++;
 		if (open) {
 			return;
@@ -27,9 +32,7 @@ public class Door : MonoBehaviour {
 		if (other.gameObject.CompareTag (PLAYER_TAG)) {
 			other.gameObject.GetComponent<Player>().StartDoorDelay();
 		} else if (other.gameObject.CompareTag (NPC_TAG)) {
-			if (other.gameObject.GetComponent<NPC>().visible) {
-				other.gameObject.GetComponent<NPC>().StartDoorDelay();
-			}
+			other.gameObject.GetComponent<NPC>().StartDoorDelay();
 		}
 	}
 
