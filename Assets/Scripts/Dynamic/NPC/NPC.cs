@@ -68,9 +68,16 @@ public class NPC : Character {
 	// fighting member variables
 	// how long in seconds until npc starts chasing
 	public const float GET_HIT_DELAY = 0.2f;
-	// how long in seconds does npc wait before punching target when it arrives
-	// how long to way after punch to start moving again
+
+	// how long to wait after punch to start moving again
 	public const float AFTER_PUNCH_DELAY = 0.5f;
+
+	// how far opponent needs to run (squared) before npc gives up retaliating
+	public const float SQUARED_STOP_RETALIATE_DIST = 25f;
+
+	// square magnitude distance between npc and player when npc should stop dynamically
+	// updating position
+	public const float CLOSE_ENOUGH_OPPONENT_DISTANCE = 1;
 
 	private bool fighting = false;
 	private Character opponent = null;
@@ -100,6 +107,7 @@ public class NPC : Character {
 		Punch(Constants.PLAYER_ONLY_LAYER);
 		fighting = false;
 		opponent = null;
+		EndRetaliateAnimator();
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
 		canSearchForDest = true;
 	}
@@ -149,7 +157,14 @@ public class NPC : Character {
 			//   the opponent's position (that is perpendicular to the player)
 
 			Vector3 displacement = opponent.transform.position - transform.position;
-			if (displacement.sqrMagnitude > 2) { // this means npc farther than the 1 pixel box around opponent so update dest
+			if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
+				// opponent is too far, so give up fighting
+				fighting = false;
+				EndRetaliateAnimator();
+			}
+
+			if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+				// this means npc farther than the 1 pixel box around opponent so update dest
 				if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 					displacement.y = 0;
 				} else {
@@ -225,11 +240,23 @@ public class NPC : Character {
 		Resume();
 
 		// fight back
+		// chase after opponent
 		StartCoroutine(ChaseAfter());
 		opponent = other;
 
+		// adjust animator to be in fighting layer
+		StartRetaliateAnimator();
+
 		// hide all pop ups
 		GetComponent<NPCInteractable>().HideAllPopUps();
+	}
+
+	protected void StartRetaliateAnimator() {
+		animator.SetLayerWeight(1, 1);
+	}
+
+	protected void EndRetaliateAnimator() {
+		animator.SetLayerWeight(1, 0);
 	}
 
 	/// NAVIGATION ///
