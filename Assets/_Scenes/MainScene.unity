@@ -62531,7 +62531,7 @@ Prefab:
     - target: {fileID: 114431858986268764, guid: b5324eb211a224545b2ba8792862873f,
         type: 2}
       propertyPath: moveSpeed
-      value: 0.01
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b5324eb211a224545b2ba8792862873f, type: 2}
@@ -62795,10 +62795,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseAnimator: {fileID: 9100000, guid: 4ce1201bf436147da8e105fe94f54846, type: 2}
-  newBack: {fileID: 7400000, guid: 777981c7850a94304b111ba007443892, type: 2}
-  newForward: {fileID: 7400000, guid: eaf9bfb2acd8f41e591fc794a5763866, type: 2}
-  newLeft: {fileID: 7400000, guid: dae99462d41764d2ea154792221620c8, type: 2}
-  newRight: {fileID: 7400000, guid: 5ee6613de28df497b8dca908859ea8d5, type: 2}
+  newBack: {fileID: 0}
+  newForward: {fileID: 0}
+  newLeft: {fileID: 0}
+  newRight: {fileID: 0}
   newBackSprites: []
   newForwardSprites: []
   newLeftSprites: []
@@ -62867,9 +62867,9 @@ Animator:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 685611271}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 417a7a4bac84540b5963b5596a1d3ad1, type: 2}
+  m_Controller: {fileID: 9100000, guid: fe78fbbc0b81c4c0d9ce4597136d8683, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

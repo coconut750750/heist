@@ -66,15 +66,55 @@ public class NPC : Character {
 	}
 
 	// fighting member variables
-	public const float PUNCH_BACK_DELAY = 0.5f;
+	// how long in seconds until npc starts chasing
+	public const float GET_HIT_DELAY = 0.2f;
+
+	// how long to wait after punch to start moving again
+	public const float AFTER_PUNCH_DELAY = 0.5f;
+
+	// how far opponent needs to run (squared) before npc gives up retaliating
+	public const float SQUARED_STOP_RETALIATE_DIST = 25f;
+
+	// square magnitude distance between npc and player when npc should stop dynamically
+	// updating position
+	public const float CLOSE_ENOUGH_OPPONENT_DISTANCE = 1;
 
 	private bool fighting = false;
 	private Character opponent = null;
 
+	IEnumerator ChaseAfter() {
+		yield return new WaitForSeconds(GET_HIT_DELAY);
+		fighting = true;
+	}
+
 	IEnumerator Retaliate() {
-		yield return new WaitForSeconds(PUNCH_BACK_DELAY);
-		Punch(Constants.PLAYER_ONLY_LAYER);
+		// need to face the correct direction otherwise punch will be missed
+		Vector3 displacement = opponent.transform.position - transform.position;
+		Debug.Log(displacement);
+		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+			if (displacement.x > 0) {
+				Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+			} else {
+				Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
+			}
+		} else {
+			// if at 0, looks nice if npc facing back (punching into screen)
+			if (displacement.y >= 0) {
+				Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
+			} else {
+				Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+			}
+		}
+
+		// don't let npc search for dest because we want npc to remain still for a bit
+		// need to explicitly set to false because it may have turned true
+		// (which is does after maxDestinationDelay on arrival)
+		canSearchForDest = false;
 		fighting = false;
+		opponent = null;
+		
+		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
+		EndRetaliateAnimator();
 		canSearchForDest = true;
 	}
 
@@ -113,7 +153,36 @@ public class NPC : Character {
 	}
 
 	protected override void FixedUpdate() {
-		if (!fighting && !isMoving && canSearchForDest) {
+		if (fighting) {
+			// if fighting, constantly update the destination to the opponent
+			//   since player can be moving
+			// the set destination, however, is not exactly the opponent's position
+			// there is a slight offset (PUNCH_DISTANCE) so that the player can actually see
+			//   the npc punching
+			// so, we calculate the closest point that is PUNCH_DISTANCE away from
+			//   the opponent's position (that is perpendicular to the player)
+
+			Vector3 displacement = opponent.transform.position - transform.position;
+			if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
+				// opponent is too far, so give up fighting
+				fighting = false;
+				EndRetaliateAnimator();
+			}
+
+			if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+				// this means npc far enough to update dest
+				if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+					displacement.y = 0;
+				} else {
+					displacement.x = 0;
+				}
+				// mag == x + y since either one is a non-zero and the other is 0
+				Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
+
+				SetNewDestination(opponent.transform.position - offset);
+			}
+		}
+		else if (!isMoving && canSearchForDest) {
 			SetNewRandomDestination();
 		}
 
@@ -164,6 +233,9 @@ public class NPC : Character {
 
 	public override void GetHitBy(Character other) {
 		base.GetHitBy(other);
+
+		// if health is 0 or less, die and call OnDeath function if there is one
+		// usually, OnDeath is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
 			if (OnDeath != null) {
 				OnDeath(this);
@@ -175,13 +247,23 @@ public class NPC : Character {
 		Resume();
 
 		// fight back
-		fighting = true;
+		// chase after opponent
+		StartCoroutine(ChaseAfter());
 		opponent = other;
 
-		SetNewDestination(opponent.transform.position);
+		// adjust animator to be in fighting layer
+		StartRetaliateAnimator();
 
 		// hide all pop ups
 		GetComponent<NPCInteractable>().HideAllPopUps();
+	}
+
+	protected void StartRetaliateAnimator() {
+		animator.SetLayerWeight(1, 1);
+	}
+
+	protected void EndRetaliateAnimator() {
+		animator.SetLayerWeight(1, 0);
 	}
 
 	/// NAVIGATION ///
@@ -191,9 +273,9 @@ public class NPC : Character {
 		canSearchForDest = false;
 	}
 
-	// if npc lands on stairs, it will either go up a floor or down a floor
 	protected void NavArrived() {
 		if (fighting) {
+			// if fighting and arrived and dest, hit the opponent
 			StartCoroutine(Retaliate());
 		} else {
 			StartCoroutine(ArriveDelay());
@@ -201,6 +283,7 @@ public class NPC : Character {
 
 		isMoving = false;
 
+		// if npc lands on stairs, it will either go up a floor or down a floor
 		if (GetFloor() != prevFloor) {
 			prevFloor = GetFloor();
 			UpdateAgentNav();

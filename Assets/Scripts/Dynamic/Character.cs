@@ -8,8 +8,8 @@ public abstract class Character : MonoBehaviour {
 
 	private const string CLASS_NAME = "movingobj";
 
-	private const float DOOR_DELAY_SECONDS = 0.05f;
-	private const float PUNCH_DISTANCE = 0.5f;
+	public const float DOOR_DELAY_SECONDS = 0.05f;
+	public const float PUNCH_DISTANCE = 0.5f;
 
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
@@ -19,6 +19,14 @@ public abstract class Character : MonoBehaviour {
 	protected int floor = 0;
 
 	public float moveSpeed;
+
+	// keep tack of previous directions to get rid of random outliers
+	// only used in Move() but updated in Face()
+	private AnimationDirection prevDir = AnimationDirection.Forward;
+
+	protected enum AnimationDirection {
+		Forward, Right, Back, Left, None
+	}
 
 	protected int forwardStateHash = Animator.StringToHash("Base Layer.Forward");
 	protected int backStateHash = Animator.StringToHash("Base Layer.Back");
@@ -110,6 +118,40 @@ public abstract class Character : MonoBehaviour {
 		}
 	}
 
+	private void Face(AnimationDirection direction, int currentAnimStateHash) {
+		switch (direction) {
+			case AnimationDirection.Forward:
+				if (currentAnimStateHash != forwardStateHash) {
+					animator.SetTrigger(forwardHash);
+					prevDir = AnimationDirection.Forward;
+				}
+				return;
+			case AnimationDirection.Back:
+				if (currentAnimStateHash != backStateHash) {
+					animator.SetTrigger(backHash);
+					prevDir = AnimationDirection.Back;
+				}
+				return;
+			case AnimationDirection.Left:
+				if (currentAnimStateHash != leftStateHash) {
+					animator.SetTrigger(leftHash);
+					prevDir = AnimationDirection.Left;
+				}
+				return;
+			case AnimationDirection.Right:
+				if (currentAnimStateHash != rightStateHash) {
+					animator.SetTrigger(rightHash);
+					prevDir = AnimationDirection.Right;
+				}
+				return;
+		}
+	}
+
+	protected void Face(AnimationDirection direction) {
+		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+		Face(direction, stateHash);
+	}
+
 	protected void UpdateAnimator(Vector3 movement) {
 		if (movement.sqrMagnitude == 0) {
 			return;
@@ -124,52 +166,71 @@ public abstract class Character : MonoBehaviour {
 				return;
 			}
 
+		AnimationDirection dirToFace = AnimationDirection.None;
 		if (Mathf.Abs (movement.y) >= Mathf.Abs (movement.x)) {
 			if (movement.y <= 0) {
-				if (stateHash != forwardStateHash) {
-					animator.SetTrigger(forwardHash);
-				}
+				dirToFace = AnimationDirection.Forward;				
 			} else {
-				if (stateHash != backStateHash) {
-					animator.SetTrigger(backHash);
-				}
+				dirToFace = AnimationDirection.Back;		
 			}
 		} else {
 			if (movement.x <= 0) {
-				if (stateHash != leftStateHash) {
-					animator.SetTrigger(leftHash);
-				}
+				dirToFace = AnimationDirection.Left;		
 			} else {
-				if (stateHash != rightStateHash) {
-					animator.SetTrigger(rightHash);
-				}
+				dirToFace = AnimationDirection.Right;		
 			}
+		}
+
+		if (dirToFace == AnimationDirection.None) {
+			return;
+		}
+
+		if (prevDir == dirToFace) {
+			Face(dirToFace);
+		} else {
+			prevDir = dirToFace;
 		}
 	}
 
-	protected virtual void Punch(int layer) {
-		Vector3 direction = Vector2.zero;
-
-		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-		if (stateHash == forwardStateHash) {
-			direction = Vector2.down;
-		} else if (stateHash == backStateHash) {
-			direction = Vector2.up;
-		} else if (stateHash == leftStateHash) {
-			direction = Vector2.left;
-		} else if (stateHash == rightStateHash) {
-			direction = Vector2.right;
+	protected virtual void Punch(AnimationDirection animDirection, int layer) {
+		Vector3 direction = Vector3.zero;
+		switch (animDirection) {
+			case AnimationDirection.Forward:
+				direction = Vector3.down;
+				break;
+			case AnimationDirection.Back:
+				direction = Vector3.up;
+				break;
+			case AnimationDirection.Left:
+				direction = Vector3.left;
+				break;
+			case AnimationDirection.Right:
+				direction = Vector3.right;
+				break;
 		}
 
 		if (direction.sqrMagnitude != 0) {
 			float z = transform.position.z;
 			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
-												 layer, z, z);
+													layer, z, z);
 			if (hit.collider != null) {
 				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
 			}
 
 			animator.SetTrigger(punchHash);
+		}
+	}
+
+	protected virtual void Punch(int layer) {
+		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+		if (stateHash == forwardStateHash) {
+			Punch(AnimationDirection.Forward, layer);
+		} else if (stateHash == backStateHash) {
+			Punch(AnimationDirection.Back, layer);
+		} else if (stateHash == leftStateHash) {
+			Punch(AnimationDirection.Left, layer);
+		} else if (stateHash == rightStateHash) {
+			Punch(AnimationDirection.Right, layer);
 		}
 	}
 
@@ -254,7 +315,7 @@ public abstract class Character : MonoBehaviour {
 		this.floor = data.floor;
 		rb2D.transform.position = data.getPosition();
 
-		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = data.strength;
+		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = 0;//data.strength;
 	}
 }
 
