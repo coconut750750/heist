@@ -243,7 +243,6 @@ public abstract class Character : MonoBehaviour {
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.CompareTag (Constants.STAIRS_TAG)) {
-			Debug.Log("stairs");
 			float currentZ = transform.position.z;
 			float nextZ = -0.1f - currentZ;
 			transform.position = new Vector3 (transform.position.x, transform.position.y, nextZ);
