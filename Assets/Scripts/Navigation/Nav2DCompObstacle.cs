@@ -23,11 +23,11 @@ public class Nav2DCompObstacle : MonoBehaviour {
 	private Transform _transform;
 
 	///The polygon points of the obstacle
-	public Vector2[][] polygonPoints {
+	public Vector3[][] polygonPoints {
 		get {
-			var obstaclePolys = new List<Vector2[]>();
+			var obstaclePolys = new List<Vector3[]>();
 
-			var points = new List<Vector2>();
+			var points = new List<Vector3>();
 			
 			for (int i = 0; i < compCollider.pathCount; ++i){
 				Vector2[] pathPoints = new Vector2[compCollider.GetPathPointCount(i)];

@@ -47,7 +47,7 @@ public class NPC : Character {
 		}
 	}
 
-	private Vector2 destination;
+	private Vector3 destination;
 	private bool isMoving; // true if npc is moving
 	private bool canSearchForDest; // true if npc may search for another destination
 
@@ -107,7 +107,6 @@ public class NPC : Character {
 				}
 			}
 		}
-		
 
 		// don't let npc search for dest because we want npc to remain still for a bit
 		// need to explicitly set to false because it may have turned true
@@ -168,8 +167,6 @@ public class NPC : Character {
 		base.OnTriggerEnter2D (other);
 		if (other.CompareTag(Constants.STAIRS_TAG)) {
 			OnFloorChanged();
-			Debug.Log(other.gameObject.name);
-			Debug.Log("floor changd " + GetFloor());
 		}
 	}
 
@@ -288,17 +285,19 @@ public class NPC : Character {
 
 	protected void DestinationInvalid() {
 		isMoving = false;
+		canSearchForDest = true;
 	}
 
 	protected void SetNewDestination(Vector2 newDest) {
-		agent.SetDestination(newDest);
+		destination = new Vector3(newDest.x, newDest.y, transform.position.z);
+		agent.SetDestination(destination);
 	}
 
 	protected void SetNewRandomDestination() {
 		Bounds nav2DBounds = agent.polyNav.masterBounds;
-		destination = GenerateRandomDest(nav2DBounds);
-		if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
-			agent.SetDestination(destination);
+		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
+		if ((randomDest - gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+			SetNewDestination(randomDest);
 		}
 	}
 
@@ -369,7 +368,7 @@ public class NPC : Character {
 		return inventory;
 	}
 
-	public Vector2 GetDestination() {
+	public Vector3 GetDestination() {
 		return destination;
 	}
 
@@ -422,7 +421,7 @@ public class NPC : Character {
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
 
-			destination = new Vector2(data.destX, data.destY);
+			destination = new Vector3(data.destX, data.destY, data.destZ);
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
 
@@ -430,7 +429,8 @@ public class NPC : Character {
 			OnFloorChanged();
 
 			if (isMoving) {
-				SetNewDestination(new Vector2(-1, 11)); //-1, 11
+				SetNewDestination(destination);
+				// SetNewDestination(new Vector3(-10, 12, 0)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
@@ -446,6 +446,7 @@ public class NPCData : CharacterData {
 	public ItemStashData inventoryData;
 	public float destX;
 	public float destY;
+	public float destZ;
 
 	public bool isMoving;
 	public bool canSearchForDest;
@@ -455,6 +456,7 @@ public class NPCData : CharacterData {
 		inventoryData = new ItemStashData(npc.GetInventory());
 		destX = npc.GetDestination().x;
 		destY = npc.GetDestination().y;
+		destZ = npc.GetDestination().z;
 
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();

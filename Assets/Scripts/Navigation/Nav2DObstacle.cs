@@ -22,26 +22,29 @@ public class Nav2DObstacle : MonoBehaviour {
 	private Transform _transform;
 
 	///The polygon points of the obstacle
-	public Vector2[] points{
+	public Vector3[] points{
 		get {
 			if (collider == null) {
-				return new Vector2[0];
+				return new Vector3[0];
 			}
 			if (collider is BoxCollider2D){
 				BoxCollider2D box = (BoxCollider2D) collider;
-				Vector2 pos = Vector2.zero;//new Vector2(transform.position.x, transform.position.y);
-				Vector2 tl = pos + new Vector2(-box.size.x, box.size.y)/2;
-				Vector2 tr = pos + new Vector2(box.size.x, box.size.y)/2;
-				Vector2 br = pos + new Vector2(box.size.x, -box.size.y)/2;
-				Vector2 bl = pos + new Vector2(-box.size.x, -box.size.y)/2;
-				return new Vector2[]{tl, tr, br, bl};
+				Vector3 tl = new Vector3(-box.size.x / 2, box.size.y / 2);
+				Vector3 tr = new Vector3(box.size.x  / 2, box.size.y / 2);
+				Vector3 br = new Vector3(box.size.x  / 2, -box.size.y / 2);
+				Vector3 bl = new Vector3(-box.size.x  / 2, -box.size.y / 2);
+				return new Vector3[]{tl, tr, br, bl};
 			}
 
 			if (collider is PolygonCollider2D){
 				Vector2[] tempPoints = (collider as PolygonCollider2D).points;				
 				if (invertPolygon)
 					System.Array.Reverse(tempPoints);
-				return tempPoints;			
+				Vector3[] finalPoints = new Vector3[tempPoints.Length];
+				for (int i = 0; i < tempPoints.Length; i++) {
+					finalPoints[i] = new Vector3(tempPoints[i].x, tempPoints[i].y, 0);
+				}
+				return finalPoints;			
 			}
 
 			return null;

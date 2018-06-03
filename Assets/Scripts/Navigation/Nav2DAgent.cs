@@ -48,7 +48,7 @@ public class Nav2DAgent : MonoBehaviour{
 	private Rigidbody2D rb2d;
 	
 	private int requests              = 0;
-	private List<Vector2> _activePath = new List<Vector2>();
+	private List<Vector3> _activePath = new List<Vector3>();
 
 	// private Vector2 velocity {
 	// 	get {
@@ -59,7 +59,7 @@ public class Nav2DAgent : MonoBehaviour{
 	// 	}
 	// }
 
-	private Vector2 velocity = Vector2.zero;
+	private Vector3 velocity = Vector3.zero;
 
 	private bool paused {
 		get {
@@ -68,18 +68,18 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 	
 	///The current goal of the agent
-	private Vector2 primeGoal        = Vector2.zero;
+	private Vector3 primeGoal        = Vector3.zero;
 
 	private static List<Nav2DAgent> allAgents = new List<Nav2DAgent>();
 
 	///The position of the agent
-	public Vector2 position{
+	public Vector3 position{
 		get {return transform.position;}
 		set {transform.position = value;}
 	}
 
 	///The current active path of the agent
-	public List<Vector2> activePath{
+	public List<Vector3> activePath{
 		get { 
 			return _activePath; 
 		}
@@ -105,7 +105,7 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	///The point that the agent is currenty going to. Returns the agent position if no active path
-	public Vector2 nextPoint{
+	public Vector3 nextPoint{
 		get {
 			if (hasPath)
 				return activePath[0];
@@ -145,10 +145,10 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	///Set the destination for the agent. As a result the agent starts moving
-	public bool SetDestination(Vector2 goal){ return SetDestination(goal, null); }
+	public bool SetDestination(Vector3 goal){ return SetDestination(goal, null); }
 
 	///Set the destination for the agent. As a result the agent starts moving. Only the callback from the last SetDestination will be called upon arrival
-	public bool SetDestination(Vector2 goal, Action<bool> callback){
+	public bool SetDestination(Vector3 goal, Action<bool> callback){
 		if (polyNav == null){
 			Debug.LogError("No Nav2D in scene!");
 			return false;
@@ -189,7 +189,7 @@ public class Nav2DAgent : MonoBehaviour{
 	///Clears the path and as a result the agent is stop moving
 	public void Stop(){
 		activePath.Clear();
-		velocity = Vector2.zero;
+		velocity = Vector3.zero;
 		OnSetVelocity(velocity);
 
 		requests = 0;
@@ -197,7 +197,7 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	//the callback from polyNav for when path is ready to use
-	void SetPath(Vector2[] path, bool success){
+	void SetPath(Vector3[] path, bool success){
 		//in case the agent stoped somehow, but a path was pending
 		if (requests == 0) {
 			return;
@@ -268,7 +268,7 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 
 		//Check and remove if we reached a point. 
-		if ((position - nextPoint).sqrMagnitude <= stoppingDistance){
+		if (((Vector2)position - (Vector2)nextPoint).sqrMagnitude <= stoppingDistance) {
 			activePath.RemoveAt(0);
 
 			//if it was last point, means the path is complete and no longer have an active path.
@@ -333,7 +333,7 @@ public class Nav2DAgent : MonoBehaviour{
 
 	
 	//seeking a target
-	Vector2 Seek(Vector2 pos){
+	Vector2 Seek(Vector3 pos){
 		Vector2 desiredVelocity = (pos - position).normalized * maxSpeed;
 		// Vector2 steer = desiredVelocity - velocity;
 		// steer = Truncate(steer, maxSpeed);
@@ -341,9 +341,9 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	//slowing at target's arrival
-	Vector2 Arrive(Vector2 pos){
+	Vector2 Arrive(Vector3 pos){
 
-		Vector2 desiredVelocity = (pos - position);
+		Vector3 desiredVelocity = (pos - position);
 		float dist = desiredVelocity.magnitude;
 
 		if (dist > 0) {
@@ -364,7 +364,7 @@ public class Nav2DAgent : MonoBehaviour{
 			return;
 
 		float currentLookAheadDistance = Mathf.Lerp(0, lookAheadDistance, velocity.magnitude/maxSpeed);
-		Vector2 lookAheadPos= position + velocity.normalized * currentLookAheadDistance;
+		Vector3 lookAheadPos = position + velocity.normalized * currentLookAheadDistance;
 
 		Debug.DrawLine(position, lookAheadPos, Color.blue);
 
@@ -380,9 +380,9 @@ public class Nav2DAgent : MonoBehaviour{
 
 				float mlt = otherAgent.avoidRadius + this.avoidRadius;
 				float dist = (lookAheadPos - otherAgent.position).magnitude;
-				Vector2 str = (lookAheadPos - otherAgent.position).normalized * mlt;
+				Vector3 str = (lookAheadPos - otherAgent.position).normalized * mlt;
 				Vector3 steer = Vector3.Lerp( (Vector3)str, Vector3.zero, dist/mlt);
-				velocity += (Vector2)steer;
+				velocity += new Vector3(steer.x, steer.y, 0);
 
 				Debug.DrawLine(otherAgent.position, otherAgent.position + str, new Color(1,0,0,0.1f));
 			}

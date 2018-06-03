@@ -10,7 +10,7 @@ using PathNode = Nav2D.PathNode;
 
 static class AStar {
 
-	public static IEnumerator CalculatePath(PathNode startNode, PathNode endNode, PathNode[] allNodes, Action<Vector2[], bool> callback){
+	public static IEnumerator CalculatePath(PathNode startNode, PathNode endNode, PathNode[] allNodes, Action<Vector3[], bool> callback){
 
 		#if DEBUG
 		Stopwatch sw = new Stopwatch();
@@ -63,12 +63,12 @@ static class AStar {
 		if (success){
 			callback( RetracePath(startNode, endNode), true );
 		} else {
-			callback( new Vector2[0], false );
+			callback( new Vector3[0], false );
 		}
 	}
 
-	private static Vector2[] RetracePath(PathNode startNode, PathNode endNode){
-		var path = new List<Vector2>();
+	private static Vector3[] RetracePath(PathNode startNode, PathNode endNode){
+		var path = new List<Vector3>();
 		var currentNode = endNode;
 
 		while(currentNode != startNode){
