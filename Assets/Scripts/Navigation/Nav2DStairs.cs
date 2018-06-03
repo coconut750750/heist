@@ -8,8 +8,8 @@ public class Nav2DStairs : MonoBehaviour {
 		get {
 			List<Vector3> p = new List<Vector3>();
 
-			foreach (Collider2D collider in GetComponentsInChildren<Collider2D>()) {
-				p.Add(collider.transform.position);
+			foreach (Transform transform in GetComponentsInChildren<Transform>()) {
+				p.Add(transform.position);
 			}
 			return p.ToArray();
 		}

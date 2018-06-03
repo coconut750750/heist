@@ -188,11 +188,16 @@ public class NPC : Character {
 
 		float x = Mathf.Round(UnityEngine.Random.Range(minX, maxX));
 		float y = Mathf.Round(UnityEngine.Random.Range(minY, maxY));
+		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
 
-		//return new Vector2(x, y);
-		// TODO: remove
-		// return new Vector3(6, 12, -0.1f);
-		return new Vector3(-9, 11, 0);
+		// TODO: debugging
+		// if (transform.position.z == 0) {
+		// 	return new Vector3(6, 12, -0.1f);
+		// } else {
+		// 	return new Vector3(9, 11, 0);
+		// }
+
+		return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -339,6 +344,7 @@ public class NPC : Character {
 		// TODO: delete this
 		//UpdateAgentNav();
 		UpdateSortingLayer();
+		Debug.Log("floor: " + GetFloor());
 	}
 
 	public void SetAgentNav(Nav2D nav) {

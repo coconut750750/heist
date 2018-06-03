@@ -74,7 +74,6 @@ static class AStar {
 			PathNode topNode = topToDown ? startNode : endNode;
 			PathNode botNode = !topToDown ? startNode : endNode;
 
-			UnityEngine.Debug.Log(topNode.pos + " " + botNode.pos);
 			foreach (StairNode stairNode in stairNodes) {
 				// for each stair node, find if there is a path between start/end node (which ever is on top floor)
 				// if stair Node not on same floor as topNode, continue
@@ -109,7 +108,7 @@ static class AStar {
 		PathNode retraceEndNode = reverse ? startNode : endNode;
 		
 		while(currentNode != retraceEndNode){
-			UnityEngine.Debug.Log("path node: " +currentNode.pos);
+			//UnityEngine.Debug.Log("path node: " +currentNode.pos);
 			path.Add(currentNode.pos);
 			
 			currentNode = currentNode.parent;

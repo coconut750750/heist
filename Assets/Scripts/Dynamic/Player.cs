@@ -14,7 +14,7 @@ public class Player : Character {
 	// Button B Interaction
 	protected static ActionButton buttonB;
 
-	private Vector3 START_POS = new Vector3(0.5f, 0, 0);
+	public static Vector3 START_POS = new Vector3(0.5f, 0, 0);
 
 	private Pocket mainItems;
 
@@ -45,7 +45,7 @@ public class Player : Character {
         });
 
 		UpdateUIInfo();
-		UpdateFloorWithGameManager();
+		UpdateVisibleFloorWithGameManager();
 	}
 
 	protected override void FixedUpdate() {
@@ -97,7 +97,7 @@ public class Player : Character {
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (other.gameObject.CompareTag(Constants.STAIRS_TAG)) {
-			UpdateFloorWithGameManager();
+			UpdateVisibleFloorWithGameManager();
 		} else if (other.gameObject.CompareTag(Constants.NPC_TAG)) {
 			if (!other.gameObject.GetComponent<NPC>().visible) {
 				return;
@@ -114,7 +114,7 @@ public class Player : Character {
 		base.OnTriggerExit2D (other);
 	}
 
-	private void UpdateFloorWithGameManager() {
+	private void UpdateVisibleFloorWithGameManager() {
 		if (GetFloor() == 1) {
 			GameManager.instance.HideFloor2();
 		} else if (GetFloor() == 2) {
@@ -179,11 +179,8 @@ public class Player : Character {
 		
         if (data != null) {
 			base.LoadFromData(data);
-			UpdateFloorWithGameManager();			
 		} else {
-			base.LoadFromData(new PlayerData(
-				0, 0, START_POS, 0, 0, 0, 0
-			));
+			base.LoadFromData(new PlayerData());
 		}
 
 		UpdateUIInfo();
@@ -193,9 +190,9 @@ public class Player : Character {
 [System.Serializable]
 public class PlayerData : CharacterData {
 
-	public PlayerData(int onStairs, int floor, Vector3 position, int money, int health, int exp, int strength) {
-		base.SetPositionalData(onStairs, floor, position);
-		base.SetStats(money, health, exp, strength);
+	public PlayerData() {
+		base.SetPositionalData(false, Player.START_POS);
+		base.SetStats(0, 0, 0, 0);
 	}
 
 	public PlayerData(Player player) : base(player) {
