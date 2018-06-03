@@ -117,9 +117,9 @@ public class NPC : Character {
 		canSearchForDest = false;
 		fighting = false;
 		opponent = null;
+		EndRetaliateAnimator();
 		
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
-		EndRetaliateAnimator();
 		canSearchForDest = true;
 	}
 
@@ -228,10 +228,10 @@ public class NPC : Character {
 			// chase after opponent
 			StartCoroutine(ChaseAfter());
 			opponent = other;
-
-			// adjust animator to be in fighting layer
-			StartRetaliateAnimator();
 		}
+
+		// adjust animator to be in fighting layer
+		StartRetaliateAnimator();
 
 		// hide all pop ups
 		GetComponent<NPCInteractable>().HideAllPopUps();
