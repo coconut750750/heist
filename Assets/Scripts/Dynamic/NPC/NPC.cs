@@ -27,6 +27,8 @@ public class NPC : Character {
 	public const float SELL_PERC = 1.10f; // sells an item at 110% of the price
 	public const float BUY_PERC = 0.85f; // buys an item at 85% of the price
 
+	public bool debugNav = false;
+
 	// how long to wait before finding another destination
 	public float maxDestinationDelay;
 
@@ -171,7 +173,7 @@ public class NPC : Character {
 	}
 
 	// Generates random destination within bound and within the destination range
-	protected Vector2 GenerateRandomDest(Bounds bound) {
+	protected Vector3 GenerateRandomDest(Bounds bound) {
 		Vector2 currPos = transform.position;
 
 		float posMinX = currPos.x - destinationRange;
@@ -187,7 +189,10 @@ public class NPC : Character {
 		float x = Mathf.Round(UnityEngine.Random.Range(minX, maxX));
 		float y = Mathf.Round(UnityEngine.Random.Range(minY, maxY));
 
-		return new Vector2(x, y);
+		//return new Vector2(x, y);
+		// TODO: remove
+		// return new Vector3(6, 12, -0.1f);
+		return new Vector3(-9, 11, 0);
 	}
 
 	/// INTERACTION ///
@@ -266,11 +271,17 @@ public class NPC : Character {
 	/// NAVIGATION ///
 
 	protected void NavStarted() {
+		if (debugNav) {
+			Debug.Log("nav started");
+		}
 		isMoving = true;
 		canSearchForDest = false;
 	}
 
 	protected void NavArrived() {
+		if (debugNav) {
+			Debug.Log("nav arrived");
+		}
 		if (fighting) {
 			// if fighting and arrived and dest, hit the opponent
 			StartCoroutine(Retaliate());
@@ -284,13 +295,19 @@ public class NPC : Character {
 	}
 
 	protected void DestinationInvalid() {
+		if (debugNav) {
+			Debug.Log("nav invalid");
+		}
 		isMoving = false;
 		canSearchForDest = true;
 	}
 
-	protected void SetNewDestination(Vector2 newDest) {
-		destination = new Vector3(newDest.x, newDest.y, transform.position.z);
+	protected void SetNewDestination(Vector3 newDest) {
+		destination = newDest;
 		agent.SetDestination(destination);
+		if (debugNav) {
+			Debug.Log("setting dest: " + destination);
+		}
 	}
 
 	protected void SetNewRandomDestination() {
@@ -319,7 +336,8 @@ public class NPC : Character {
 	// called when npc enters trigger (could be stairs)
 	// called when first loads
 	private void OnFloorChanged() {
-		UpdateAgentNav();
+		// TODO: delete this
+		//UpdateAgentNav();
 		UpdateSortingLayer();
 	}
 
@@ -430,7 +448,7 @@ public class NPC : Character {
 
 			if (isMoving) {
 				SetNewDestination(destination);
-				// SetNewDestination(new Vector3(-10, 12, 0)); //-1, 11
+				//SetNewDestination(new Vector3(-11, 14, 0)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}

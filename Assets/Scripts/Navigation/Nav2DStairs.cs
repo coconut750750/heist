@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class Nav2DStairs : MonoBehaviour {
 
-	private List<Collider2D> stairColliders;
+	public Vector3[] points {
+		get {
+			List<Vector3> p = new List<Vector3>();
 
-	private List<Vector3> points;
-
-	public void Start() {
-		stairColliders = new List<Collider2D>();
-		points = new List<Vector3>();
-
-		foreach (Collider2D collider in GetComponentsInChildren<Collider2D>()) {
-			stairColliders.Add(collider);
-			points.Add(new Vector3());
+			foreach (Collider2D collider in GetComponentsInChildren<Collider2D>()) {
+				p.Add(collider.transform.position);
+			}
+			return p.ToArray();
 		}
+	}
 
+	public void Awake() {
 		
-
 	}
 }

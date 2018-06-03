@@ -170,6 +170,7 @@ public class Nav2DAgent : MonoBehaviour{
 		//check if goal is valid
 		if (!polyNav.PointIsValid(goal)) {
 			// Go to closer point if requested destination is invalid
+			Debug.Log("invalid " + goal);
 			SetDestination(polyNav.GetCloserEdgePoint(goal), callback);
 			return true;
 		}
