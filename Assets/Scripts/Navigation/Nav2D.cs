@@ -7,15 +7,18 @@ using System;
 [AddComponentMenu("Navigation/Nav2D")]
 public class Nav2D : MonoBehaviour {
 
+	public bool debug = false;
+
 	[SerializeField]
-	private GameObject floor;
+	private List<GameObject> floors;
 
 	public bool drawNodes;
 	public bool drawNodesAndEdges;
 
 	///The list of obstacles for the navigation
 	private List<Nav2DObstacle> navObstacles = new List<Nav2DObstacle>();
-	private List<Nav2DCompObstacle> compObstacles = new List<Nav2DCompObstacle>();
+	private List<Nav2DCompObstacle> navCompObstacles = new List<Nav2DCompObstacle>();
+	private List<Nav2DStairs> navStairs = new List<Nav2DStairs>();
 
 	// if graph is connected, include all valid points
 	// if graph is not connected, exclude points that are not inside any obstacles
@@ -29,6 +32,7 @@ public class Nav2D : MonoBehaviour {
 
 	private PolyMap map;
 	private List<PathNode> nodes = new List<PathNode>();
+	private List<StairNode> stairNodes = new List<StairNode>();
 	// TODO: create list of valid polygons nav2d agent can use to find valid dest
 	//private List<Polygon> validPolygons = new List<Polygon>();
 
@@ -59,8 +63,11 @@ public class Nav2D : MonoBehaviour {
 
 	//some initializing
 	void Awake() {
-		navObstacles = floor.GetComponentsInChildren<Nav2DObstacle>().ToList();
-		compObstacles = floor.GetComponentsInChildren<Nav2DCompObstacle>().ToList();
+		foreach (GameObject floor in floors) {
+			navObstacles.AddRange(floor.GetComponentsInChildren<Nav2DObstacle>().ToList());
+			navCompObstacles.AddRange(floor.GetComponentsInChildren<Nav2DCompObstacle>().ToList());
+			navStairs.AddRange(floor.GetComponentsInChildren<Nav2DStairs>().ToList());
+		}
 
 		masterCollider = GetComponent<Collider2D>();
 		masterBounds = masterCollider.bounds;
@@ -78,8 +85,8 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	public void AddObstacle(Nav2DCompObstacle navObstacle) {
-		if (!compObstacles.Contains(navObstacle)) {
-			compObstacles.Add(navObstacle);
+		if (!navCompObstacles.Contains(navObstacle)) {
+			navCompObstacles.Add(navObstacle);
 			regenerateFlag = true;
 		}
 	}
@@ -91,7 +98,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	public void RemoveObstacle(Nav2DCompObstacle navObstacle) {
-		compObstacles.Remove(navObstacle);
+		navCompObstacles.Remove(navObstacle);
 		regenerateFlag = true;
 	}
 
@@ -103,10 +110,10 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Find a path 'from' and 'to', providing a callback for when path is ready containing the path.
-	public void FindPath(Vector2 start, Vector2 end, System.Action<Vector2[], bool> callback) {
+	public void FindPath(Vector3 start, Vector3 end, System.Action<Vector3[], bool> callback) {
 
 		if (CheckLOS(start, end)) {
-			callback( new Vector2[]{start, end}, true );
+			callback( new Vector3[]{start, end}, true );
 			return;
 		}
 
@@ -141,13 +148,13 @@ public class Nav2D : MonoBehaviour {
 		newNodes.Add(endNode);
 		LinkEnd(endNode, newNodes);
 
-		StartCoroutine(AStar.CalculatePath(startNode, endNode, newNodes.ToArray(), RequestDone));
+		StartCoroutine(AStar.CalculatePath(startNode, endNode, newNodes.ToArray(), stairNodes.ToArray(), RequestDone));
 	}
 
 	//Pathfind request finished (path found or not)
 	// delete start and end node
 	// destroy links between end node and other nodes
-	void RequestDone(Vector2[] path, bool success) {
+	void RequestDone(Vector3[] path, bool success) {
 		DeleteExternalLinks();
 		isProcessingPath = false;
 		currentRequest.callback(path, success);
@@ -157,14 +164,18 @@ public class Nav2D : MonoBehaviour {
 	///Generate the map
 	public void GenerateMap(bool generateMaster) {
 		CreatePolyMap(generateMaster);
-		CreateNodes();
+		CreateAndCleanNodes();
+		// since stairs are non-negotiable, create them after cleaning up nodes
+		CreateAndLinkStairNodes();
 		LinkNodes(nodes);
 	}
 
 	//helper function
-	Vector2[] TransformPoints ( Vector2[] points, Transform t ) {
-		for (int i = 0; i < points.Length; i++)
+	Vector3[] TransformPoints ( Vector3[] points, Transform t ) {
+		for (int i = 0; i < points.Length; i++) {
 			points[i] = t.TransformPoint(points[i]);
+		}
+			
 		return points;
 	}
 
@@ -177,18 +188,16 @@ public class Nav2D : MonoBehaviour {
 		//create a polygon object for each obstacle
 		for (int i = 0; i < navObstacles.Count; i++) {
 			Nav2DObstacle obstacle = navObstacles[i];
-			Vector2[] transformedPoints = TransformPoints(obstacle.points, obstacle.transform);
-			Vector2[] inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + obstacle.extraOffset) );
-		
+			Vector3[] transformedPoints = TransformPoints(obstacle.points, obstacle.transform);
+			Vector3[] inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + obstacle.extraOffset) );
 			obstaclePolys.Add(new Polygon(inflatedPoints));
 		}
 
 		//create polygon objects for each composite obstacle
-		foreach (Nav2DCompObstacle compObstacle in compObstacles) {
-			foreach (Vector2[] p in compObstacle.polygonPoints) {
-				Vector2[] transformedPoints = TransformPoints(p, compObstacle.transform);
-				Vector2[] inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + compObstacle.extraOffset) );
-
+		foreach (Nav2DCompObstacle compObstacle in navCompObstacles) {
+			foreach (Vector3[] p in compObstacle.polygonPoints) {
+				Vector3[] transformedPoints = TransformPoints(p, compObstacle.transform);
+				Vector3[] inflatedPoints = InflatePolygon(transformedPoints, Mathf.Max(0.01f, inflateRadius + compObstacle.extraOffset) );
 				obstaclePolys.Add(new Polygon(inflatedPoints));
 			}
 		}		
@@ -197,7 +206,7 @@ public class Nav2D : MonoBehaviour {
 			if (masterCollider is PolygonCollider2D) {
 				PolygonCollider2D polyCollider = (PolygonCollider2D)masterCollider;
 				//invert the main polygon points so that we save checking for inward/outward later (for Inflate)
-				List<Vector2> reversed = new List<Vector2>();
+				List<Vector3> reversed = new List<Vector3>();
 				
 				for (int i = 0; i < polyCollider.pathCount; ++i) {
 
@@ -206,8 +215,8 @@ public class Nav2D : MonoBehaviour {
 					
 					reversed.Reverse();
 
-					Vector2[] transformed = TransformPoints(reversed.ToArray(), polyCollider.transform);
-					Vector2[] inflated = InflatePolygon(transformed, Mathf.Max(0.01f, inflateRadius));
+					Vector3[] transformed = TransformPoints(reversed.ToArray(), polyCollider.transform);
+					Vector3[] inflated = InflatePolygon(transformed, Mathf.Max(0.01f, inflateRadius));
 				
 					masterPolys.Add(new Polygon(inflated));
 					reversed.Clear();
@@ -219,8 +228,8 @@ public class Nav2D : MonoBehaviour {
 				Vector2 tr = box.offset + new Vector2(box.size.x, box.size.y)/2;
 				Vector2 br = box.offset + new Vector2(box.size.x, -box.size.y)/2;
 				Vector2 bl = box.offset + new Vector2(-box.size.x, -box.size.y)/2;
-				Vector2[] transformed = TransformPoints(new Vector2[]{tl, bl, br, tr}, masterCollider.transform);
-				Vector2[] inflated = InflatePolygon(transformed, Mathf.Max(0.01f, inflateRadius));
+				Vector3[] transformed = TransformPoints(new Vector3[]{tl, bl, br, tr}, masterCollider.transform);
+				Vector3[] inflated = InflatePolygon(transformed, Mathf.Max(0.01f, inflateRadius));
 				masterPolys.Add(new Polygon(inflated));
 			}
 		
@@ -236,17 +245,42 @@ public class Nav2D : MonoBehaviour {
 		//
 	}
 
+	//Link stairs together
+	void CreateAndLinkStairNodes() {
+		// adding stair nodes after deleting surrounded
+		foreach (Nav2DStairs stairs in navStairs) {
+			foreach (Vector3 point in stairs.points) {
+				Vector3 rounded = new Vector3(Mathf.Round(point.x), Mathf.Round(point.y), point.z);
+				StairNode node = new StairNode(rounded);
+				nodes.Add(node);
+				stairNodes.Add(node);
+			}
+		}
+
+		for (int a = 0; a < stairNodes.Count; a++) {
+			for (int b = a + 1; b < stairNodes.Count; b++) {
+				StairNode nodeA = stairNodes[a];
+				StairNode nodeB = stairNodes[b];
+				
+				if (nodeA.pos.x == nodeB.pos.x && nodeA.pos.y == nodeB.pos.y) {
+					stairNodes[a].neighborStair = nodeB;
+					stairNodes[b].neighborStair = nodeA;
+				}
+			}
+		}
+	}
+
 	//Create Nodes at convex points (since master poly is inverted, it will be concave for it) if they are valid
-	void CreateNodes() {
+	void CreateAndCleanNodes() {
 		nodes.Clear();
 
-		List<Vector2> alreadyAdded = new List<Vector2>();
+		List<Vector3> alreadyAdded = new List<Vector3>();
 
 		for (int p = 0; p < map.allPolygons.Length; p++) {
 			Polygon poly = map.allPolygons[p];
 			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
 
-			Vector2[] inflatedPoints = InflatePolygon(poly.points, inflateRadius);
+			Vector3[] inflatedPoints = InflatePolygon(poly.points, inflateRadius);
 			for (int i = 0; i < inflatedPoints.Length; i++) {
 				//if point is concave dont create a node
 				if (PointIsConcave(inflatedPoints, i)) {
@@ -255,10 +289,7 @@ public class Nav2D : MonoBehaviour {
 				
 				//round the position vector to ensure objects fit through doors
 				//also need to round to allow CheckLOS() between them
-				Vector2 rounded = new Vector2(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y));				
-				
-				//Vector2 rounded = new Vector2(inflatedPoints[i].x, inflatedPoints[i].y);				
-
+				Vector3 rounded = new Vector3(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y), inflatedPoints[i].z);				
 				
 				//if point is not in valid area dont create a node
 				if (!PointIsValid(rounded)) {
@@ -295,13 +326,14 @@ public class Nav2D : MonoBehaviour {
 		}
 
 		DeleteLoneNodes();
-	}
+	}	
 	
 	//Link the start node in
 	void LinkStart(PathNode start, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
 			if (CheckLOS(start.pos, toNodes[i].pos)) {
 				start.links.Add(toNodes[i]);
+				toNodes[i].links.Add(start);
 			}			
 		}
 	}
@@ -311,6 +343,7 @@ public class Nav2D : MonoBehaviour {
 		for (int i = 0; i < toNodes.Count; i++) {
 			if (CheckLOS(end.pos, toNodes[i].pos)) {
 				toNodes[i].links.Add(end);
+				end.links.Add(toNodes[i]);
 			}			
 		}
 	}
@@ -330,14 +363,14 @@ public class Nav2D : MonoBehaviour {
 
 	// delete nodes that are completely surrounded by other nodes and obstacles
 	// run after creating nodes
-	void DeleteSurrounded(List<Vector2> addedNodeCoords) {
+	void DeleteSurrounded(List<Vector3> addedNodeCoords) {
 		List<PathNode> cleanedNodes = new List<PathNode>();
 
 		for (int n = 0; n < nodes.Count; n++) {
-			Vector2 left = nodes[n].pos + new Vector2(-1, 0);
-			Vector2 top = nodes[n].pos + new Vector2(0, 1);
-			Vector2 right = nodes[n].pos + new Vector2(1, 0);
-			Vector2 down = nodes[n].pos + new Vector2(0, -1);
+			Vector3 left = nodes[n].pos + new Vector3(-1, 0);
+			Vector3 top = nodes[n].pos + new Vector3(0, 1);
+			Vector3 right = nodes[n].pos + new Vector3(1, 0);
+			Vector3 down = nodes[n].pos + new Vector3(0, -1);
 
 			bool leftBlocked = addedNodeCoords.Contains(left) || !PointIsValid(left);
 			bool topBlocked = addedNodeCoords.Contains(top) || !PointIsValid(top);
@@ -365,7 +398,11 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Determine if 2 points see each other.
-	public bool CheckLOS (Vector2 posA, Vector2 posB) {
+	public bool CheckLOS (Vector3 posA, Vector3 posB) {
+		if (posA.z != posB.z) {
+			return false;
+		}
+
 		if ((posA - posB).sqrMagnitude < Mathf.Epsilon) {
 			return true;
 		}
@@ -373,6 +410,10 @@ public class Nav2D : MonoBehaviour {
 		Polygon poly = null;
 		for (int i = 0; i < map.obstaclePolygons.Length; i++) {
 			poly = map.obstaclePolygons[i];
+			// if polygon on different floor, ignore it
+			if (poly.points[0].z != posA.z) {
+				continue;
+			}
 			for (int j = 0; j < poly.points.Length; j++) {
 				if (SegmentsCross(posA, posB, poly.points[j], poly.points[(j + 1) % poly.points.Length])) {
 					return false;
@@ -383,7 +424,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///determine if a point is within a valid (walkable) area.
-	public bool PointIsValid (Vector2 point) {
+	public bool PointIsValid (Vector3 point) {
 		// check if point in nav 2d boundaries
 		for (int i = 0; i < map.masterPolygons.Length; i++) {
 			if (!PointInsidePolygon(map.masterPolygons[i].points, point)) {
@@ -394,6 +435,9 @@ public class Nav2D : MonoBehaviour {
 		// check if point not in any obstacles
 		int inside = 0;
 		for (int i = 0; i < map.obstaclePolygons.Length; i++) {
+			if (map.obstaclePolygons[i].points[0].z != point.z) {
+				continue;
+			}
 			if (PointInsidePolygon(map.obstaclePolygons[i].points, point)) {
 				inside++;
 			}
@@ -408,9 +452,9 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Kind of scales a polygon based on it's vertices average normal.
-	public static Vector2[] InflatePolygon(Vector2[] points, float dist) {
+	public static Vector3[] InflatePolygon(Vector3[] points, float dist) {
 
-		Vector2[] inflatedPoints = new Vector2[points.Length];
+		Vector3[] inflatedPoints = new Vector3[points.Length];
 
 		for (int i = 0; i < points.Length; i++) {
 			
@@ -419,14 +463,14 @@ public class Nav2D : MonoBehaviour {
 			Vector2 mid = (ab + ac).normalized;
 			
 			mid *= (!PointIsConcave(points, i)? -dist : dist);
-			inflatedPoints[i] = (points[i] + mid);
+			inflatedPoints[i] = (Vector3)((Vector2)points[i] + mid) + new Vector3(0, 0, points[i].z);
 		}
 
 		return inflatedPoints;
 	}
 
 	///Check if or not a point is concave to the polygon points provided
-	public static bool PointIsConcave(Vector2[] points, int point) {
+	public static bool PointIsConcave(Vector3[] points, int point) {
 
 		Vector2 current = points[point];
 		Vector2 next = points[(point + 1) % points.Length];
@@ -462,7 +506,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Is a point inside a polygon?
-	public static bool PointInsidePolygon(Vector2[] polyPoints, Vector2 point) {
+	public static bool PointInsidePolygon(Vector3[] polyPoints, Vector3 point) {
 
 		float xMin = 0;
 		for (int i = 0; i < polyPoints.Length; i++) {
@@ -485,14 +529,14 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Finds the closer edge point to the navigation valid area
-	public Vector2 GetCloserEdgePoint ( Vector2 point ) {
+	public Vector2 GetCloserEdgePoint ( Vector3 point ) {
 
-		List<Vector2> possiblePoints = new List<Vector2>();
-		Vector2 closerVertex = Vector2.zero;
+		List<Vector3> possiblePoints = new List<Vector3>();
+		Vector3 closerVertex = Vector3.zero;
 		float closerVertexDist = Mathf.Infinity;
 
 		Polygon poly = null;
-		Vector2[] inflatedPoints = null;
+		Vector3[] inflatedPoints = null;
 		for (int p = 0; p < map.allPolygons.Length; p++) {
 
 			poly = map.allPolygons[p];
@@ -500,13 +544,13 @@ public class Nav2D : MonoBehaviour {
 
 			for (int i = 0; i < inflatedPoints.Length; i++) {
 
-				Vector2 a = inflatedPoints[i];
-				Vector2 b = inflatedPoints[(i + 1) % inflatedPoints.Length];
+				Vector3 a = inflatedPoints[i];
+				Vector3 b = inflatedPoints[(i + 1) % inflatedPoints.Length];
 
-				Vector2 originalA = poly.points[i];
-				Vector2 originalB = poly.points[(i + 1) % poly.points.Length];
+				Vector3 originalA = poly.points[i];
+				Vector3 originalB = poly.points[(i + 1) % poly.points.Length];
 				
-				Vector2 proj = (Vector2)Vector3.Project( (point - a), (b - a) ) + a;
+				Vector3 proj = Vector3.Project( (point - a), (b - a) ) + a;
 
 				if (SegmentsCross(point, proj, originalA, originalB) && PointIsValid(proj))
 					possiblePoints.Add(proj);
@@ -538,8 +582,8 @@ public class Nav2D : MonoBehaviour {
 
 	//defines a polygon
 	public class Polygon {
-		public Vector2[] points;
-		public Polygon(Vector2[] points) {
+		public Vector3[] points;
+		public Polygon(Vector3[] points) {
 			this.points = points;
 		}
 	}
@@ -562,27 +606,27 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	struct PathRequest {
-		public Vector2 start;
-		public Vector2 end;
-		public Action<Vector2[], bool> callback;
+		public Vector3 start;
+		public Vector3 end;
+		public Action<Vector3[], bool> callback;
 
-		public PathRequest(Vector2 start, Vector2 end, Action<Vector2[], bool> callback) {
+		public PathRequest(Vector3 start, Vector3 end, Action<Vector3[], bool> callback) {
 			this.start = start;
 			this.end = end;
 			this.callback = callback;
 		}
 	}
 
-	//defines a node for A*
+	//defines a default node for A*
 	public class PathNode : IHeapItem<PathNode> {
-		public Vector2 pos;
+		public Vector3 pos;
 		public List<PathNode> links = new List<PathNode>();
 		public float gCost = 1;
 		public float hCost;
 		public PathNode parent = null;
 		private int _heapIndex;
 
-		public PathNode (Vector2 pos) {
+		public PathNode (Vector3 pos) {
 			this.pos = pos;	
 		}
 
@@ -603,12 +647,19 @@ public class Nav2D : MonoBehaviour {
 		}
 	}
 
-////////////////////////////////////////
-///////////GUI AND EDITOR STUFF/////////
-////////////////////////////////////////
+    public class StairNode : PathNode
+    {
+		public StairNode neighborStair;
+        public StairNode(Vector3 pos) : base(pos) {
+        }
+    }
+
+    ////////////////////////////////////////
+    ///////////GUI AND EDITOR STUFF/////////
+    ////////////////////////////////////////
 #if UNITY_EDITOR
-	
-	void OnDrawGizmos () {
+
+    void OnDrawGizmos () {
 
 		if (!drawNodes && !drawNodesAndEdges) {
 			return;
@@ -616,17 +667,17 @@ public class Nav2D : MonoBehaviour {
 
 		if (!Application.isPlaying) {
 			CreatePolyMap(true);
-			CreateNodes();
+			CreateAndCleanNodes();
 			LinkNodes(nodes);
 		}
 
 		//the original drawn polygons
 		if (masterCollider is PolygonCollider2D) {
-			PolygonCollider2D polyCollider = masterCollider as PolygonCollider2D;
-			for (int i = 0; i < polyCollider.pathCount; ++i ) {
-	            for (int p = 0; p < polyCollider.GetPath(i).Length; ++p )
-	                DebugDrawPolygon(TransformPoints( polyCollider.GetPath(i), polyCollider.transform ), Color.green );
-	        }
+			// PolygonCollider2D polyCollider = masterCollider as PolygonCollider2D;
+			// for (int i = 0; i < polyCollider.pathCount; ++i ) {
+	        //     for (int p = 0; p < polyCollider.GetPath(i).Length; ++p )
+	        //         DebugDrawPolygon(TransformPoints( polyCollider.GetPath(i), polyCollider.transform ), Color.green );
+	        // }
         
         } else if (masterCollider is BoxCollider2D) {
         	BoxCollider2D box = masterCollider as BoxCollider2D;
@@ -634,17 +685,17 @@ public class Nav2D : MonoBehaviour {
 			Vector2 tr = box.offset + new Vector2(box.size.x, box.size.y)/2;
 			Vector2 br = box.offset + new Vector2(box.size.x, -box.size.y)/2;
 			Vector2 bl = box.offset + new Vector2(-box.size.x, -box.size.y)/2;
-        	DebugDrawPolygon(TransformPoints(new Vector2[]{tl, tr, br, bl}, masterCollider.transform), Color.green);
+        	DebugDrawPolygon(TransformPoints(new Vector3[]{tl, tr, br, bl}, masterCollider.transform), Color.green);
         }
 
 		float nodeSize = 0.15f;
 		Color white = new Color(1, 1f, 1f, 1f);
 		foreach (PathNode p in nodes) {
-			Vector2[] square = new Vector2[4];
-			square[0] = p.pos + new Vector2(-nodeSize, 0);
-			square[1] = p.pos + new Vector2(0, nodeSize);
-			square[2] = p.pos + new Vector2(nodeSize, 0);
-			square[3] = p.pos + new Vector2(0, -nodeSize);
+			Vector3[] square = new Vector3[4];
+			square[0] = p.pos + new Vector3(-nodeSize, 0);
+			square[1] = p.pos + new Vector3(0, nodeSize);
+			square[2] = p.pos + new Vector3(nodeSize, 0);
+			square[3] = p.pos + new Vector3(0, -nodeSize);
 
 			if (drawNodesAndEdges) {
 				foreach (PathNode neighbor in p.links) {
@@ -665,7 +716,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	//helper debug function
-	void DebugDrawPolygon(Vector2[] points, Color color) {
+	void DebugDrawPolygon(Vector3[] points, Color color) {
 		for (int i = 0; i < points.Length; i++) {
 			Debug.DrawLine(points[i], points[(i + 1) % points.Length], color);
 		}

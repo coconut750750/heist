@@ -133,21 +133,30 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowFloor2() {
-		floor2.SetActive(true);
-		SetGroundFloor(false);
+		SetSecondFloorActive(true);
+		SetGroundFloorActive(false);
 	}
 
 	public void HideFloor2() {
-		SetGroundFloor(true);
-		floor2.SetActive(false);
+		SetSecondFloorActive(false);
+		SetGroundFloorActive(true);
 	}
 
-	public void SetGroundFloor (bool active) {
+	public void SetGroundFloorActive (bool active) {
     	foreach (Collider2D c in groundFloor.GetComponentsInChildren<Collider2D>()) {
-			if (!c.gameObject.CompareTag(Constants.STAIRS_TAG)) {
+			if (!c.CompareTag(Constants.STAIRS_TAG)) {
 				c.enabled = active;
 			}
     	}
+	}
+
+	public void SetSecondFloorActive (bool active) {
+		foreach (Collider2D c in floor2.GetComponentsInChildren<Collider2D>()) {
+			if (!c.CompareTag(Constants.STAIRS_TAG)) {
+				c.enabled = active;
+			}
+    	}
+		floor2.SetActive(active);
 	}
 
 	public int GetVisibleFloor() {

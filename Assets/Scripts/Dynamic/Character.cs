@@ -14,9 +14,7 @@ public abstract class Character : MonoBehaviour {
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
-	protected int onStairs = 0;
-
-	protected int floor = 0;
+	protected bool onStairs = false;
 
 	public float moveSpeed;
 
@@ -245,21 +243,14 @@ public abstract class Character : MonoBehaviour {
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.CompareTag (Constants.STAIRS_TAG)) {
-			if (onStairs == 0) {
-				floor = 1 - floor;
-
-				transform.position = new Vector3 (transform.position.x, transform.position.y, 
-					0 - (float)floor / 10);
-
-				onStairs += 2;
-			}
+			Debug.Log("stairs");
+			float currentZ = transform.position.z;
+			float nextZ = -0.1f - currentZ;
+			transform.position = new Vector3 (transform.position.x, transform.position.y, nextZ);
 		}
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
-		if (other.gameObject.CompareTag (Constants.STAIRS_TAG) && onStairs > 0) {
-			onStairs -= 1;
-		}
 	}
 
 	public void StartDoorDelay() {
@@ -267,6 +258,7 @@ public abstract class Character : MonoBehaviour {
 	}
 
 	public int GetFloor() {
+		int floor = (int)(transform.position.z * -10);
 		return floor + 1;
 	}
 
@@ -282,7 +274,7 @@ public abstract class Character : MonoBehaviour {
 		return paused;
 	}
 
-	public int GetOnStairs() {
+	public bool GetOnStairs() {
 		return onStairs;
 	}
 
@@ -312,7 +304,6 @@ public abstract class Character : MonoBehaviour {
 
 	protected void LoadFromData(CharacterData data) {
 		this.onStairs = data.onStairs;
-		this.floor = data.floor;
 		rb2D.transform.position = data.getPosition();
 
 		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = 0;//data.strength;
@@ -321,8 +312,7 @@ public abstract class Character : MonoBehaviour {
 
 [System.Serializable]
 public class CharacterData : GameData {
-	public int onStairs;
-	public int floor;
+	public bool onStairs;
 	public float xPos;
 	public float yPos;
 	public float zPos;
@@ -337,13 +327,12 @@ public class CharacterData : GameData {
 	}
 
 	public CharacterData(Character moveObj) {
-		SetPositionalData(moveObj.GetOnStairs(), moveObj.GetFloor() - 1, moveObj.GetPosition());
+		SetPositionalData(moveObj.GetOnStairs(), moveObj.GetPosition());
 		SetStats(moveObj.GetMoney(), moveObj.GetHealth(), moveObj.GetExperience(), moveObj.GetStrength());
 	}
 
-	protected void SetPositionalData(int onStairs, int floor, Vector3 position) {
+	protected void SetPositionalData(bool onStairs, Vector3 position) {
 		this.onStairs = onStairs;
-		this.floor = floor;
 		this.xPos = position.x;
 		this.yPos = position.y;
 		this.zPos = position.z;

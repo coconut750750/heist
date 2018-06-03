@@ -27,6 +27,8 @@ public class NPC : Character {
 	public const float SELL_PERC = 1.10f; // sells an item at 110% of the price
 	public const float BUY_PERC = 0.85f; // buys an item at 85% of the price
 
+	public bool debugNav = false;
+
 	// how long to wait before finding another destination
 	public float maxDestinationDelay;
 
@@ -47,7 +49,7 @@ public class NPC : Character {
 		}
 	}
 
-	private Vector2 destination;
+	private Vector3 destination;
 	private bool isMoving; // true if npc is moving
 	private bool canSearchForDest; // true if npc may search for another destination
 
@@ -90,20 +92,21 @@ public class NPC : Character {
 
 	IEnumerator Retaliate() {
 		// need to face the correct direction otherwise punch will be missed
-		Vector3 displacement = opponent.transform.position - transform.position;
-		Debug.Log(displacement);
-		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-			if (displacement.x > 0) {
-				Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+		if (visible) {
+			Vector3 displacement = opponent.transform.position - transform.position;
+			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+				if (displacement.x > 0) {
+					Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+				} else {
+					Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
+				}
 			} else {
-				Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
-			}
-		} else {
-			// if at 0, looks nice if npc facing back (punching into screen)
-			if (displacement.y >= 0) {
-				Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
-			} else {
-				Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+				// if at 0, looks nice if npc facing back (punching into screen)
+				if (displacement.y >= 0) {
+					Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
+				} else {
+					Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+				}
 			}
 		}
 
@@ -154,35 +157,8 @@ public class NPC : Character {
 
 	protected override void FixedUpdate() {
 		if (fighting) {
-			// if fighting, constantly update the destination to the opponent
-			//   since player can be moving
-			// the set destination, however, is not exactly the opponent's position
-			// there is a slight offset (PUNCH_DISTANCE) so that the player can actually see
-			//   the npc punching
-			// so, we calculate the closest point that is PUNCH_DISTANCE away from
-			//   the opponent's position (that is perpendicular to the player)
-
-			Vector3 displacement = opponent.transform.position - transform.position;
-			if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
-				// opponent is too far, so give up fighting
-				fighting = false;
-				EndRetaliateAnimator();
-			}
-
-			if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
-				// this means npc far enough to update dest
-				if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-					displacement.y = 0;
-				} else {
-					displacement.x = 0;
-				}
-				// mag == x + y since either one is a non-zero and the other is 0
-				Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
-
-				SetNewDestination(opponent.transform.position - offset);
-			}
-		}
-		else if (!isMoving && canSearchForDest) {
+			FollowOpponentUpdate();
+		} else if (!isMoving && canSearchForDest) {
 			SetNewRandomDestination();
 		}
 
@@ -191,11 +167,13 @@ public class NPC : Character {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		OnFloorChanged();
+		if (other.CompareTag(Constants.STAIRS_TAG)) {
+			OnFloorChanged();
+		}
 	}
 
 	// Generates random destination within bound and within the destination range
-	protected Vector2 GenerateRandomDest(Bounds bound) {
+	protected Vector3 GenerateRandomDest(Bounds bound) {
 		Vector2 currPos = transform.position;
 
 		float posMinX = currPos.x - destinationRange;
@@ -210,8 +188,16 @@ public class NPC : Character {
 
 		float x = Mathf.Round(UnityEngine.Random.Range(minX, maxX));
 		float y = Mathf.Round(UnityEngine.Random.Range(minY, maxY));
+		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
 
-		return new Vector2(x, y);
+		// TODO: debugging
+		// if (transform.position.z == 0) {
+		// 	return new Vector3(6, 12, -0.1f);
+		// } else {
+		// 	return new Vector3(9, 11, 0);
+		// }
+
+		return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -235,17 +221,48 @@ public class NPC : Character {
 
 		// ensure that npc is moving when it gets hit
 		Resume();
+		
+		if (!fighting) {
+			// fight back
+			// chase after opponent
+			StartCoroutine(ChaseAfter());
+			opponent = other;
 
-		// fight back
-		// chase after opponent
-		StartCoroutine(ChaseAfter());
-		opponent = other;
-
-		// adjust animator to be in fighting layer
-		StartRetaliateAnimator();
+			// adjust animator to be in fighting layer
+			StartRetaliateAnimator();
+		}
 
 		// hide all pop ups
 		GetComponent<NPCInteractable>().HideAllPopUps();
+	}
+
+	protected void FollowOpponentUpdate() {
+		// if fighting, constantly update the destination to the opponent
+		//   since player can be moving
+		// the set destination, however, is not exactly the opponent's position
+		// there is a slight offset (PUNCH_DISTANCE) so that the player can actually see
+		//   the npc punching
+		// so, we calculate the closest point that is PUNCH_DISTANCE away from
+		//   the opponent's position (that is perpendicular to the player)
+		Vector3 displacement = opponent.transform.position - transform.position;
+		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
+			// opponent is too far, so give up fighting
+			fighting = false;
+			EndRetaliateAnimator();
+		}
+
+		if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+			// this means npc far enough to update dest
+			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+				displacement.y = 0;
+			} else {
+				displacement.x = 0;
+			}
+			// mag == x + y since either one is a non-zero and the other is 0
+			Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
+
+			SetNewDestination(opponent.transform.position - offset);
+		}
 	}
 
 	protected void StartRetaliateAnimator() {
@@ -259,11 +276,17 @@ public class NPC : Character {
 	/// NAVIGATION ///
 
 	protected void NavStarted() {
+		if (debugNav) {
+			Debug.Log("nav started");
+		}
 		isMoving = true;
 		canSearchForDest = false;
 	}
 
 	protected void NavArrived() {
+		if (debugNav) {
+			Debug.Log("nav arrived");
+		}
 		if (fighting) {
 			// if fighting and arrived and dest, hit the opponent
 			StartCoroutine(Retaliate());
@@ -277,18 +300,26 @@ public class NPC : Character {
 	}
 
 	protected void DestinationInvalid() {
+		if (debugNav) {
+			Debug.Log("nav invalid");
+		}
 		isMoving = false;
+		canSearchForDest = true;
 	}
 
-	protected void SetNewDestination(Vector2 newDest) {
-		agent.SetDestination(newDest);
+	protected void SetNewDestination(Vector3 newDest) {
+		destination = newDest;
+		agent.SetDestination(destination);
+		if (debugNav) {
+			Debug.Log("setting dest: " + destination);
+		}
 	}
 
 	protected void SetNewRandomDestination() {
 		Bounds nav2DBounds = agent.polyNav.masterBounds;
-		destination = GenerateRandomDest(nav2DBounds);
-		if ((destination - (Vector2)gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
-			agent.SetDestination(destination);
+		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
+		if ((randomDest - gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+			SetNewDestination(randomDest);
 		}
 	}
 
@@ -310,8 +341,10 @@ public class NPC : Character {
 	// called when npc enters trigger (could be stairs)
 	// called when first loads
 	private void OnFloorChanged() {
-		UpdateAgentNav();
+		// TODO: delete this
+		//UpdateAgentNav();
 		UpdateSortingLayer();
+		Debug.Log("floor: " + GetFloor());
 	}
 
 	public void SetAgentNav(Nav2D nav) {
@@ -359,7 +392,7 @@ public class NPC : Character {
 		return inventory;
 	}
 
-	public Vector2 GetDestination() {
+	public Vector3 GetDestination() {
 		return destination;
 	}
 
@@ -412,7 +445,7 @@ public class NPC : Character {
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
 
-			destination = new Vector2(data.destX, data.destY);
+			destination = new Vector3(data.destX, data.destY, data.destZ);
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
 
@@ -420,7 +453,8 @@ public class NPC : Character {
 			OnFloorChanged();
 
 			if (isMoving) {
-				SetNewDestination(new Vector2(-1, 11)); //-1, 11
+				SetNewDestination(destination);
+				//SetNewDestination(new Vector3(-11, 14, 0)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
@@ -436,6 +470,7 @@ public class NPCData : CharacterData {
 	public ItemStashData inventoryData;
 	public float destX;
 	public float destY;
+	public float destZ;
 
 	public bool isMoving;
 	public bool canSearchForDest;
@@ -445,6 +480,7 @@ public class NPCData : CharacterData {
 		inventoryData = new ItemStashData(npc.GetInventory());
 		destX = npc.GetDestination().x;
 		destY = npc.GetDestination().y;
+		destZ = npc.GetDestination().z;
 
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();
