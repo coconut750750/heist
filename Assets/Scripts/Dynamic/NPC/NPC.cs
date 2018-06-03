@@ -28,6 +28,7 @@ public class NPC : Character {
 	public const float BUY_PERC = 0.85f; // buys an item at 85% of the price
 
 	public bool debugNav = false;
+	public bool saveData = true;
 
 	// how long to wait before finding another destination
 	public float maxDestinationDelay;
@@ -76,7 +77,7 @@ public class NPC : Character {
 	public const float AFTER_PUNCH_DELAY = 0.5f;
 
 	// how far opponent needs to run (squared) before npc gives up retaliating
-	public const float SQUARED_STOP_RETALIATE_DIST = 25f;
+	public const float SQUARED_STOP_RETALIATE_DIST = 2500f;
 
 	// square magnitude distance between npc and player when npc should stop dynamically
 	// updating position
@@ -192,9 +193,9 @@ public class NPC : Character {
 
 		// TODO: debugging
 		// if (transform.position.z == 0) {
-		// 	return new Vector3(6, 12, -0.1f);
+		// 	return new Vector3(-9, 11, -0.1f);
 		// } else {
-		// 	return new Vector3(9, 11, 0);
+		// 	return new Vector3(-9, 11, 0);
 		// }
 
 		return new Vector3(x, y);
@@ -245,13 +246,15 @@ public class NPC : Character {
 		// so, we calculate the closest point that is PUNCH_DISTANCE away from
 		//   the opponent's position (that is perpendicular to the player)
 		Vector3 displacement = opponent.transform.position - transform.position;
+		float floorDiff = displacement.z;
+		displacement.z = 0;
 		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
 			// opponent is too far, so give up fighting
 			fighting = false;
 			EndRetaliateAnimator();
 		}
 
-		if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+		if (floorDiff != 0 || displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
 			// this means npc far enough to update dest
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 				displacement.y = 0;
@@ -311,14 +314,15 @@ public class NPC : Character {
 		destination = newDest;
 		agent.SetDestination(destination);
 		if (debugNav) {
-			Debug.Log("setting dest: " + destination);
+			Debug.Log("setting dest: " + destination + " starting at " + transform.position);
 		}
 	}
 
 	protected void SetNewRandomDestination() {
 		Bounds nav2DBounds = agent.polyNav.masterBounds;
 		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
-		if ((randomDest - gameObject.transform.position).sqrMagnitude >= closestDestinationSquared) {
+		if ((randomDest - transform.position).sqrMagnitude >= closestDestinationSquared || 
+				randomDest.z != transform.position.z) {
 			SetNewDestination(randomDest);
 		}
 	}
@@ -418,7 +422,7 @@ public class NPC : Character {
 
 	public override void Save()
     {
-		if (independent) {
+		if (independent && saveData) {
 			NPCData data = new NPCData(this);
 			GameManager.Save(data, base.filename);
 		}

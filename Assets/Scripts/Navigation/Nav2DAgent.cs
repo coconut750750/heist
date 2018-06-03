@@ -155,14 +155,15 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 
 		//goal is almost the same as the last goal. Nothing happens for performace in case it's called frequently
-		if ((goal - primeGoal).sqrMagnitude < Mathf.Epsilon)
+		if ((goal - primeGoal).sqrMagnitude < Mathf.Epsilon && primeGoal.z == position.z)
 			return true;
 
 		reachedCallback = callback;
 		primeGoal = goal;
 
 		//goal is almost the same as agent position. We consider arrived immediately
-		if ((goal - position).sqrMagnitude < stoppingDistance){
+		//also ensure that goal and position are on same floor
+		if ((goal - position).sqrMagnitude < stoppingDistance && goal.z == position.z){
 			OnArrived();
 			return true;
 		}
@@ -182,6 +183,7 @@ public class Nav2DAgent : MonoBehaviour{
 		//compute path
 		requests++;
 		polyNav.FindPath(position, goal, SetPath);
+		Debug.Log("finding path");
 
 		return true;
 	}
@@ -273,6 +275,7 @@ public class Nav2DAgent : MonoBehaviour{
 
 			//if it was last point, means the path is complete and no longer have an active path.
 			if (!hasPath) {
+				
 				OnArrived();
 				return;
 			} else {
