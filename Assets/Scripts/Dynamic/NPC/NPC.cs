@@ -228,10 +228,10 @@ public class NPC : Character {
 			// chase after opponent
 			StartCoroutine(ChaseAfter());
 			opponent = other;
-
-			// adjust animator to be in fighting layer
-			StartRetaliateAnimator();
 		}
+
+		// adjust animator to be in fighting layer
+		StartRetaliateAnimator();
 
 		// hide all pop ups
 		GetComponent<NPCInteractable>().HideAllPopUps();
