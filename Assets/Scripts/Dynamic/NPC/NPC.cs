@@ -117,9 +117,9 @@ public class NPC : Character {
 		canSearchForDest = false;
 		fighting = false;
 		opponent = null;
+		EndRetaliateAnimator();
 		
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
-		EndRetaliateAnimator();
 		canSearchForDest = true;
 	}
 
