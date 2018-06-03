@@ -90,22 +90,24 @@ public class NPC : Character {
 
 	IEnumerator Retaliate() {
 		// need to face the correct direction otherwise punch will be missed
-		Vector3 displacement = opponent.transform.position - transform.position;
-		Debug.Log(displacement);
-		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-			if (displacement.x > 0) {
-				Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+		if (visible) {
+			Vector3 displacement = opponent.transform.position - transform.position;
+			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+				if (displacement.x > 0) {
+					Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+				} else {
+					Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
+				}
 			} else {
-				Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
-			}
-		} else {
-			// if at 0, looks nice if npc facing back (punching into screen)
-			if (displacement.y >= 0) {
-				Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
-			} else {
-				Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+				// if at 0, looks nice if npc facing back (punching into screen)
+				if (displacement.y >= 0) {
+					Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
+				} else {
+					Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+				}
 			}
 		}
+		
 
 		// don't let npc search for dest because we want npc to remain still for a bit
 		// need to explicitly set to false because it may have turned true
@@ -154,35 +156,8 @@ public class NPC : Character {
 
 	protected override void FixedUpdate() {
 		if (fighting) {
-			// if fighting, constantly update the destination to the opponent
-			//   since player can be moving
-			// the set destination, however, is not exactly the opponent's position
-			// there is a slight offset (PUNCH_DISTANCE) so that the player can actually see
-			//   the npc punching
-			// so, we calculate the closest point that is PUNCH_DISTANCE away from
-			//   the opponent's position (that is perpendicular to the player)
-
-			Vector3 displacement = opponent.transform.position - transform.position;
-			if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
-				// opponent is too far, so give up fighting
-				fighting = false;
-				EndRetaliateAnimator();
-			}
-
-			if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
-				// this means npc far enough to update dest
-				if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-					displacement.y = 0;
-				} else {
-					displacement.x = 0;
-				}
-				// mag == x + y since either one is a non-zero and the other is 0
-				Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
-
-				SetNewDestination(opponent.transform.position - offset);
-			}
-		}
-		else if (!isMoving && canSearchForDest) {
+			FollowOpponentUpdate();
+		} else if (!isMoving && canSearchForDest) {
 			SetNewRandomDestination();
 		}
 
@@ -191,7 +166,11 @@ public class NPC : Character {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		OnFloorChanged();
+		if (other.CompareTag(Constants.STAIRS_TAG)) {
+			OnFloorChanged();
+			Debug.Log(other.gameObject.name);
+			Debug.Log("floor changd " + GetFloor());
+		}
 	}
 
 	// Generates random destination within bound and within the destination range
@@ -235,17 +214,48 @@ public class NPC : Character {
 
 		// ensure that npc is moving when it gets hit
 		Resume();
+		
+		if (!fighting) {
+			// fight back
+			// chase after opponent
+			StartCoroutine(ChaseAfter());
+			opponent = other;
 
-		// fight back
-		// chase after opponent
-		StartCoroutine(ChaseAfter());
-		opponent = other;
-
-		// adjust animator to be in fighting layer
-		StartRetaliateAnimator();
+			// adjust animator to be in fighting layer
+			StartRetaliateAnimator();
+		}
 
 		// hide all pop ups
 		GetComponent<NPCInteractable>().HideAllPopUps();
+	}
+
+	protected void FollowOpponentUpdate() {
+		// if fighting, constantly update the destination to the opponent
+		//   since player can be moving
+		// the set destination, however, is not exactly the opponent's position
+		// there is a slight offset (PUNCH_DISTANCE) so that the player can actually see
+		//   the npc punching
+		// so, we calculate the closest point that is PUNCH_DISTANCE away from
+		//   the opponent's position (that is perpendicular to the player)
+		Vector3 displacement = opponent.transform.position - transform.position;
+		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
+			// opponent is too far, so give up fighting
+			fighting = false;
+			EndRetaliateAnimator();
+		}
+
+		if (displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+			// this means npc far enough to update dest
+			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+				displacement.y = 0;
+			} else {
+				displacement.x = 0;
+			}
+			// mag == x + y since either one is a non-zero and the other is 0
+			Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
+
+			SetNewDestination(opponent.transform.position - offset);
+		}
 	}
 
 	protected void StartRetaliateAnimator() {
