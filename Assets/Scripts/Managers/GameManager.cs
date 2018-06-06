@@ -27,9 +27,6 @@ public class GameManager : MonoBehaviour {
 	private GameObject groundFloor;
 	private GameObject floor2;
 
-	public Nav2D groundNav;
-	public Nav2D floor2Nav;
-
 	// in game clock
 	private int day = 1;
 	private int hour;
