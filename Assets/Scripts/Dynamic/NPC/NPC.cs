@@ -79,10 +79,6 @@ public class NPC : Character {
 	// how far opponent needs to run (squared) before npc gives up retaliating
 	public const float SQUARED_STOP_RETALIATE_DIST = 2500f;
 
-	// square magnitude distance between npc and player when npc should stop dynamically
-	// updating position
-	public const float CLOSE_ENOUGH_OPPONENT_DISTANCE = 1;
-
 	private bool fighting = false;
 	private Character opponent = null;
 
@@ -254,7 +250,7 @@ public class NPC : Character {
 			EndRetaliateAnimator();
 		}
 
-		if (floorDiff != 0 || displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+		if (floorDiff != 0 || displacement.sqrMagnitude > PUNCH_DISTANCE) {
 			// this means npc far enough to update dest
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 				displacement.y = 0;
@@ -321,6 +317,8 @@ public class NPC : Character {
 	protected void SetNewRandomDestination() {
 		Bounds nav2DBounds = agent.polyNav.masterBounds;
 		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
+
+		// this check ensures the npc's travel is significant enough
 		if ((randomDest - transform.position).sqrMagnitude >= closestDestinationSquared || 
 				randomDest.z != transform.position.z) {
 			SetNewDestination(randomDest);
@@ -345,24 +343,12 @@ public class NPC : Character {
 	// called when npc enters trigger (could be stairs)
 	// called when first loads
 	private void OnFloorChanged() {
-		// TODO: delete this
-		//UpdateAgentNav();
 		UpdateSortingLayer();
 		Debug.Log("floor: " + GetFloor());
 	}
 
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
-	}
-
-	// called when floor changes
-	// changes agent nav to correct floor
-	private void UpdateAgentNav() {
-		if (GetFloor() == 1) {
-			SetAgentNav(GameManager.instance.groundNav);
-		} else if (GetFloor() == 2) {
-			SetAgentNav(GameManager.instance.floor2Nav);
-		}
 	}
 
 	// called only when floor changes

@@ -138,9 +138,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
+  debugNav: 0
+  saveData: 1
   maxDestinationDelay: 5
   closestDestinationSquared: 1
   destinationRange: 15
+  startFloor: 1
   visible: 1
 --- !u!114 &114654633985807300
 MonoBehaviour:
@@ -184,7 +187,7 @@ MonoBehaviour:
   repath: 0
   restrict: 0
   debugPath: 1
-  polyNav: {fileID: 0}
+  polyNav: {fileID: 114842599073543120, guid: 85f05a8204e6742a0bcbeb9f216dd94e, type: 2}
 --- !u!212 &212406970877011668
 SpriteRenderer:
   m_ObjectHideFlags: 1

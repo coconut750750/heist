@@ -14,6 +14,7 @@ public abstract class Character : MonoBehaviour {
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
+	// TODO: remove
 	protected bool onStairs = false;
 
 	public float moveSpeed;
@@ -26,6 +27,7 @@ public abstract class Character : MonoBehaviour {
 		Forward, Right, Back, Left, None
 	}
 
+	// TODO: extract animation state controller into object
 	protected int forwardStateHash = Animator.StringToHash("Base Layer.Forward");
 	protected int backStateHash = Animator.StringToHash("Base Layer.Back");
 	protected int leftStateHash = Animator.StringToHash("Base Layer.Left");
@@ -182,7 +184,7 @@ public abstract class Character : MonoBehaviour {
 		if (dirToFace == AnimationDirection.None) {
 			return;
 		}
-
+		
 		if (prevDir == dirToFace) {
 			Face(dirToFace);
 		} else {
@@ -214,7 +216,8 @@ public abstract class Character : MonoBehaviour {
 			if (hit.collider != null) {
 				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
 			}
-
+			
+			Face(animDirection);
 			animator.SetTrigger(punchHash);
 		}
 	}
