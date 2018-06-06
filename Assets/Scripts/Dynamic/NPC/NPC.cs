@@ -321,6 +321,8 @@ public class NPC : Character {
 	protected void SetNewRandomDestination() {
 		Bounds nav2DBounds = agent.polyNav.masterBounds;
 		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
+
+		// this check ensures the npc's travel is significant enough
 		if ((randomDest - transform.position).sqrMagnitude >= closestDestinationSquared || 
 				randomDest.z != transform.position.z) {
 			SetNewDestination(randomDest);
@@ -351,18 +353,9 @@ public class NPC : Character {
 		Debug.Log("floor: " + GetFloor());
 	}
 
+	// TODO: delete
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
-	}
-
-	// called when floor changes
-	// changes agent nav to correct floor
-	private void UpdateAgentNav() {
-		if (GetFloor() == 1) {
-			SetAgentNav(GameManager.instance.groundNav);
-		} else if (GetFloor() == 2) {
-			SetAgentNav(GameManager.instance.floor2Nav);
-		}
 	}
 
 	// called only when floor changes
