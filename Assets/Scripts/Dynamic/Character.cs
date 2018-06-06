@@ -184,7 +184,7 @@ public abstract class Character : MonoBehaviour {
 		if (dirToFace == AnimationDirection.None) {
 			return;
 		}
-
+		
 		if (prevDir == dirToFace) {
 			Face(dirToFace);
 		} else {
@@ -216,7 +216,8 @@ public abstract class Character : MonoBehaviour {
 			if (hit.collider != null) {
 				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
 			}
-
+			
+			Face(animDirection);
 			animator.SetTrigger(punchHash);
 		}
 	}
