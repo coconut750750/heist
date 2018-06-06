@@ -79,10 +79,6 @@ public class NPC : Character {
 	// how far opponent needs to run (squared) before npc gives up retaliating
 	public const float SQUARED_STOP_RETALIATE_DIST = 2500f;
 
-	// square magnitude distance between npc and player when npc should stop dynamically
-	// updating position
-	public const float CLOSE_ENOUGH_OPPONENT_DISTANCE = 1;
-
 	private bool fighting = false;
 	private Character opponent = null;
 
@@ -254,7 +250,7 @@ public class NPC : Character {
 			EndRetaliateAnimator();
 		}
 
-		if (floorDiff != 0 || displacement.sqrMagnitude > CLOSE_ENOUGH_OPPONENT_DISTANCE) {
+		if (floorDiff != 0 || displacement.sqrMagnitude > PUNCH_DISTANCE) {
 			// this means npc far enough to update dest
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 				displacement.y = 0;
@@ -347,13 +343,10 @@ public class NPC : Character {
 	// called when npc enters trigger (could be stairs)
 	// called when first loads
 	private void OnFloorChanged() {
-		// TODO: delete this
-		//UpdateAgentNav();
 		UpdateSortingLayer();
 		Debug.Log("floor: " + GetFloor());
 	}
 
-	// TODO: delete
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
 	}
