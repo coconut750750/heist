@@ -52,8 +52,8 @@ public class Inventory : ItemStash {
     public override void DeselectAll() {
         if (isDisplaying && GameManager.instance.stashDisplayer.isActiveAndEnabled) {
             GameManager.instance.stashDisplayer.DeselectAll();
-		} else if (isDisplaying && NPCUI.instance.isActiveAndEnabled) {
-            NPCUI.instance.DeselectAll();
+		} else if (isDisplaying && NPCTrade.instance.isActiveAndEnabled) {
+            NPCTrade.instance.DeselectAll();
         }
     }
 

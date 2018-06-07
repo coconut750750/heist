@@ -41,7 +41,6 @@ public class SellController : MonoBehaviour {
 			return false;
 		}
 
-
 		int currentMoney = GameManager.instance.mainPlayer.GetMoney();
 		GameManager.instance.mainPlayer.SetMoney(currentMoney + sellingPrice);
 
@@ -61,7 +60,7 @@ public class SellController : MonoBehaviour {
 	public void UpdateButtons() {
 		Disable();
 
-		NPC npc = NPCUI.instance.GetNPC();
+		NPC npc = NPCTrade.instance.GetNPC();
 		if (npc.GetInventory().GetNumItems() == npc.GetInventory().GetCapacity()) {
 			return;
 		}

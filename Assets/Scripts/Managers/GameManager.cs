@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour {
 	public StashDisplayer stashDisplayer;
 
 	[SerializeField]
-	public NPCUI npcDisplayer;
+	public NPCTrade npcDisplayer;
 
 	[SerializeField]
 	public Canvas canvas;

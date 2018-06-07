@@ -102,8 +102,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		if (GameManager.instance.IsPaused()) {
 			if (PauseMenu.instance.isActiveAndEnabled) {
 				PauseMenu.instance.GetActiveStash().DeselectAll();
-			} else if (NPCUI.instance.isActiveAndEnabled) {
-				NPCUI.instance.DeselectAll();
+			} else if (NPCTrade.instance.isActiveAndEnabled) {
+				NPCTrade.instance.DeselectAll();
 			}
 		}
 
@@ -194,7 +194,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		int indexOther = itemSlotOther.GetIndex();
 		if (parentStash == itemSlotOther.GetParentStash()) {
 			parentStash.SwapItemPositions(indexOther, index);
-		} else if (itemSlotOther.GetParentStash() != null && parentStash != null) { 
+		} else if (itemSlotOther.GetParentStash() != null && parentStash != null) {			
 			itemSlotOther.GetParentStash().SetItemAtIndex(prevItem, indexOther);
 			parentStash.SetItemAtIndex(prevOtherItem, index);
 		}

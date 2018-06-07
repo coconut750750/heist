@@ -424,7 +424,6 @@ public class Nav2D : MonoBehaviour {
 	///determine if a point is within a valid (walkable) area.
 	public bool PointIsValid (Vector3 point) {
 		// check if point in nav 2d boundaries
-		Debug.Log(map == null);
 		for (int i = 0; i < map.masterPolygons.Length; i++) {
 			if (!PointInsidePolygon(map.masterPolygons[i].points, point)) {
 				return false;
