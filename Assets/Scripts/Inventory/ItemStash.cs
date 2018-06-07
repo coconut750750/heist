@@ -75,6 +75,11 @@ public abstract class ItemStash : MonoBehaviour {
 	}
 
 	public void SetItemAtIndex(Item itemToSet, int index) {
+		if (items[index] == null && itemToSet != null) {
+			count++;
+		} else if (itemToSet == null && items[index] != null) {
+			count--;
+		}
 		items[index] = itemToSet;
 	}
 

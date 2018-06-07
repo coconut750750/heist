@@ -59,9 +59,13 @@ public class TradeController : MonoBehaviour {
 	public void UpdateButtons() {
 		Disable();
 
+		Debug.Log("updagin buttons");
+
 		if (!GameManager.instance.mainPlayer.CanAddItem()) {
 			return;
 		}
+
+		Debug.Log("update buttons " + (selectedItem != null) + " " + (tradingItem != null));
 
 		if (selectedItem != null && tradingItem != null) {
 			willTrade = tradingItem.GetValue() / selectedItem.GetValue() > NPC.LOWER_BOUND_TRADING_PERC;
