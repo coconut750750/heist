@@ -21,12 +21,12 @@ public class NPCInteractable : Interactable {
     public NPCOptions npcOptions;
     private NPCOptions npcOptionsInstance = null;
 
-	private NPC npcObject;
+	private NPC npc;
     private bool interacted = false;
 
     // Use this for initialization
     void Start () {
-		npcObject = gameObject.GetComponent<NPC>();
+		npc = gameObject.GetComponent<NPC>();
 	}
 
     void Update () {
@@ -60,7 +60,7 @@ public class NPCInteractable : Interactable {
         if (speechBubbleInstance == null) {
             speechBubbleInstance = Instantiate(speechBubble);
             speechBubbleInstance.Display(GameManager.instance.canvas.transform);
-            speechBubbleInstance.UpdateText(npcObject.Greet());
+            speechBubbleInstance.UpdateText(npc.Greet());
             speechBubbleInstance.UpdatePosition(gameObject.transform.position);
         }
 
@@ -84,7 +84,7 @@ public class NPCInteractable : Interactable {
         }
 
         hoverTextInstance = Instantiate(hoverNameText);
-        hoverTextInstance.Display(npcObject.GetName(), GameManager.instance.canvas.transform);
+        hoverTextInstance.Display(npc.GetName(), GameManager.instance.canvas.transform);
     }
 
     public override void ExitRange(Player player)
@@ -125,14 +125,14 @@ public class NPCInteractable : Interactable {
     }
 
     public void ShowInventory() {
-        GameManager.instance.npcDisplayer.Display(npcObject);
+        NPCTrade.instance.Display(npc);
     }
 
     public void ShowQuest() {
-
+        
     }
 
     public void ShowInfo() {
-
+        NPCInfo.instance.Display(npc);
     }
 }

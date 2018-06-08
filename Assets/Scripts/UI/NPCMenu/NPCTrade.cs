@@ -10,12 +10,6 @@ public class NPCTrade : MonoBehaviour {
 	[SerializeField]
 	private Text nameText;
 
-	// [SerializeField]
-	// private Text healthText;
-	// [SerializeField]
-	// private Text expText;
-	// [SerializeField]
-	// private Text strengthText;
 	[SerializeField]
 	private Text moneyText;
 
@@ -63,10 +57,6 @@ public class NPCTrade : MonoBehaviour {
 		npcInventory.SetDisplaying(true);
 
 		nameText.text = npc.GetName();
-
-		// healthText.text = npc.GetHealth().ToString();
-		// strengthText.text = npc.GetStrength().ToString();
-		// expText.text = npc.GetExperience().ToString();
 
 		UpdateInventoryUI();
 	}
