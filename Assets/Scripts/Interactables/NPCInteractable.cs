@@ -129,7 +129,7 @@ public class NPCInteractable : Interactable {
     }
 
     public void ShowQuest() {
-        
+        NPCQuest.instance.Display(npc);
     }
 
     public void ShowInfo() {

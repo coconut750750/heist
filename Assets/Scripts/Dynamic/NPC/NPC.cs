@@ -201,7 +201,12 @@ public class NPC : Character {
 
 	public string Greet() {
 		// TODO: change greetings randomly and depending on npc's opinion of player
-		return "Hello there";
+		return "Hello there!";
+	}
+
+	public string GetQuest() {
+		// TODO: change quest
+		return "Order me an omelette.";
 	}
 
 	public override void GetHitBy(Character other) {
