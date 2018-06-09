@@ -16,12 +16,6 @@ public class GameManager : MonoBehaviour {
 	public Player mainPlayer;
 
 	[SerializeField]
-	public StashDisplayer stashDisplayer;
-
-	[SerializeField]
-	public NPCTrade npcDisplayer;
-
-	[SerializeField]
 	public Canvas canvas;
 
 	private GameObject groundFloor;

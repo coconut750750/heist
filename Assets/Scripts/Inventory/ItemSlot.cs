@@ -93,8 +93,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	private void DeselectAllStashes() {
-		if (parentStash != GameManager.instance.stashDisplayer) {
-			GameManager.instance.stashDisplayer.DeselectAll();
+		if (parentStash != StashDisplayer.instance) {
+			StashDisplayer.instance.DeselectAll();
 		}
 		if (parentStash != GameManager.instance.mainPlayer.GetPocket()) {
 			GameManager.instance.mainPlayer.GetPocket().DeselectAll();

@@ -19,13 +19,11 @@ using System;
 ///			by one.
 /// </summary>  
 public class NPC : Character {
-
 	public const float BOTTOM_END_TRADING_PERC = 0.85f;
 	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
 	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
-
-	public const float SELL_PERC = 1.10f; // sells an item at 110% of the price
-	public const float BUY_PERC = 0.85f; // buys an item at 85% of the price
+	public const float SELL_PERC = 1.10f;
+	public const float BUY_PERC = 0.85f;
 
 	public bool debugNav = false;
 	public bool saveData = true;
@@ -43,6 +41,7 @@ public class NPC : Character {
 
 	private string npcName = "Billy";
 	private Inventory inventory;
+	private NPCInteractable interactable;
 	
 	private Nav2DAgent agent {
 		get {
@@ -51,13 +50,12 @@ public class NPC : Character {
 	}
 
 	private Vector3 destination;
-	private bool isMoving; // true if npc is moving
-	private bool canSearchForDest; // true if npc may search for another destination
+	private bool isMoving;
+	private bool canSearchForDest;
 
 	// independent if npc not spawned
 	private bool independent = true;
 
-	// called when npc dies
 	public event Action<NPC> OnDeath;
 
 	// true if visible by camera
@@ -70,13 +68,9 @@ public class NPC : Character {
 	}
 
 	// fighting member variables
-	// how long in seconds until npc starts chasing
+
 	public const float GET_HIT_DELAY = 0.2f;
-
-	// how long to wait after punch to start moving again
 	public const float AFTER_PUNCH_DELAY = 0.5f;
-
-	// how far opponent needs to run (squared) before npc gives up retaliating
 	public const float SQUARED_STOP_RETALIATE_DIST = 2500f;
 
 	private bool fighting = false;
@@ -114,6 +108,7 @@ public class NPC : Character {
 		fighting = false;
 		opponent = null;
 		EndRetaliateAnimator();
+		interactable.EndRetaliate();
 		
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
 		canSearchForDest = true;
@@ -126,6 +121,8 @@ public class NPC : Character {
 
 		inventory = gameObject.GetComponent<Inventory>();
 		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
+
+		interactable = gameObject.GetComponent<NPCInteractable>();
 	}
 
 	protected override void Start() {
@@ -201,7 +198,12 @@ public class NPC : Character {
 
 	public string Greet() {
 		// TODO: change greetings randomly and depending on npc's opinion of player
-		return "Hello there";
+		return "Hello there!";
+	}
+
+	public string GetQuest() {
+		// TODO: change quest
+		return "Order me an omelette.";
 	}
 
 	public override void GetHitBy(Character other) {
@@ -220,17 +222,14 @@ public class NPC : Character {
 		Resume();
 		
 		if (!fighting) {
-			// fight back
-			// chase after opponent
 			StartCoroutine(ChaseAfter());
 			opponent = other;
 		}
 
-		// adjust animator to be in fighting layer
 		StartRetaliateAnimator();
 
-		// hide all pop ups
-		GetComponent<NPCInteractable>().HideAllPopUps();
+		interactable.HideAllPopUps();
+		interactable.GetHitBy(other);
 	}
 
 	protected void FollowOpponentUpdate() {

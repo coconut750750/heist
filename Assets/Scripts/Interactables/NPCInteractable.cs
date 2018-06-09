@@ -21,22 +21,20 @@ public class NPCInteractable : Interactable {
     public NPCOptions npcOptions;
     private NPCOptions npcOptionsInstance = null;
 
-	private NPC npcObject;
+    public Exclaim exclaim;
+    private Exclaim exclaimInstance = null;
+
+	private NPC npc;
     private bool interacted = false;
 
     // Use this for initialization
     void Start () {
-		npcObject = gameObject.GetComponent<NPC>();
+		npc = gameObject.GetComponent<NPC>();
 	}
 
     void Update () {
         if (!base.enabled) {
             return;
-        }
-
-        // updates hovername's position so that it follows the npc
-        if (hoverTextInstance != null) {
-            hoverTextInstance.UpdatePosition(gameObject.transform.position);
         }
     }
 	
@@ -44,35 +42,20 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             // interacted twice so resume game, hide pop ups, and enable button b
-            player.EnableButtonB();
-            GameManager.instance.UnpauseGame();
-            HideSpeechBubble();
-            HideNPCOptions();
-            return;
+            FinishInteraction();
         } else {
             // disable button b so player can't attack
             // there isnt a cover when player interacts with npc
-            player.DisableButtonB();
-            GameManager.instance.PauseGame();
+            StartInteraction();
         }
+    }
 
-        // greet player
-        if (speechBubbleInstance == null) {
-            speechBubbleInstance = Instantiate(speechBubble);
-            speechBubbleInstance.Display(GameManager.instance.canvas.transform);
-            speechBubbleInstance.UpdateText(npcObject.Greet());
-            speechBubbleInstance.UpdatePosition(gameObject.transform.position);
-        }
+    public void GetHitBy(Character opponent) {
+        ShowExclaim();
+    }
 
-        if (npcOptionsInstance == null) {
-            npcOptionsInstance = Instantiate(npcOptions);
-            npcOptionsInstance.Display(GameManager.instance.canvas.transform);
-            npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
-            npcOptionsInstance.UpdatePosition(gameObject.transform.position);
-        }
-
-        // destory hover name so that it doesn't overlap with speech bubble
-        HideHoverText();
+    public void EndRetaliate() {
+        HideExclaim();
     }
 
     public override void EnterRange(Player player)
@@ -83,30 +66,88 @@ public class NPCInteractable : Interactable {
             return;
         }
 
-        hoverTextInstance = Instantiate(hoverNameText);
-        hoverTextInstance.Display(npcObject.GetName(), GameManager.instance.canvas.transform);
+        ShowHoverText();
     }
 
     public override void ExitRange(Player player)
     {
+        FinishInteraction();
         HideHoverText();
     }
 
-    public void HideHoverText() {
+    private void StartInteraction() {
+        player.DisableButtonB();
+
+        npc.Pause();
+        player.Pause();
+
+        // greet player
+        ShowSpeechBubble();
+        ShowNPCOptions();
+
+        // destory hover name so that it doesn't overlap with speech bubble
+        HideHoverText();
+    }
+
+    private void FinishInteraction() {
+        player.EnableButtonB();
+        HideSpeechBubble();
+        HideNPCOptions();
+
+        npc.Resume();
+        player.Resume();
+    }
+
+    private void ShowHoverText() {
+        hoverTextInstance = Instantiate(hoverNameText);
+        hoverTextInstance.Display(npc.GetName(), gameObject, GameManager.instance.canvas.transform);
+    }
+
+    private void HideHoverText() {
         if (hoverTextInstance != null) {
             hoverTextInstance.Destroy();
             hoverTextInstance = null;
         }
     }
 
-    public void HideSpeechBubble() {
+    private void ShowSpeechBubble() {
+        if (speechBubbleInstance == null) {
+            speechBubbleInstance = Instantiate(speechBubble);
+            speechBubbleInstance.Display(GameManager.instance.canvas.transform);
+            speechBubbleInstance.UpdateText(npc.Greet());
+            speechBubbleInstance.UpdatePosition(gameObject.transform.position);
+        }
+    }
+
+    private void HideSpeechBubble() {
         if (speechBubbleInstance != null) {
             speechBubbleInstance.Destroy();
             speechBubbleInstance = null;
         }
     }
 
-    public void HideNPCOptions() {
+    private void ShowNPCOptions() {
+        if (npcOptionsInstance == null) {
+            npcOptionsInstance = Instantiate(npcOptions);
+            npcOptionsInstance.Display(GameManager.instance.canvas.transform);
+            npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
+            npcOptionsInstance.UpdatePosition(gameObject.transform.position);
+        }
+    }
+
+    private void ShowExclaim() {
+        exclaimInstance = Instantiate(exclaim);
+        exclaimInstance.Display(gameObject, GameManager.instance.canvas.transform);
+    }
+
+    private void HideExclaim() {
+        if (exclaimInstance != null) {
+            exclaimInstance.Destroy();
+            exclaimInstance = null;
+        }
+    }
+
+    private void HideNPCOptions() {
         if (npcOptionsInstance != null) {
             npcOptionsInstance.Destroy();
             npcOptionsInstance = null;
@@ -125,14 +166,14 @@ public class NPCInteractable : Interactable {
     }
 
     public void ShowInventory() {
-        GameManager.instance.npcDisplayer.Display(npcObject);
+        NPCTrade.instance.Display(npc);
     }
 
     public void ShowQuest() {
-
+        NPCQuest.instance.Display(npc);
     }
 
     public void ShowInfo() {
-
+        NPCInfo.instance.Display(npc);
     }
 }

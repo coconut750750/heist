@@ -9,6 +9,9 @@ using UnityEngine.UI;
 ///  an inventory and injects the data into the ItemSlot objects it holds.
 /// </summary>  
 public class StashDisplayer : MonoBehaviour {
+
+    public static StashDisplayer instance = null;
+
     private static Inventory displayInventory;
     private static ItemSlot[] itemSlots;
     private static int capacity;
@@ -16,6 +19,12 @@ public class StashDisplayer : MonoBehaviour {
 
     // set up the itemSlots
     void Awake() {
+        if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy (gameObject);
+		}
+        
         Transform inventory = transform.Find("Inventory");
         capacity = inventory.childCount;
         itemSlots = new ItemSlot[capacity];
