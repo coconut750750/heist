@@ -89,7 +89,7 @@ public class NPC : Character {
 		fighting = false;
 		opponent = null;
 		EndRetaliateAnimator();
-		interactable.EndRetaliate();
+		interactable.HideFightAlert();
 		
 		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
 		canSearchForDest = true;
@@ -104,6 +104,12 @@ public class NPC : Character {
 		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
+
+		// TODO: testing only!!
+		int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
+		if (i == 0) {
+			interactable.ShowQuestAlert();
+		}
 	}
 
 	protected override void Start() {
@@ -210,7 +216,7 @@ public class NPC : Character {
 		StartRetaliateAnimator();
 
 		interactable.HideAllPopUps();
-		interactable.GetHitBy(other);
+		interactable.ShowFightAlert(other);
 	}
 
 	protected void FollowOpponentUpdate() {
