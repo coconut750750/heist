@@ -126,6 +126,7 @@ MonoBehaviour:
     type: 2}
   npcOptions: {fileID: 114696464334595614, guid: 6c5b5deec783847f39f04761488e3851,
     type: 2}
+  exclaim: {fileID: 114276828376534776, guid: 6bd21cc640d6848ec993d318ca84abc0, type: 2}
 --- !u!114 &114431858986268764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -187,7 +188,7 @@ MonoBehaviour:
   repath: 0
   restrict: 0
   debugPath: 1
-  polyNav: {fileID: 114842599073543120, guid: 85f05a8204e6742a0bcbeb9f216dd94e, type: 2}
+  polyNav: {fileID: 0}
 --- !u!212 &212406970877011668
 SpriteRenderer:
   m_ObjectHideFlags: 1

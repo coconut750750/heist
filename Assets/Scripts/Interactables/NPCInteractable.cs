@@ -21,6 +21,9 @@ public class NPCInteractable : Interactable {
     public NPCOptions npcOptions;
     private NPCOptions npcOptionsInstance = null;
 
+    public Exclaim exclaim;
+    private Exclaim exclaimInstance = null;
+
 	private NPC npc;
     private bool interacted = false;
 
@@ -32,11 +35,6 @@ public class NPCInteractable : Interactable {
     void Update () {
         if (!base.enabled) {
             return;
-        }
-
-        // updates hovername's position so that it follows the npc
-        if (hoverTextInstance != null) {
-            hoverTextInstance.UpdatePosition(gameObject.transform.position);
         }
     }
 	
@@ -50,6 +48,14 @@ public class NPCInteractable : Interactable {
             // there isnt a cover when player interacts with npc
             StartInteraction();
         }
+    }
+
+    public void GetHitBy(Character opponent) {
+        ShowExclaim();
+    }
+
+    public void EndRetaliate() {
+        HideExclaim();
     }
 
     public override void EnterRange(Player player)
@@ -94,7 +100,7 @@ public class NPCInteractable : Interactable {
 
     private void ShowHoverText() {
         hoverTextInstance = Instantiate(hoverNameText);
-        hoverTextInstance.Display(npc.GetName(), GameManager.instance.canvas.transform);
+        hoverTextInstance.Display(npc.GetName(), gameObject, GameManager.instance.canvas.transform);
     }
 
     private void HideHoverText() {
@@ -126,6 +132,18 @@ public class NPCInteractable : Interactable {
             npcOptionsInstance.Display(GameManager.instance.canvas.transform);
             npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
             npcOptionsInstance.UpdatePosition(gameObject.transform.position);
+        }
+    }
+
+    private void ShowExclaim() {
+        exclaimInstance = Instantiate(exclaim);
+        exclaimInstance.Display(gameObject, GameManager.instance.canvas.transform);
+    }
+
+    private void HideExclaim() {
+        if (exclaimInstance != null) {
+            exclaimInstance.Destroy();
+            exclaimInstance = null;
         }
     }
 
