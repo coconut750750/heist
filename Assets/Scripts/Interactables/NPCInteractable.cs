@@ -45,15 +45,17 @@ public class NPCInteractable : Interactable {
         if (!interacted) { 
             // interacted twice so resume game, hide pop ups, and enable button b
             player.EnableButtonB();
-            GameManager.instance.UnpauseGame();
             HideSpeechBubble();
             HideNPCOptions();
+
+            player.Resume();
             return;
         } else {
             // disable button b so player can't attack
             // there isnt a cover when player interacts with npc
             player.DisableButtonB();
-            GameManager.instance.PauseGame();
+
+            player.Pause();
         }
 
         // greet player

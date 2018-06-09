@@ -23,9 +23,8 @@ public class PauseMenu : MonoBehaviour {
 	[SerializeField]
 	private DismantleStash dismantleStash;
 
-	private Color WHITE = new Color(255, 255, 255);
-	[SerializeField]
-	private Color SELECTED = new Color(200, 200, 200);
+	private Color defaultColor;
+	private Color SELECTED = new Color(1,0.3960784314f,0);
 
 	void Awake () {
 		if (instance == null) {
@@ -41,6 +40,8 @@ public class PauseMenu : MonoBehaviour {
 				OpenContent(index);
 			});
 		}
+		defaultColor = menuButtons[0].GetComponent<Image>().color;
+		Debug.Log(defaultColor);
 	}
 
 	public void Pause() {
@@ -56,7 +57,7 @@ public class PauseMenu : MonoBehaviour {
 		// disable all other menu contents
 		for (int i = 1; i < menuContents.Length; i++) {
 			menuContents[i].SetActive(false);
-			menuButtons[i].GetComponent<Image>().color = WHITE;
+			menuButtons[i].GetComponent<Image>().color = defaultColor;
 		}
 	}
 
@@ -69,7 +70,7 @@ public class PauseMenu : MonoBehaviour {
 
 	public void OpenContent(int index) {
 		// set button color
-		menuButtons[openedMenu].GetComponent<Image>().color = WHITE;
+		menuButtons[openedMenu].GetComponent<Image>().color = defaultColor;
 		menuButtons[index].GetComponent<Image>().color = SELECTED;
 
 		// open menu content

@@ -32,8 +32,7 @@ public class NPCInfo : MonoBehaviour {
 	}
 	
 	public void Display(NPC npc) {
-		// dont need to pause game because initial interaction (npcinteractable)
-		// will pause the game
+		GameManager.instance.PauseGame();
 
 		gameObject.SetActive(true);
 
@@ -48,6 +47,7 @@ public class NPCInfo : MonoBehaviour {
 
 	public void Hide() {
 		gameObject.SetActive(false);
-		// dont need to unpause the game because, again, npcinteractable will unpause
+		
+		GameManager.instance.UnpauseGame();
 	}
 }
