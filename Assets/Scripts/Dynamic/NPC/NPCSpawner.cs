@@ -163,7 +163,7 @@ public class NPCSpawner : MonoBehaviour {
 		}
 
 		int npcIndex = Random.Range(0, npcAwake.Count);
-		if (!NpcIsInRange(npcs[npcIndex]) && npcAwake[npcIndex]) {
+		if (CanRecallNPC(npcIndex)) {
 			Recall(npcIndex);
 			StartCoroutine(AlterDelay());
 		}
@@ -219,11 +219,16 @@ public class NPCSpawner : MonoBehaviour {
 		}
 	}
 
-	// checks to see if NPC is in the range of the camera
 	bool NpcIsInRange(NPC npc) {
 		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
 
 		return range.Contains((Vector2)(npc.transform.position));
+	}
+
+	bool CanRecallNPC(int npcIndex) {
+		return !NpcIsInRange(npcs[npcIndex]) && 
+			   npcAwake[npcIndex] &&
+			   !npcs[npcIndex].IsFighting();
 	}
 
 	public int NumNpcs() {

@@ -71,7 +71,7 @@ public class NPC : Character {
 
 	public const float GET_HIT_DELAY = 0.2f;
 	public const float AFTER_PUNCH_DELAY = 0.5f;
-	public const float SQUARED_STOP_RETALIATE_DIST = 2500f;
+	public const float SQUARED_STOP_RETALIATE_DIST = 36;
 
 	private bool fighting = false;
 	private Character opponent = null;
@@ -81,26 +81,7 @@ public class NPC : Character {
 		fighting = true;
 	}
 
-	IEnumerator Retaliate() {
-		// need to face the correct direction otherwise punch will be missed
-		if (visible) {
-			Vector3 displacement = opponent.transform.position - transform.position;
-			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-				if (displacement.x > 0) {
-					Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
-				} else {
-					Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
-				}
-			} else {
-				// if at 0, looks nice if npc facing back (punching into screen)
-				if (displacement.y >= 0) {
-					Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
-				} else {
-					Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
-				}
-			}
-		}
-
+	IEnumerator EndFight() {
 		// don't let npc search for dest because we want npc to remain still for a bit
 		// need to explicitly set to false because it may have turned true
 		// (which is does after maxDestinationDelay on arrival)
@@ -245,8 +226,7 @@ public class NPC : Character {
 		displacement.z = 0;
 		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
 			// opponent is too far, so give up fighting
-			fighting = false;
-			EndRetaliateAnimator();
+			StartCoroutine(EndFight());
 		}
 
 		if (floorDiff != 0 || displacement.sqrMagnitude > PUNCH_DISTANCE) {
@@ -263,12 +243,39 @@ public class NPC : Character {
 		}
 	}
 
+	protected void Retaliate() {
+		// need to face the correct direction otherwise punch will be missed
+		if (visible) {
+			Vector3 displacement = opponent.transform.position - transform.position;
+			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+				if (displacement.x > 0) {
+					Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+				} else {
+					Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
+				}
+			} else {
+				// if at 0, looks nice if npc facing back (punching into screen)
+				if (displacement.y >= 0) {
+					Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
+				} else {
+					Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+				}
+			}
+		}
+
+		StartCoroutine(EndFight());
+	}
+
 	protected void StartRetaliateAnimator() {
 		animator.SetLayerWeight(1, 1);
 	}
 
 	protected void EndRetaliateAnimator() {
 		animator.SetLayerWeight(1, 0);
+	}
+
+	public bool IsFighting() {
+		return fighting;
 	}
 
 	/// NAVIGATION ///
@@ -287,7 +294,7 @@ public class NPC : Character {
 		}
 		if (fighting) {
 			// if fighting and arrived and dest, hit the opponent
-			StartCoroutine(Retaliate());
+			Retaliate();
 		} else {
 			StartCoroutine(ArriveDelay());
 		}
