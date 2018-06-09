@@ -10,12 +10,6 @@ public class NPCTrade : MonoBehaviour {
 	[SerializeField]
 	private Text nameText;
 
-	// [SerializeField]
-	// private Text healthText;
-	// [SerializeField]
-	// private Text expText;
-	// [SerializeField]
-	// private Text strengthText;
 	[SerializeField]
 	private Text moneyText;
 
@@ -53,8 +47,7 @@ public class NPCTrade : MonoBehaviour {
 	}
 	
 	public void Display(NPC npc) {
-		// dont need to pause game because initial interaction (npcinteractable)
-		// will pause the game
+		GameManager.instance.PauseGame();
 
 		gameObject.SetActive(true);
 
@@ -63,10 +56,6 @@ public class NPCTrade : MonoBehaviour {
 		npcInventory.SetDisplaying(true);
 
 		nameText.text = npc.GetName();
-
-		// healthText.text = npc.GetHealth().ToString();
-		// strengthText.text = npc.GetStrength().ToString();
-		// expText.text = npc.GetExperience().ToString();
 
 		UpdateInventoryUI();
 	}
@@ -84,7 +73,8 @@ public class NPCTrade : MonoBehaviour {
 		sellController.HideSellingStash();
 
 		gameObject.SetActive(false);
-		// dont need to unpause the game because, again, npcinteractable will unpause
+		
+		GameManager.instance.UnpauseGame();
 	}
 
 	public void DeselectAll() {
