@@ -21,8 +21,12 @@ public class NPCInteractable : Interactable {
     public NPCOptions npcOptions;
     private NPCOptions npcOptionsInstance = null;
 
-    public Exclaim exclaim;
-    private Exclaim exclaimInstance = null;
+    public Alert exclaimIcon;
+    private Alert exclaimInstance = null;
+
+    public Alert quest;
+    private Alert questInstance = null;
+    private bool hasQuest;
 
 	private NPC npc;
     private bool interacted = false;
@@ -50,12 +54,26 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    public void GetHitBy(Character opponent) {
-        ShowExclaim();
+    public void ShowFightAlert(Character opponent) {
+        HideQuestIcon();
+        ShowExclaimIcon();
     }
 
-    public void EndRetaliate() {
-        HideExclaim();
+    public void HideFightAlert() {
+        if (hasQuest) {
+            ShowQuestIcon();
+        }
+        HideExclaimIcon();
+    }
+
+    public void ShowQuestAlert() {
+        hasQuest = true;
+        ShowQuestIcon();
+    }
+
+    public void HideQuestAlert() {
+        hasQuest = false;
+        HideQuestIcon();
     }
 
     public override void EnterRange(Player player)
@@ -135,15 +153,27 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void ShowExclaim() {
-        exclaimInstance = Instantiate(exclaim);
+    private void ShowExclaimIcon() {
+        exclaimInstance = Instantiate(exclaimIcon);
         exclaimInstance.Display(gameObject, GameManager.instance.canvas.transform);
     }
 
-    private void HideExclaim() {
+    private void HideExclaimIcon() {
         if (exclaimInstance != null) {
             exclaimInstance.Destroy();
             exclaimInstance = null;
+        }
+    }
+
+    private void ShowQuestIcon() {
+        questInstance = Instantiate(quest);
+        questInstance.Display(gameObject, GameManager.instance.canvas.transform);
+    }
+
+    private void HideQuestIcon() {
+        if (questInstance != null) {
+            questInstance.Destroy();
+            questInstance = null;
         }
     }
 
