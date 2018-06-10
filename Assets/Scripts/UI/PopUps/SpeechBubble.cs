@@ -30,11 +30,8 @@ public class SpeechBubble : PopUp {
     public SpeechBubble() : base(speechOffset) {
     }
 
-	public override void Display(Transform parent) {
-        base.Display(parent);
-		// set first sibling so that when it fades and camera moves, doesn't potentially
-		// cover other stuff like top bar and buttons
-		transform.SetSiblingIndex(0);
+	public override void Display() {
+        base.Display();
 	}
 
 	void Start() {
