@@ -7,9 +7,12 @@ public class NPCInfo : MonoBehaviour {
 
 	public static NPCInfo instance = null;
 
+	private Color YELLOW = Color.yellow;
+	private Color GREEN = Color.green;
+	private Color RED = Color.red;
+
 	[SerializeField]
 	private Text nameText;
-
 	[SerializeField]
 	private Text healthText;
 	[SerializeField]
@@ -18,6 +21,8 @@ public class NPCInfo : MonoBehaviour {
 	private Text strengthText;
 	[SerializeField]
 	private Text moneyText;
+	[SerializeField]
+	private Slider friendlinessSlider;
 
 	private NPC npc;
 
@@ -43,11 +48,28 @@ public class NPCInfo : MonoBehaviour {
 		healthText.text = npc.GetHealth().ToString();
 		strengthText.text = npc.GetStrength().ToString();
 		expText.text = npc.GetExperience().ToString();
+
+		SetFriendlinessSlider(npc.GetFriendliness());
 	}
 
 	public void Hide() {
 		gameObject.SetActive(false);
 		
 		GameManager.instance.UnpauseGame();
+	}
+
+	private void SetFriendlinessSlider(int friendliness) {
+		friendlinessSlider.value = friendliness;
+
+		ColorBlock cb = friendlinessSlider.colors;
+		if (friendliness > 66) {
+			cb.disabledColor = GREEN;
+		} else if (friendliness > 33) {
+			cb.disabledColor = YELLOW;
+		} else {
+			cb.disabledColor = RED;
+		}
+
+		friendlinessSlider.colors = cb;
 	}
 }

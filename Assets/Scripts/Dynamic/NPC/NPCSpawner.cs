@@ -22,9 +22,6 @@ using UnityEngine;
 ///					recalled immediately.
 /// </summary>  
 public class NPCSpawner : MonoBehaviour {
-
-	private const string NPC_NAME = "NPC-";
-
 	public int PEAK_MAX = 1;
 	public int PEAK_MIN = 1;
 
@@ -118,11 +115,7 @@ public class NPCSpawner : MonoBehaviour {
 	NPC InstantiateNPC(int index, Vector2 pos) {	
 		NPC instance = NPCManager.instance.InstantiateNPC(index, pos);	
 
-		instance.SetAgentNav(polyNav);
-		instance.transform.SetParent(transform);
-
-		instance.name = NPC_NAME + npcs.Count;
-		instance.SetIndependent(false);
+		instance.InstantiateBySpawner(polyNav, transform, npcs.Count);
 
 		instance.OnDeath += Remove;
 
@@ -164,13 +157,14 @@ public class NPCSpawner : MonoBehaviour {
 
 		int npcIndex = Random.Range(0, npcAwake.Count);
 		if (CanRecallNPC(npcIndex)) {
-			Recall(npcIndex);
+			RecallUnconditionally(npcIndex);
 			StartCoroutine(AlterDelay());
 		}
 	}
 
 	// recalls npc no matter where it is
-	void Recall(int npcIndex) {
+	void RecallUnconditionally(int npcIndex) {
+		npcs[npcIndex].Recall();
 		npcs[npcIndex].gameObject.SetActive(false);
 		npcAwake[npcIndex] = false;
 		numAwake--;
@@ -269,7 +263,7 @@ public class NPCSpawner : MonoBehaviour {
 				instance.LoadFromData(data.npcDatas[i]);
 
 				if (!data.npcAwake[i]) {
-					Recall(i);
+					RecallUnconditionally(i);
 				}
 			}
 		} else {

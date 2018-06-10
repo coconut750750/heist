@@ -15,9 +15,9 @@ public class HoverName : PopUp {
       UpdatePosition(baseObject.transform.position);
     }
 
-    public void Display(string name, GameObject baseObject, Transform parent) {
+    public void Display(string name, GameObject baseObject) {
       this.baseObject = baseObject;
-      Display(parent);
+      Display();
       GetComponentInChildren<Text>().text = name;
     }
 }

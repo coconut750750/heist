@@ -14,9 +14,9 @@ public class Exclaim : PopUp {
     	UpdatePosition(baseObject.transform.position);
     }
 
-	public void Display(GameObject baseObject, Transform parent) {
+	public void Display(GameObject baseObject) {
       this.baseObject = baseObject;
-      Display(parent);
+      Display();
 	  transform.SetSiblingIndex(0);
     }
 }

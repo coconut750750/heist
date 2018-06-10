@@ -9,7 +9,7 @@ public abstract class Character : MonoBehaviour {
 	private const string CLASS_NAME = "movingobj";
 
 	public const float DOOR_DELAY_SECONDS = 0.05f;
-	public const float PUNCH_DISTANCE = 0.5f;
+	public const float ATTACK_DISTANCE = 0.5f;
 
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
@@ -37,7 +37,7 @@ public abstract class Character : MonoBehaviour {
 	protected int backHash = Animator.StringToHash("Back");
 	protected int leftHash = Animator.StringToHash("Left");
 	protected int rightHash = Animator.StringToHash("Right");
-	protected int punchHash = Animator.StringToHash("Punch");
+	protected int attackHash = Animator.StringToHash("Attack");
 
 	protected Animator animator;
 
@@ -54,29 +54,29 @@ public abstract class Character : MonoBehaviour {
 		paused = false;
 	}
 
-	/// GET HIT VARIABLES ///
-	private const float GET_HIT_EFFECT_TIME = 1.5f;
-	private const float GET_HIT_BLINK_SECONDS = 0.075f;
-	private const int GET_HIT_BLINK_NUM = 20;
-	private const float GET_HIT_SPEEDUP = 1.25f;
+	/// GET ATTACK VARIABLES ///
+	private const float GET_ATTACK_EFFECT_TIME = 1.5f;
+	private const float GET_ATTACK_BLINK_SECONDS = 0.075f;
+	private const int GET_ATTACK_BLINK_NUM = 20;
+	private const float GET_ATTACK_SPEEDUP = 1.25f;
 
-	private bool isEffectedByHit = false;
+	private bool isEffectedByAttack = false;
 
 	IEnumerator Blink() {
 		bool spriteEnabled = false;
-		for (int i = 0; i < GET_HIT_BLINK_NUM; i++) {
+		for (int i = 0; i < GET_ATTACK_BLINK_NUM; i++) {
 			GetComponent<SpriteRenderer>().enabled = spriteEnabled;
 			spriteEnabled = !spriteEnabled;
-			yield return new WaitForSeconds(GET_HIT_BLINK_SECONDS);
+			yield return new WaitForSeconds(GET_ATTACK_BLINK_SECONDS);
 		}
 	}
 
-	IEnumerator GetHitSpeedUp() {
-		moveSpeed *= GET_HIT_SPEEDUP;
-		yield return new WaitForSeconds(GET_HIT_EFFECT_TIME);
-		moveSpeed /= GET_HIT_SPEEDUP;
+	IEnumerator GetAttackSpeedUp() {
+		moveSpeed *= GET_ATTACK_SPEEDUP;
+		yield return new WaitForSeconds(GET_ATTACK_EFFECT_TIME);
+		moveSpeed /= GET_ATTACK_SPEEDUP;
 
-		isEffectedByHit = false;
+		isEffectedByAttack = false;
 	}
 
 	/// END MEMBERS
@@ -192,7 +192,7 @@ public abstract class Character : MonoBehaviour {
 		}
 	}
 
-	protected virtual void Punch(AnimationDirection animDirection, int layer) {
+	protected virtual void Attack(AnimationDirection animDirection, int layer) {
 		Vector3 direction = Vector3.zero;
 		switch (animDirection) {
 			case AnimationDirection.Forward:
@@ -211,36 +211,36 @@ public abstract class Character : MonoBehaviour {
 
 		if (direction.sqrMagnitude != 0) {
 			float z = transform.position.z;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, PUNCH_DISTANCE, 
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, ATTACK_DISTANCE, 
 												 layer, z, z);
 			if (hit.collider != null) {
-				hit.collider.gameObject.GetComponent<Character>().GetHitBy(this);
+				hit.collider.gameObject.GetComponent<Character>().GetAttackedBy(this);
 			}
 			
 			Face(animDirection);
-			animator.SetTrigger(punchHash);
+			animator.SetTrigger(attackHash);
 		}
 	}
 
-	protected virtual void Punch(int layer) {
+	protected virtual void Attack(int layer) {
 		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 		if (stateHash == forwardStateHash) {
-			Punch(AnimationDirection.Forward, layer);
+			Attack(AnimationDirection.Forward, layer);
 		} else if (stateHash == backStateHash) {
-			Punch(AnimationDirection.Back, layer);
+			Attack(AnimationDirection.Back, layer);
 		} else if (stateHash == leftStateHash) {
-			Punch(AnimationDirection.Left, layer);
+			Attack(AnimationDirection.Left, layer);
 		} else if (stateHash == rightStateHash) {
-			Punch(AnimationDirection.Right, layer);
+			Attack(AnimationDirection.Right, layer);
 		}
 	}
 
-	public virtual void GetHitBy(Character other) {
+	public virtual void GetAttackedBy(Character other) {
 		health -= other.strength;
-		if (!isEffectedByHit) {
+		if (!isEffectedByAttack) {
 			StartCoroutine(Blink());
-			StartCoroutine(GetHitSpeedUp());
-			isEffectedByHit = true;
+			StartCoroutine(GetAttackSpeedUp());
+			isEffectedByAttack = true;
 		}
 	}
 
