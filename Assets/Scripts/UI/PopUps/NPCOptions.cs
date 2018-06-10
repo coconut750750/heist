@@ -21,8 +21,8 @@ public class NPCOptions : PopUp {
     public NPCOptions() : base(optionsOffset) {
     }
 
-	public override void Display(Transform parent) {
-		base.Display(parent);
+	public override void Display() {
+		base.Display();
 	}
 
 	public override void Destroy() {

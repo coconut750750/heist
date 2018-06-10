@@ -126,7 +126,7 @@ public class NPCInteractable : Interactable {
 
     private void ShowHoverText() {
         hoverTextInstance = Instantiate(hoverNameText);
-        hoverTextInstance.Display(npc.GetName(), gameObject, GameManager.instance.canvas.transform);
+        hoverTextInstance.Display(npc.GetName(), gameObject);
     }
 
     private void HideHoverText() {
@@ -139,7 +139,7 @@ public class NPCInteractable : Interactable {
     private void ShowSpeechBubble() {
         if (speechBubbleInstance == null) {
             speechBubbleInstance = Instantiate(speechBubble);
-            speechBubbleInstance.Display(GameManager.instance.canvas.transform);
+            speechBubbleInstance.Display();
             speechBubbleInstance.UpdateText(npc.Greet());
             speechBubbleInstance.UpdatePosition(gameObject.transform.position);
         }
@@ -155,7 +155,7 @@ public class NPCInteractable : Interactable {
     private void ShowNPCOptions() {
         if (npcOptionsInstance == null) {
             npcOptionsInstance = Instantiate(npcOptions);
-            npcOptionsInstance.Display(GameManager.instance.canvas.transform);
+            npcOptionsInstance.Display();
             npcOptionsInstance.SetCallbacks(ShowInventory, ShowQuest, ShowInfo);
             npcOptionsInstance.UpdatePosition(gameObject.transform.position);
         }
@@ -170,7 +170,7 @@ public class NPCInteractable : Interactable {
 
     private void ShowExclaimIcon() {
         exclaimInstance = Instantiate(exclaimIcon);
-        exclaimInstance.Display(gameObject, GameManager.instance.canvas.transform);
+        exclaimInstance.Display(gameObject);
     }
 
     private void HideExclaimIcon() {
@@ -182,7 +182,7 @@ public class NPCInteractable : Interactable {
 
     private void ShowQuestIcon() {
         questInstance = Instantiate(quest);
-        questInstance.Display(gameObject, GameManager.instance.canvas.transform);
+        questInstance.Display(gameObject);
     }
 
     private void HideQuestIcon() {
