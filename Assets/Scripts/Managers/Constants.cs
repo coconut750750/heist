@@ -12,6 +12,7 @@ public abstract class Constants {
 
 	public const string BUTTON_B_TAG = "ButtonB";
 
+	public const string NPC_NAME = "NPC-";
 
 	/// LAYERS
 	public const int NPC_ONLY_LAYER = 1024;
