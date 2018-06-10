@@ -211,6 +211,22 @@ public class NPC : Character {
 		return "Order me an omelette.";
 	}
 
+	public void AcceptedQuest() {
+		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
+	}
+
+	public void CompletedQuest() {
+		AdjustFriendliness(COMPLETE_QUEST_FRIENDLY_DELTA);
+	}
+
+	public void RejectedQuest() {
+		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
+	}
+
+	public void BoughtOrTraded() {
+		AdjustFriendliness(BUY_FRIENDLY_DELTA);
+	}
+
 	public override void GetAttackedBy(Character other) {
 		base.GetAttackedBy(other);
 
@@ -235,6 +251,8 @@ public class NPC : Character {
 
 		interactable.HideAllPopUps();
 		interactable.ShowFightAlert(other);
+
+		AdjustFriendliness(ATTACK_FRIENDLY_DELTA);
 	}
 
 	protected void FollowOpponentUpdate() {
@@ -422,6 +440,11 @@ public class NPC : Character {
 
 	public void AdjustFriendliness(int delta) {
 		this.friendliness += delta;
+		if (this.friendliness < 0) {
+			this.friendliness = 0;
+		} else if (this.friendliness > 100) {
+			this.friendliness = 100;
+		}
 	}
 
 	public int GetFriendliness() {
