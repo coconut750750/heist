@@ -9,7 +9,8 @@ using UnityEngine.Events;
 
 public class Player : Character {
 
-	private const float PUNCH_DELAY_SECONDS = 0.5f;
+	// TODO: make this variable based on attack speed
+	private const float ATTACK_DELAY_SECONDS = 0.5f;
 
 	// Button B Interaction
 	protected static ActionButton buttonB;
@@ -27,11 +28,11 @@ public class Player : Character {
 	[SerializeField]
 	private Text expText;
 
-	private bool canPunch = true;
-	IEnumerator punchDelay() {
-		canPunch = false;
-		yield return new WaitForSeconds(PUNCH_DELAY_SECONDS);
-		canPunch = true;
+	private bool canAttack = true;
+	IEnumerator AttackDelay() {
+		canAttack = false;
+		yield return new WaitForSeconds(ATTACK_DELAY_SECONDS);
+		canAttack = true;
 	}
 
 	protected override void Start () {
@@ -41,7 +42,7 @@ public class Player : Character {
 		GameObject buttonObj = GameObject.Find(Constants.BUTTON_B_TAG);
 		buttonB = buttonObj.GetComponent<ActionButton>();
 		buttonB.AddListener(delegate {
-            Punch();
+            Attack();
         });
 
 		UpdateUIInfo();
@@ -80,17 +81,17 @@ public class Player : Character {
 		buttonB.enabled = true;
 	}
 
-	public void Punch() {
-		if (!canPunch) {
+	public void Attack() {
+		if (!canAttack) {
 			return;
 		}
 
-		base.Punch(Constants.NPC_ONLY_LAYER);
-		StartCoroutine(punchDelay());
+		base.Attack(Constants.NPC_ONLY_LAYER);
+		StartCoroutine(AttackDelay());
 	}
 
-	public override void GetHitBy(Character other) {
-		base.GetHitBy(other);
+	public override void GetAttackedBy(Character other) {
+		base.GetAttackedBy(other);
 		UpdateUIInfo();
 	}
 

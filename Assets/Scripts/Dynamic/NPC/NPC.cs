@@ -25,6 +25,13 @@ public class NPC : Character {
 	public const float SELL_PERC = 1.10f;
 	public const float BUY_PERC = 0.85f;
 
+	// friendliness constants
+	public const int BUY_FRIENDLY_DELTA = 1;
+	public const int COMPLETE_QUEST_FRIENDLY_DELTA = 15;
+	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 5;
+	public const int ATTACK_FRIENDLY_DELTA = -35;
+	public const int REJECT_QUEST_FRIENDLY_DELTA = -10;
+
 	public bool debugNav = false;
 	public bool saveData = true;
 
@@ -68,15 +75,15 @@ public class NPC : Character {
 
 	// fighting member variables
 
-	public const float GET_HIT_DELAY = 0.2f;
-	public const float AFTER_PUNCH_DELAY = 0.5f;
+	public const float GET_ATTACK_DELAY = 0.2f;
+	public const float AFTER_ATTACK_DELAY = 0.5f;
 	public const float SQUARED_STOP_RETALIATE_DIST = 36;
 
 	private bool fighting = false;
 	private Character opponent = null;
 
 	IEnumerator ChaseAfter() {
-		yield return new WaitForSeconds(GET_HIT_DELAY);
+		yield return new WaitForSeconds(GET_ATTACK_DELAY);
 		fighting = true;
 	}
 
@@ -90,7 +97,7 @@ public class NPC : Character {
 		EndRetaliateAnimator();
 		interactable.HideFightAlert();
 		
-		yield return new WaitForSeconds(AFTER_PUNCH_DELAY);
+		yield return new WaitForSeconds(AFTER_ATTACK_DELAY);
 		canSearchForDest = true;
 	}
 
@@ -204,8 +211,8 @@ public class NPC : Character {
 		return "Order me an omelette.";
 	}
 
-	public override void GetHitBy(Character other) {
-		base.GetHitBy(other);
+	public override void GetAttackedBy(Character other) {
+		base.GetAttackedBy(other);
 
 		// if health is 0 or less, die and call OnDeath function if there is one
 		// usually, OnDeath is set by NPC spawner that just removes this object from the array
@@ -216,7 +223,7 @@ public class NPC : Character {
 			Destroy(gameObject);
 		}
 
-		// ensure that npc is moving when it gets hit
+		// ensure that npc is moving when it gets attacked
 		Resume();
 		
 		if (!fighting) {
@@ -234,9 +241,9 @@ public class NPC : Character {
 		// if fighting, constantly update the destination to the opponent
 		//   since player can be moving
 		// the set destination, however, is not exactly the opponent's position
-		// there is a slight offset (PUNCH_DISTANCE) so that the player can actually see
-		//   the npc punching
-		// so, we calculate the closest point that is PUNCH_DISTANCE away from
+		// there is a slight offset (ATTACK_DISTANCE) so that the player can actually see
+		//   the npc attacking
+		// so, we calculate the closest point that is ATTACK_DISTANCE away from
 		//   the opponent's position (that is perpendicular to the player)
 		Vector3 displacement = opponent.transform.position - transform.position;
 		float floorDiff = displacement.z;
@@ -246,7 +253,7 @@ public class NPC : Character {
 			StartCoroutine(EndFight());
 		}
 
-		if (floorDiff != 0 || displacement.sqrMagnitude > PUNCH_DISTANCE) {
+		if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
 			// this means npc far enough to update dest
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 				displacement.y = 0;
@@ -254,28 +261,28 @@ public class NPC : Character {
 				displacement.x = 0;
 			}
 			// mag == x + y since either one is a non-zero and the other is 0
-			Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * PUNCH_DISTANCE;
+			Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
 
 			SetNewDestination(opponent.transform.position - offset);
 		}
 	}
 
 	protected void Retaliate() {
-		// need to face the correct direction otherwise punch will be missed
+		// need to face the correct direction otherwise attack will be missed
 		if (visibleByCamera) {
 			Vector3 displacement = opponent.transform.position - transform.position;
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 				if (displacement.x > 0) {
-					Punch(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
+					Attack(AnimationDirection.Right, Constants.PLAYER_ONLY_LAYER);
 				} else {
-					Punch(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
+					Attack(AnimationDirection.Left, Constants.PLAYER_ONLY_LAYER);
 				}
 			} else {
-				// if at 0, looks nice if npc facing back (punching into screen)
+				// if at 0, looks nice if npc facing back (attacking into screen)
 				if (displacement.y >= 0) {
-					Punch(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
+					Attack(AnimationDirection.Back, Constants.PLAYER_ONLY_LAYER);
 				} else {
-					Punch(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
+					Attack(AnimationDirection.Forward, Constants.PLAYER_ONLY_LAYER);
 				}
 			}
 		}
@@ -310,7 +317,7 @@ public class NPC : Character {
 			Debug.Log("nav arrived");
 		}
 		if (fighting) {
-			// if fighting and arrived and dest, hit the opponent
+			// if fighting and arrived and dest, attack the opponent
 			Retaliate();
 		} else {
 			StartCoroutine(ArriveDelay());
@@ -411,6 +418,10 @@ public class NPC : Character {
 
 	public string GetName() {
 		return npcName;
+	}
+
+	public void AdjustFriendliness(int delta) {
+		this.friendliness += delta;
 	}
 
 	public int GetFriendliness() {
