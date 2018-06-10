@@ -153,6 +153,13 @@ public class NPCInteractable : Interactable {
         }
     }
 
+    private void HideNPCOptions() {
+        if (npcOptionsInstance != null) {
+            npcOptionsInstance.Destroy();
+            npcOptionsInstance = null;
+        }
+    }
+
     private void ShowExclaimIcon() {
         exclaimInstance = Instantiate(exclaimIcon);
         exclaimInstance.Display(gameObject, GameManager.instance.canvas.transform);
@@ -176,18 +183,13 @@ public class NPCInteractable : Interactable {
             questInstance = null;
         }
     }
-
-    private void HideNPCOptions() {
-        if (npcOptionsInstance != null) {
-            npcOptionsInstance.Destroy();
-            npcOptionsInstance = null;
-        }
-    }
             
     public void HideAllPopUps() {
         HideHoverText();
         HideSpeechBubble();
         HideNPCOptions();
+        HideExclaimIcon();
+        HideQuestIcon();
     }
 
     public override void Disable() {

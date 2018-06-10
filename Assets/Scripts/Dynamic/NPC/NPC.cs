@@ -131,9 +131,21 @@ public class NPC : Character {
 		canSearchForDest = true;
 	}
 
+	public void InstantiateBySpawner(Nav2D polyNav, Transform parentTransform, int index) {
+		SetAgentNav(polyNav);
+		transform.SetParent(parentTransform);
+
+		name = Constants.NPC_NAME + index;
+		SetIndependent(false);
+	}
+
 	public void Spawn() {
 		RefreshInventory();
 		gameObject.SetActive(true);
+	}
+
+	public void Recall() {
+		interactable.HideAllPopUps();
 	}
 
 	protected override void FixedUpdate() {
