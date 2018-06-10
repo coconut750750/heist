@@ -53,13 +53,11 @@ public class NPC : Character {
 	private bool isMoving;
 	private bool canSearchForDest;
 
-	// independent if npc not spawned
-	private bool independent = true;
+	private bool spawned = false;
 
 	public event Action<NPC> OnDeath;
 
-	// true if visible by camera
-	public bool visible = true;
+	public bool visibleByCamera = true;
 	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
 	IEnumerator ArriveDelay() {
@@ -136,7 +134,7 @@ public class NPC : Character {
 		transform.SetParent(parentTransform);
 
 		name = Constants.NPC_NAME + index;
-		SetIndependent(false);
+		SetSpawned(true);
 	}
 
 	public void Spawn() {
@@ -263,7 +261,7 @@ public class NPC : Character {
 
 	protected void Retaliate() {
 		// need to face the correct direction otherwise punch will be missed
-		if (visible) {
+		if (visibleByCamera) {
 			Vector3 displacement = opponent.transform.position - transform.position;
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 				if (displacement.x > 0) {
@@ -388,15 +386,15 @@ public class NPC : Character {
 	// called every frame
 	// if npc and player not on same floor, hide npc
 	private void UpdateVisibility() {
-		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visible) {
+		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visibleByCamera) {
 			SetVisibility(false);
-		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visible) {
+		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visibleByCamera) {
 			SetVisibility(true);
 		}
 	}
 
 	private void SetVisibility(bool visible) {
-		this.visible = visible;
+		this.visibleByCamera = visible;
 		GetComponent<SpriteRenderer>().enabled = visible;
 		GetComponent<Animator>().enabled = visible;
 		GetComponent<NPCInteractable>().SetEnabled(visible);
@@ -422,17 +420,17 @@ public class NPC : Character {
 		return canSearchForDest;
 	}
 
-	public bool IsIndependent() {
-		return independent;
+	public bool WasSpawned() {
+		return spawned;
 	}
 
-	public void SetIndependent(bool independent) {
-		this.independent = independent;
+	public void SetSpawned(bool spawned) {
+		this.spawned = spawned;
 	}
 
 	public override void Save()
     {
-		if (independent && saveData) {
+		if (!spawned && saveData) {
 			NPCData data = new NPCData(this);
 			GameManager.Save(data, base.filename);
 		}
@@ -498,6 +496,6 @@ public class NPCData : CharacterData {
 
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();
-		this.visible = npc.visible;
+		this.visible = npc.visibleByCamera;
 	}
 }

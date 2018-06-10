@@ -99,7 +99,7 @@ public class Player : Character {
 		if (other.gameObject.CompareTag(Constants.STAIRS_TAG)) {
 			UpdateVisibleFloorWithGameManager();
 		} else if (other.gameObject.CompareTag(Constants.NPC_TAG)) {
-			if (!other.gameObject.GetComponent<NPC>().visible) {
+			if (!other.gameObject.GetComponent<NPC>().visibleByCamera) {
 				return;
 			}
 			Debug.Log("herlloo");
