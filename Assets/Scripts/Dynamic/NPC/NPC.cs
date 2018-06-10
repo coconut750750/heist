@@ -40,6 +40,7 @@ public class NPC : Character {
 	public int startFloor = 1;
 
 	private string npcName = "Billy";
+	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
 	
@@ -412,6 +413,10 @@ public class NPC : Character {
 		return npcName;
 	}
 
+	public int GetFriendliness() {
+		return friendliness;
+	}
+
 	public bool IsMoving() {
 		return isMoving;
 	}
@@ -457,6 +462,8 @@ public class NPC : Character {
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
 
+			friendliness = data.friendliness;
+
 			destination = new Vector3(data.destX, data.destY, data.destZ);
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
@@ -466,6 +473,7 @@ public class NPC : Character {
 
 			if (isMoving) {
 				SetNewDestination(destination);
+				// TODO: debugging purposes
 				//SetNewDestination(new Vector3(-11, 14, 0)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
@@ -484,6 +492,7 @@ public class NPCData : CharacterData {
 	public float destY;
 	public float destZ;
 
+	public int friendliness;
 	public bool isMoving;
 	public bool canSearchForDest;
 	public bool visible;
@@ -494,6 +503,7 @@ public class NPCData : CharacterData {
 		destY = npc.GetDestination().y;
 		destZ = npc.GetDestination().z;
 
+		this.friendliness = npc.GetFriendliness();
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();
 		this.visible = npc.visibleByCamera;
