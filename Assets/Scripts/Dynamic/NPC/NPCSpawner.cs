@@ -157,13 +157,13 @@ public class NPCSpawner : MonoBehaviour {
 
 		int npcIndex = Random.Range(0, npcAwake.Count);
 		if (CanRecallNPC(npcIndex)) {
-			Recall(npcIndex);
+			RecallUnconditionally(npcIndex);
 			StartCoroutine(AlterDelay());
 		}
 	}
 
 	// recalls npc no matter where it is
-	void Recall(int npcIndex) {
+	void RecallUnconditionally(int npcIndex) {
 		npcs[npcIndex].Recall();
 		npcs[npcIndex].gameObject.SetActive(false);
 		npcAwake[npcIndex] = false;
@@ -263,7 +263,7 @@ public class NPCSpawner : MonoBehaviour {
 				instance.LoadFromData(data.npcDatas[i]);
 
 				if (!data.npcAwake[i]) {
-					Recall(i);
+					RecallUnconditionally(i);
 				}
 			}
 		} else {
