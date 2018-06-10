@@ -12,6 +12,8 @@ using UnityEngine.UI;
 /// </summary>  
 public class NPCInteractable : Interactable {
 
+    private static NPCInteractable activeInstance = null;
+
     public HoverName hoverNameText;
     private HoverName hoverTextInstance = null;
 
@@ -43,13 +45,17 @@ public class NPCInteractable : Interactable {
     }
 	
 	public override void Interact(Player player) {
+        // ensures that if another npc comes when player is interacting, the first one
+        // is closed
+        if (activeInstance != null && activeInstance != this) {
+            activeInstance.Interact(player);
+            return;
+        }
+
         interacted = !interacted;
         if (!interacted) { 
-            // interacted twice so resume game, hide pop ups, and enable button b
             FinishInteraction();
         } else {
-            // disable button b so player can't attack
-            // there isnt a cover when player interacts with npc
             StartInteraction();
         }
     }
@@ -93,21 +99,23 @@ public class NPCInteractable : Interactable {
         HideHoverText();
     }
 
+    // disable button b so player can't attack
+    // since there isnt a cover when player interacts with npc
     private void StartInteraction() {
+        activeInstance = this;
         player.DisableButtonB();
+
+        ShowSpeechBubble();
+        ShowNPCOptions();
+        HideHoverText(); // avoid overlap with speech bubble
 
         npc.Pause();
         player.Pause();
-
-        // greet player
-        ShowSpeechBubble();
-        ShowNPCOptions();
-
-        // destory hover name so that it doesn't overlap with speech bubble
-        HideHoverText();
     }
 
+     //hide pop ups, and enable button b and resumes npc and player
     private void FinishInteraction() {
+        activeInstance = null;
         player.EnableButtonB();
         HideSpeechBubble();
         HideNPCOptions();
