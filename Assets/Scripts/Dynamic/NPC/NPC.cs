@@ -438,6 +438,10 @@ public class NPC : Character {
 		return npcName;
 	}
 
+	public void SetName(string newName) {
+		npcName = newName;
+	}
+
 	public void AdjustFriendliness(int delta) {
 		this.friendliness += delta;
 		if (this.friendliness < 0) {
