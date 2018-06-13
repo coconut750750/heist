@@ -14,9 +14,6 @@ public abstract class Character : MonoBehaviour {
 	protected Rigidbody2D rb2D;
 	private bool paused = false;
 
-	// TODO: remove
-	protected bool onStairs = false;
-
 	public float moveSpeed;
 
 	// keep tack of previous directions to get rid of random outliers
@@ -276,10 +273,6 @@ public abstract class Character : MonoBehaviour {
 		return paused;
 	}
 
-	public bool GetOnStairs() {
-		return onStairs;
-	}
-
 	public Vector3 GetPosition() {
 		return rb2D.transform.position;
 	}
@@ -305,7 +298,6 @@ public abstract class Character : MonoBehaviour {
 	public abstract void Load();
 
 	protected void LoadFromData(CharacterData data) {
-		this.onStairs = data.onStairs;
 		rb2D.transform.position = data.getPosition();
 
 		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = 0;//data.strength;
@@ -314,7 +306,6 @@ public abstract class Character : MonoBehaviour {
 
 [System.Serializable]
 public class CharacterData : GameData {
-	public bool onStairs;
 	public float xPos;
 	public float yPos;
 	public float zPos;
@@ -329,12 +320,11 @@ public class CharacterData : GameData {
 	}
 
 	public CharacterData(Character moveObj) {
-		SetPositionalData(moveObj.GetOnStairs(), moveObj.GetPosition());
+		SetPositionalData(moveObj.GetPosition());
 		SetStats(moveObj.GetMoney(), moveObj.GetHealth(), moveObj.GetExperience(), moveObj.GetStrength());
 	}
 
-	protected void SetPositionalData(bool onStairs, Vector3 position) {
-		this.onStairs = onStairs;
+	protected void SetPositionalData(Vector3 position) {
 		this.xPos = position.x;
 		this.yPos = position.y;
 		this.zPos = position.z;

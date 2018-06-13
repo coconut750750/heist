@@ -116,6 +116,9 @@ public class NPC : Character {
 		if (i == 0) {
 			interactable.ShowQuestAlert();
 		}
+
+		// TODO: remove
+		interactable.ShowQuestAlert();
 	}
 
 	protected override void Start() {
@@ -190,13 +193,13 @@ public class NPC : Character {
 		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
 
 		// TODO: debugging
-		// if (transform.position.z == 0) {
-		// 	return new Vector3(-9, 11, -0.1f);
-		// } else {
-		// 	return new Vector3(-9, 11, 0);
-		// }
+		if (transform.position.z == 0) {
+			return new Vector3(-9, 11, -0.1f);
+		} else {
+			return new Vector3(-9, 11, 0);
+		}
 
-		return new Vector3(x, y);
+		//return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -255,6 +258,7 @@ public class NPC : Character {
 		AdjustFriendliness(ATTACK_FRIENDLY_DELTA);
 	}
 
+	// TODO: fix this function
 	protected void FollowOpponentUpdate() {
 		// if fighting, constantly update the destination to the opponent
 		//   since player can be moving
@@ -271,6 +275,7 @@ public class NPC : Character {
 			StartCoroutine(EndFight());
 		}
 
+		// TODO: remove if statement and see if it stil works
 		if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
 			// this means npc far enough to update dest
 			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
@@ -285,6 +290,7 @@ public class NPC : Character {
 		}
 	}
 
+	// TODO: use Character.Attack() instead?
 	protected void Retaliate() {
 		// need to face the correct direction otherwise attack will be missed
 		if (visibleByCamera) {
@@ -340,9 +346,7 @@ public class NPC : Character {
 		} else {
 			StartCoroutine(ArriveDelay());
 		}
-
 		isMoving = false;
-
 		// if npc lands on stairs, it will enter trigger
 	}
 
@@ -358,7 +362,7 @@ public class NPC : Character {
 		destination = newDest;
 		agent.SetDestination(destination);
 		if (debugNav) {
-			Debug.Log("setting dest: " + destination + " starting at " + transform.position);
+			Debug.Log(gameObject.name + " setting dest: " + destination + " starting at " + transform.position);
 		}
 	}
 
@@ -375,7 +379,7 @@ public class NPC : Character {
 
 	/// INVENTORY ///
 
-	void PopulateInventory() {
+	private void PopulateInventory() {
 		int num = UnityEngine.Random.Range(0, inventory.GetCapacity());
 
 		for (int i = 0; i < num; i++) {
@@ -383,7 +387,7 @@ public class NPC : Character {
 		}
 	}
 
-	void RefreshInventory() {
+	private void RefreshInventory() {
 		inventory.RemoveAll();
 		PopulateInventory();
 	}
@@ -392,7 +396,6 @@ public class NPC : Character {
 	// called when first loads
 	private void OnFloorChanged() {
 		UpdateSortingLayer();
-		Debug.Log("floor: " + GetFloor());
 	}
 
 	public void SetAgentNav(Nav2D nav) {
@@ -442,7 +445,7 @@ public class NPC : Character {
 		npcName = newName;
 	}
 
-	public void AdjustFriendliness(int delta) {
+	private void AdjustFriendliness(int delta) {
 		this.friendliness += delta;
 		if (this.friendliness < 0) {
 			this.friendliness = 0;

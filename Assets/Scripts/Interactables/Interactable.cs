@@ -5,64 +5,47 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
-
-    private static Stack<Interactable> currentInteractables;
-
+    private static Stack<Interactable> currentInteractables = new Stack<Interactable>();
     protected static ActionButton buttonA;
-    private const string BUTTON_A_TAG = "ButtonA";
-
     protected static Player player;
-    private const string PLAYER_TAG = "Player";
 
     private UnityAction call = null;
-
     private new bool enabled = true;
 
-	// Use this for initialization
 	void Awake () {
         if (buttonA == null) {
-            GameObject buttonObj = GameObject.Find(BUTTON_A_TAG);
+            GameObject buttonObj = GameObject.Find(Constants.BUTTON_A_TAG);
             buttonA = buttonObj.GetComponent<ActionButton>();
             buttonA.Disable();
         }
         if (player == null) {
-            player = GameObject.Find(PLAYER_TAG).GetComponent<Player>();
-        }
-        if (currentInteractables == null) {
-            currentInteractables = new Stack<Interactable>();
+            player = GameObject.Find(Constants.PLAYER_TAG).GetComponent<Player>();
         }
 	}
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    // when another "thing" enters the trigger area
     protected void OnTriggerEnter2D(Collider2D other)
     {
         if (!enabled) {
             return;
         }
-        if (other.gameObject.CompareTag(PLAYER_TAG))
+        if (other.gameObject.CompareTag(Constants.PLAYER_TAG))
         {
             if (!buttonA.IsInteractable()) {
                 buttonA.Enable();
             }
-            PlayerInteract(player);
+            EnablePlayerInteract(player);
             EnterRange(player);
         }
     }
 
-    // when "thing" exits the trigger area
     protected void OnTriggerExit2D(Collider2D other)
     {
         if (!enabled) {
             return;
         }
-        if (other.gameObject.CompareTag(PLAYER_TAG))
+        if (other.gameObject.CompareTag(Constants.PLAYER_TAG))
         {
-            PlayerLeave(player);
+            DisablePlayerInteract(player);
             ExitRange(player);
             
             if (buttonA.IsInteractable() && buttonA.GetListeners() == 0) {
@@ -71,8 +54,7 @@ public abstract class Interactable : MonoBehaviour {
         }
     }
 
-    // enable the button to be interactable with the new method
-    public void PlayerInteract(Player player) {
+    private void EnablePlayerInteract(Player player) {
         call = delegate {
             Interact(player);
         };
@@ -83,8 +65,7 @@ public abstract class Interactable : MonoBehaviour {
         currentInteractables.Push(this);
     }
 
-    // resets the button so it is cleared the next time "thing" enters
-    public void PlayerLeave(Player player) {
+    private void DisablePlayerInteract(Player player) {
         if (currentInteractables.Count > 0 && currentInteractables.Pop() == this) {
             Interactable.buttonA.RemoveAllListeners();
 
@@ -113,12 +94,9 @@ public abstract class Interactable : MonoBehaviour {
         enabled = false;
     }
 
-    // called when player is in trigger area
     public abstract void EnterRange(Player player);
 
-    // called when player leaves trigger area
     public abstract void ExitRange(Player player);
 
-    // called when button is pressed
     public abstract void Interact(Player player);
 }

@@ -1,4 +1,5 @@
-// #if UNITY_EDITOR
+// TODO: delete this class 
+//#if UNITY_EDITOR
 // using UnityEngine;
 // using UnityEditor;
 // using System.Collections;

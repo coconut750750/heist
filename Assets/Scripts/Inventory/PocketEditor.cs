@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+// TODO: delete this class
 [CustomEditor (typeof(Pocket))]
 public class PocketEditor : Editor {
 	private SerializedProperty itemImagesProperty;

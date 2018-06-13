@@ -25,10 +25,11 @@ public class NPCInteractable : Interactable {
 
     public Alert exclaimIcon;
     private Alert exclaimInstance = null;
+    private bool hasExclaim = false;
 
     public Alert quest;
     private Alert questInstance = null;
-    private bool hasQuest;
+    private bool hasQuest = false;
 
 	private NPC npc;
     private bool interacted = false;
@@ -38,12 +39,6 @@ public class NPCInteractable : Interactable {
 		npc = gameObject.GetComponent<NPC>();
 	}
 
-    void Update () {
-        if (!base.enabled) {
-            return;
-        }
-    }
-	
 	public override void Interact(Player player) {
         // ensures that if another npc comes when player is interacting, the first one
         // is closed
@@ -61,11 +56,13 @@ public class NPCInteractable : Interactable {
     }
 
     public void ShowFightAlert(Character opponent) {
+        hasExclaim = true;
         HideQuestIcon();
         ShowExclaimIcon();
     }
 
     public void HideFightAlert() {
+        hasExclaim = false;
         if (hasQuest) {
             ShowQuestIcon();
         }
@@ -100,23 +97,22 @@ public class NPCInteractable : Interactable {
     }
 
     // disable button b so player can't attack
-    // since there isnt a cover when player interacts with npc
     private void StartInteraction() {
         activeInstance = this;
         player.DisableButtonB();
 
+        npc.Pause();
+        player.Pause();
+
         ShowSpeechBubble();
         ShowNPCOptions();
         HideHoverText(); // avoid overlap with speech bubble
-
-        npc.Pause();
-        player.Pause();
     }
 
-     //hide pop ups, and enable button b and resumes npc and player
     private void FinishInteraction() {
         activeInstance = null;
         player.EnableButtonB();
+
         HideSpeechBubble();
         HideNPCOptions();
 
@@ -198,6 +194,15 @@ public class NPCInteractable : Interactable {
         HideNPCOptions();
         HideExclaimIcon();
         HideQuestIcon();
+    }
+
+    public override void Enable() {
+        base.Enable();
+        if (hasExclaim) {
+            ShowExclaimIcon();
+        } else if (hasQuest) {
+            ShowQuestIcon();
+        }
     }
 
     public override void Disable() {

@@ -11,6 +11,7 @@ public abstract class Constants {
 	public const string STAIRS_TAG = "Stairs";
 
 	public const string BUTTON_B_TAG = "ButtonB";
+    public const string BUTTON_A_TAG = "ButtonA";
 
 	public const string NPC_NAME = "NPC-";
 

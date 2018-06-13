@@ -183,7 +183,6 @@ public class Nav2DAgent : MonoBehaviour{
 		//compute path
 		requests++;
 		polyNav.FindPath(position, goal, SetPath);
-		Debug.Log("finding path");
 
 		return true;
 	}
