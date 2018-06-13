@@ -178,7 +178,7 @@ public class NPCInteractable : Interactable {
             questInstance = null;
         }
     }
-            
+
     public void DestroyAllPopUps() {
         DestroyHoverText();
         DestroySpeechBubble();
@@ -198,7 +198,15 @@ public class NPCInteractable : Interactable {
 
     public override void Disable() {
         base.Disable();
-        DestroyAllPopUps();
+        DestroyHoverText();
+        DestroySpeechBubble();
+        DestroyNPCOptions();
+        if (exclaimInstance != null) {
+            exclaimInstance.Disable();
+        }
+        if (questInstance != null) {
+            questInstance.Disable();
+        }
     }
 
     public void ShowInventory() {
