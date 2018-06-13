@@ -15,4 +15,4 @@ MonoBehaviour:
   quality: 100
   sprite: {fileID: 21300000, guid: 58b5c0559ba8946fdb4fdf51032ccc83, type: 3}
   price: 20
-  chance: 25
+  chance: 10

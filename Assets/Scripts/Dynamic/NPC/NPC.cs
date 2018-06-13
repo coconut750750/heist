@@ -112,10 +112,13 @@ public class NPC : Character {
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
 		// TODO: testing only!!
-		int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
-		if (i == 0) {
-			interactable.ShowQuestAlert();
-		}
+		// int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
+		// if (i == 0) {
+		// 	interactable.InitQuestIcon();
+		// }
+
+		// TODO: remove
+		interactable.InitQuestIcon();
 	}
 
 	protected override void Start() {
@@ -151,7 +154,7 @@ public class NPC : Character {
 	}
 
 	public void Recall() {
-		interactable.HideAllPopUps();
+		interactable.DestroyAllPopUps();
 	}
 
 	protected override void FixedUpdate() {
@@ -190,13 +193,13 @@ public class NPC : Character {
 		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
 
 		// TODO: debugging
-		// if (transform.position.z == 0) {
-		// 	return new Vector3(-9, 11, -0.1f);
-		// } else {
-		// 	return new Vector3(-9, 11, 0);
-		// }
+		if (transform.position.z == 0) {
+			return new Vector3(-9, 11, -0.1f);
+		} else {
+			return new Vector3(-9, 11, 0);
+		}
 
-		return new Vector3(x, y);
+		//return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -249,12 +252,12 @@ public class NPC : Character {
 
 		StartRetaliateAnimator();
 
-		interactable.HideAllPopUps();
 		interactable.ShowFightAlert(other);
 
 		AdjustFriendliness(ATTACK_FRIENDLY_DELTA);
 	}
 
+	// TODO: fix this function
 	protected void FollowOpponentUpdate() {
 		// if fighting, constantly update the destination to the opponent
 		//   since player can be moving
@@ -271,20 +274,21 @@ public class NPC : Character {
 			StartCoroutine(EndFight());
 		}
 
-		if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
-			// this means npc far enough to update dest
-			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-				displacement.y = 0;
-			} else {
-				displacement.x = 0;
-			}
-			// mag == x + y since either one is a non-zero and the other is 0
-			Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
-
-			SetNewDestination(opponent.transform.position - offset);
+		// TODO: remove if statement and see if it stil works
+		//if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
+		// this means npc far enough to update dest
+		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+			displacement.y = 0;
+		} else {
+			displacement.x = 0;
 		}
+		// mag == x + y since either one is a non-zero and the other is 0
+		Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
+
+		SetNewDestination(opponent.transform.position - offset);
 	}
 
+	// TODO: use Character.Attack() instead?
 	protected void Retaliate() {
 		// need to face the correct direction otherwise attack will be missed
 		if (visibleByCamera) {
@@ -340,9 +344,7 @@ public class NPC : Character {
 		} else {
 			StartCoroutine(ArriveDelay());
 		}
-
 		isMoving = false;
-
 		// if npc lands on stairs, it will enter trigger
 	}
 
@@ -358,7 +360,7 @@ public class NPC : Character {
 		destination = newDest;
 		agent.SetDestination(destination);
 		if (debugNav) {
-			Debug.Log("setting dest: " + destination + " starting at " + transform.position);
+			Debug.Log(gameObject.name + " setting dest: " + destination + " starting at " + transform.position);
 		}
 	}
 
@@ -375,7 +377,7 @@ public class NPC : Character {
 
 	/// INVENTORY ///
 
-	void PopulateInventory() {
+	private void PopulateInventory() {
 		int num = UnityEngine.Random.Range(0, inventory.GetCapacity());
 
 		for (int i = 0; i < num; i++) {
@@ -383,7 +385,7 @@ public class NPC : Character {
 		}
 	}
 
-	void RefreshInventory() {
+	private void RefreshInventory() {
 		inventory.RemoveAll();
 		PopulateInventory();
 	}
@@ -392,7 +394,6 @@ public class NPC : Character {
 	// called when first loads
 	private void OnFloorChanged() {
 		UpdateSortingLayer();
-		Debug.Log("floor: " + GetFloor());
 	}
 
 	public void SetAgentNav(Nav2D nav) {
@@ -438,7 +439,11 @@ public class NPC : Character {
 		return npcName;
 	}
 
-	public void AdjustFriendliness(int delta) {
+	public void SetName(string newName) {
+		npcName = newName;
+	}
+
+	private void AdjustFriendliness(int delta) {
 		this.friendliness += delta;
 		if (this.friendliness < 0) {
 			this.friendliness = 0;

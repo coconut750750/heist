@@ -28,7 +28,6 @@ public class NPCInteractable : Interactable {
 
     public Alert quest;
     private Alert questInstance = null;
-    private bool hasQuest;
 
 	private NPC npc;
     private bool interacted = false;
@@ -38,12 +37,6 @@ public class NPCInteractable : Interactable {
 		npc = gameObject.GetComponent<NPC>();
 	}
 
-    void Update () {
-        if (!base.enabled) {
-            return;
-        }
-    }
-	
 	public override void Interact(Player player) {
         // ensures that if another npc comes when player is interacting, the first one
         // is closed
@@ -61,25 +54,20 @@ public class NPCInteractable : Interactable {
     }
 
     public void ShowFightAlert(Character opponent) {
-        HideQuestIcon();
-        ShowExclaimIcon();
+        DestroyHoverText();
+        DestroyNPCOptions();
+        DestroySpeechBubble();
+        if (questInstance != null) {
+            questInstance.Disable();
+        }
+        InitExclaimIcon();
     }
 
     public void HideFightAlert() {
-        if (hasQuest) {
-            ShowQuestIcon();
+        if (questInstance != null) {
+            questInstance.Enable();
         }
-        HideExclaimIcon();
-    }
-
-    public void ShowQuestAlert() {
-        hasQuest = true;
-        ShowQuestIcon();
-    }
-
-    public void HideQuestAlert() {
-        hasQuest = false;
-        HideQuestIcon();
+        DestroyExclaimIcon();
     }
 
     public override void EnterRange(Player player)
@@ -90,53 +78,52 @@ public class NPCInteractable : Interactable {
             return;
         }
 
-        ShowHoverText();
+        InitHoverText();
     }
 
     public override void ExitRange(Player player)
     {
-        FinishInteraction();
-        HideHoverText();
+        DestroyHoverText();
     }
 
     // disable button b so player can't attack
-    // since there isnt a cover when player interacts with npc
     private void StartInteraction() {
         activeInstance = this;
         player.DisableButtonB();
 
-        ShowSpeechBubble();
-        ShowNPCOptions();
-        HideHoverText(); // avoid overlap with speech bubble
-
         npc.Pause();
         player.Pause();
+
+        InitSpeechBubble();
+        InitNPCOptions();
+        DestroyHoverText(); // avoid overlap with speech bubble
     }
 
-     //hide pop ups, and enable button b and resumes npc and player
     private void FinishInteraction() {
         activeInstance = null;
         player.EnableButtonB();
-        HideSpeechBubble();
-        HideNPCOptions();
+
+        DestroySpeechBubble();
+        DestroyNPCOptions();
 
         npc.Resume();
         player.Resume();
+        InitHoverText();
     }
 
-    private void ShowHoverText() {
+    private void InitHoverText() {
         hoverTextInstance = Instantiate(hoverNameText);
         hoverTextInstance.Display(npc.GetName(), gameObject);
     }
 
-    private void HideHoverText() {
+    private void DestroyHoverText() {
         if (hoverTextInstance != null) {
             hoverTextInstance.Destroy();
             hoverTextInstance = null;
         }
     }
 
-    private void ShowSpeechBubble() {
+    private void InitSpeechBubble() {
         if (speechBubbleInstance == null) {
             speechBubbleInstance = Instantiate(speechBubble);
             speechBubbleInstance.Display();
@@ -145,14 +132,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void HideSpeechBubble() {
+    private void DestroySpeechBubble() {
         if (speechBubbleInstance != null) {
             speechBubbleInstance.Destroy();
             speechBubbleInstance = null;
         }
     }
 
-    private void ShowNPCOptions() {
+    private void InitNPCOptions() {
         if (npcOptionsInstance == null) {
             npcOptionsInstance = Instantiate(npcOptions);
             npcOptionsInstance.Display();
@@ -161,48 +148,65 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void HideNPCOptions() {
+    private void DestroyNPCOptions() {
         if (npcOptionsInstance != null) {
             npcOptionsInstance.Destroy();
             npcOptionsInstance = null;
         }
     }
 
-    private void ShowExclaimIcon() {
+    private void InitExclaimIcon() {
         exclaimInstance = Instantiate(exclaimIcon);
         exclaimInstance.Display(gameObject);
     }
 
-    private void HideExclaimIcon() {
+    private void DestroyExclaimIcon() {
         if (exclaimInstance != null) {
             exclaimInstance.Destroy();
             exclaimInstance = null;
         }
     }
 
-    private void ShowQuestIcon() {
+    public void InitQuestIcon() {
         questInstance = Instantiate(quest);
         questInstance.Display(gameObject);
     }
 
-    private void HideQuestIcon() {
+    public void DestroyQuestIcon() {
         if (questInstance != null) {
             questInstance.Destroy();
             questInstance = null;
         }
     }
-            
-    public void HideAllPopUps() {
-        HideHoverText();
-        HideSpeechBubble();
-        HideNPCOptions();
-        HideExclaimIcon();
-        HideQuestIcon();
+
+    public void DestroyAllPopUps() {
+        DestroyHoverText();
+        DestroySpeechBubble();
+        DestroyNPCOptions();
+        DestroyExclaimIcon();
+        DestroyQuestIcon();
+    }
+
+    public override void Enable() {
+        base.Enable();
+        if (exclaimInstance != null) {
+            InitExclaimIcon();
+        } else if (questInstance != null) {
+            InitQuestIcon();
+        }
     }
 
     public override void Disable() {
         base.Disable();
-        HideAllPopUps();
+        DestroyHoverText();
+        DestroySpeechBubble();
+        DestroyNPCOptions();
+        if (exclaimInstance != null) {
+            exclaimInstance.Disable();
+        }
+        if (questInstance != null) {
+            questInstance.Disable();
+        }
     }
 
     public void ShowInventory() {

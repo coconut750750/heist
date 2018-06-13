@@ -107,8 +107,8 @@ static class AStar {
 		PathNode currentNode = reverse ? endNode : startNode;
 		PathNode retraceEndNode = reverse ? startNode : endNode;
 		
-		while(currentNode != retraceEndNode){
-			//UnityEngine.Debug.Log("path node: " +currentNode.pos);
+		while (currentNode != retraceEndNode){
+			// UnityEngine.Debug.Log("path node: " +currentNode.pos);
 			path.Add(currentNode.pos);
 			
 			currentNode = currentNode.parent;

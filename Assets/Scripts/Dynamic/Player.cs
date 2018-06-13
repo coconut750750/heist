@@ -192,7 +192,7 @@ public class Player : Character {
 public class PlayerData : CharacterData {
 
 	public PlayerData() {
-		base.SetPositionalData(false, Player.START_POS);
+		base.SetPositionalData(Player.START_POS);
 		base.SetStats(0, 0, 0, 0);
 	}
 
