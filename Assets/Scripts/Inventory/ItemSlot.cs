@@ -81,7 +81,14 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemImage.sprite = item.sprite;
 		itemImage.enabled = true;
 		this.item = item;
-		
+	}
+
+	public void ClearItem() {
+		itemImage.sprite = null;
+		itemImage.enabled = false;
+		this.item = null;
+
+		Deselect();
 	}
 
 	public Item GetItem() {
@@ -92,6 +99,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return this.itemImage;
 	}
 
+	// TODO: move this somewhere else
 	private void DeselectAllStashes() {
 		if (parentStash != StashDisplayer.instance) {
 			StashDisplayer.instance.DeselectAll();
@@ -163,18 +171,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		this.outputAllowed = allowed;
 	}
 
-	public void ClearItem() {
-		itemImage.sprite = null;
-		itemImage.enabled = false;
-		this.item = null;
-
-		Deselect();
-	}
-
 	public bool IsEmpty() {
 		return this.item == null;
 	}
 
+	// TODO: clean this up
     public void OnDrop(PointerEventData eventData)
     {
 		if (!inputAllowed) {

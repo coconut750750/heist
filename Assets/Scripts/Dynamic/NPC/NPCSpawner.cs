@@ -40,7 +40,7 @@ public class NPCSpawner : MonoBehaviour {
 	private List<int> npcIndicies;
 	private List<bool> npcAwake;
 
-	private int numAwake; // number of npcs awake
+	private int numAwakeNpcs;
 
 	public int npcSize;
 	public int spawnRange;
@@ -60,7 +60,7 @@ public class NPCSpawner : MonoBehaviour {
 		npcs = new List<NPC>();
 		npcIndicies = new List<int>();
 		npcAwake = new List<bool>();
-		numAwake = 0;
+		numAwakeNpcs = 0;
 		
 		StartCoroutine(AlterDelay());
 
@@ -86,21 +86,21 @@ public class NPCSpawner : MonoBehaviour {
 		int hour = GameManager.instance.GetHour();
 
 		if (END_BASE_HOUR <= hour && hour < END_PEAK_HOUR) {
-			if (numAwake <= PEAK_MIN) {
+			if (numAwakeNpcs <= PEAK_MIN) {
 				Spawn();
-			} else if (numAwake >= PEAK_MAX) {
+			} else if (numAwakeNpcs >= PEAK_MAX) {
 				Recall();
 			}
 		} else if (hour < END_BASE_HOUR || END_PEAK_HOUR <= hour) {
-			if (numAwake <= BASE_MIN) {
+			if (numAwakeNpcs <= BASE_MIN) {
 				Spawn();
-			} else if (numAwake >= BASE_MAX) {
+			} else if (numAwakeNpcs >= BASE_MAX) {
 				Recall();
 			}
 		} 
 	}
 
-	void ActivateNPC(int npcIndex) {
+	private void ActivateNPC(int npcIndex) {
 		NPC npc = npcs[npcIndex];
 
 		if (NpcIsInRange(npc)) {
@@ -109,10 +109,10 @@ public class NPCSpawner : MonoBehaviour {
 
 		npc.Spawn();
 		npcAwake[npcIndex] = true;
-		numAwake++;
+		numAwakeNpcs++;
 	}
 
-	NPC InstantiateNPC(int index, Vector2 pos) {	
+	private NPC InstantiateNPC(int index, Vector2 pos) {	
 		NPC instance = NPCManager.instance.InstantiateNPC(index, pos);	
 
 		instance.InstantiateBySpawner(polyNav, transform, npcs.Count);
@@ -122,7 +122,7 @@ public class NPCSpawner : MonoBehaviour {
 		npcs.Add(instance);
 		npcIndicies.Add(index);
 		npcAwake.Add(true);
-		numAwake++;
+		numAwakeNpcs++;
 
 		return instance;
 	}
@@ -150,7 +150,7 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	// deactivates but doesn't delete
-	void Recall() {
+	private void Recall() {
 		if (!canAlterNpcCount) {
 			return;
 		}
@@ -163,26 +163,24 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	// recalls npc no matter where it is
-	void RecallUnconditionally(int npcIndex) {
+	private void RecallUnconditionally(int npcIndex) {
 		npcs[npcIndex].Recall();
 		npcs[npcIndex].gameObject.SetActive(false);
 		npcAwake[npcIndex] = false;
-		numAwake--;
+		numAwakeNpcs--;
 	}
 
-	// removes npc from npc list (maybe because they cease to exist)
+	// removes npc from npc list (perhaps they died)
 	void Remove(NPC npc) {
-		Debug.Log("removing...");
 		int index = npcs.IndexOf(npc);
 		npcs.RemoveAt(index);
 		npcAwake.RemoveAt(index);
 		npcIndicies.RemoveAt(index);
-		numAwake--;
+		numAwakeNpcs--;
 	}
 
 	// returns a vector 2 position out of range 
-	// to be relevant
-	Vector2? GenerateRandomNPCPos() {
+	private Vector2? GenerateRandomNPCPos() {
 		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
 		int side = Random.Range(0, 4);
 		Vector2 pos;
@@ -213,13 +211,13 @@ public class NPCSpawner : MonoBehaviour {
 		}
 	}
 
-	bool NpcIsInRange(NPC npc) {
+	private bool NpcIsInRange(NPC npc) {
 		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
 
 		return range.Contains((Vector2)(npc.transform.position));
 	}
 
-	bool CanRecallNPC(int npcIndex) {
+	private bool CanRecallNPC(int npcIndex) {
 		return !NpcIsInRange(npcs[npcIndex]) && 
 			   npcAwake[npcIndex] &&
 			   !npcs[npcIndex].IsFighting();
@@ -237,8 +235,8 @@ public class NPCSpawner : MonoBehaviour {
 		return npcAwake.ToArray();
 	}
 
-	public int GetNumAwake() {
-		return numAwake;
+	public int GetNumAwakeNpcs() {
+		return numAwakeNpcs;
 	}
 
 	public NPC[] GetNpcs() {
@@ -278,7 +276,7 @@ public class NPCSpawnerData : GameData {
 	public int[] npcIndicies;
 	public bool[] npcAwake;
 
-	public int numAwake;
+	public int numAwakeNpcs;
 
 	public NPCData[] npcDatas;
 
@@ -287,7 +285,7 @@ public class NPCSpawnerData : GameData {
 		npcIndicies = spawner.GetNpcIndicies();
 		npcAwake = spawner.GetNpcAwake();
 
-		numAwake = spawner.GetNumAwake();
+		numAwakeNpcs = spawner.GetNumAwakeNpcs();
 
 		npcDatas = new NPCData[numNpcs];
 		NPC[] npcs = spawner.GetNpcs();

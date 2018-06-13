@@ -41,7 +41,6 @@ public class PauseMenu : MonoBehaviour {
 			});
 		}
 		defaultColor = menuButtons[0].GetComponent<Image>().color;
-		Debug.Log(defaultColor);
 	}
 
 	public void Pause() {
