@@ -27,8 +27,8 @@ public class NPC : Character {
 
 	// friendliness constants
 	public const int BUY_FRIENDLY_DELTA = 1;
-	public const int COMPLETE_QUEST_FRIENDLY_DELTA = 15;
-	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 5;
+	public const int COMPLETE_QUEST_FRIENDLY_DELTA = 10;
+	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 3;
 	public const int ATTACK_FRIENDLY_DELTA = -35;
 	public const int REJECT_QUEST_FRIENDLY_DELTA = -10;
 
