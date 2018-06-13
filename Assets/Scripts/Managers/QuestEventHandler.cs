@@ -38,4 +38,8 @@ public class QuestEventHandler : MonoBehaviour {
 	public void OnDefeatedNPC(Player player, NPC npc) {
 
 	}
+
+	public void OnSellItem(Player player, NPC npc) {
+
+	}
 }

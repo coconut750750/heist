@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StealingQuestStage : QuestStage
+public class SellingQuestStage : QuestStage
 {
     private Item requirement;
 
-    public StealingQuestStage(Item requirement, string details, int stageNum, int reward) : 
+    public SellingQuestStage(Item requirement, string details, int stageNum, int reward) : 
                          base(details, stageNum, reward) {
         this.requirement = requirement;
     }
