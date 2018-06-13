@@ -112,13 +112,10 @@ public class NPC : Character {
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
 		// TODO: testing only!!
-		// int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
-		// if (i == 0) {
-		// 	interactable.InitQuestIcon();
-		// }
-
-		// TODO: remove
-		interactable.InitQuestIcon();
+		int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
+		if (i == 0) {
+			interactable.InitQuestIcon();
+		}
 	}
 
 	protected override void Start() {
@@ -193,13 +190,13 @@ public class NPC : Character {
 		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
 
 		// TODO: debugging
-		if (transform.position.z == 0) {
-			return new Vector3(-9, 11, -0.1f);
-		} else {
-			return new Vector3(-9, 11, 0);
-		}
+		// if (transform.position.z == 0) {
+		// 	return new Vector3(-9, 11, -0.1f);
+		// } else {
+		// 	return new Vector3(-9, 11, 0);
+		// }
 
-		//return new Vector3(x, y);
+		return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -274,8 +271,6 @@ public class NPC : Character {
 			StartCoroutine(EndFight());
 		}
 
-		// TODO: remove if statement and see if it stil works
-		//if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
 		// this means npc far enough to update dest
 		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 			displacement.y = 0;

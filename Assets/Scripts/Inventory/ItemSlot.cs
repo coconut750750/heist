@@ -123,12 +123,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	public void Select() {
 		DeselectAllStashes();
 		
-		nameText.text = item.itemName;
-		qualityText.text = item.quality + "%";
+		selected = true;
+		SetSelectedItemInfo(item.itemName, item.quality + "%");
 		itemBack.color = SELECTED_COLOR;
 
-		selected = true;
-		
 		if (OnSelected != null) {
 			OnSelected(this.item, index);
 		}
@@ -144,15 +142,20 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void Deselect() {
 		if (selected) {
+			
 			selected = false;
-			nameText.text = "";
-			qualityText.text = "";
+			SetSelectedItemInfo("", "");
 			itemBack.color = DEFAULT_COLOR;
 
 			if (OnDeselected != null) {
 				OnDeselected();
 			}
 		}
+	}
+
+	private void SetSelectedItemInfo(string name, string quality) {
+		nameText.text = name;
+		qualityText.text = quality;
 	}
 
 	public bool InputAllowed() {
@@ -175,7 +178,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return this.item == null;
 	}
 
-	// TODO: clean this up
     public void OnDrop(PointerEventData eventData)
     {
 		if (!inputAllowed) {
@@ -184,24 +186,9 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 		ItemSlot itemSlotOther = ItemDragger.itemBeingDragged.GetParentSlot();
 
-		// swap item slot items
-		Item prevItem = GetItem();
-		Item prevOtherItem = itemSlotOther.GetItem();
-
-		SetItem(prevOtherItem);
-		itemSlotOther.SetItem(prevItem);
-		
-		// swap parent stash positions
-		int indexOther = itemSlotOther.GetIndex();
-		if (parentStash == itemSlotOther.GetParentStash()) {
-			parentStash.SwapItemPositions(indexOther, index);
-		} else if (itemSlotOther.GetParentStash() != null && parentStash != null) {			
-			itemSlotOther.GetParentStash().SetItemAtIndex(prevItem, indexOther);
-			parentStash.SetItemAtIndex(prevOtherItem, index);
-		}
-
-		itemSlotOther.Deselect();
-		Select();
+		SwapItemsInSlots(itemSlotOther);
+		SwapParentStashPositions(itemSlotOther);
+		SwapSlotSelection(itemSlotOther);
 
 		if (OnDropped != null) {
 			OnDropped(this.item);
@@ -211,4 +198,27 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 			itemSlotOther.OnRemoved();
 		}
     }
+
+	private void SwapItemsInSlots(ItemSlot other) {
+		Item prevItem = GetItem();
+		Item prevOtherItem = other.GetItem();
+
+		SetItem(prevOtherItem);
+		other.SetItem(prevItem);
+	}
+
+	private void SwapParentStashPositions(ItemSlot other) {
+		int indexOther = other.GetIndex();
+		if (parentStash == other.GetParentStash()) {
+			parentStash.SwapItemPositions(indexOther, index);
+		} else if (other.GetParentStash() != null && parentStash != null) {			
+			other.GetParentStash().SetItemAtIndex(other.GetItem(), indexOther);
+			parentStash.SetItemAtIndex(GetItem(), index);
+		}
+	}
+
+	private void SwapSlotSelection(ItemSlot other) {
+		other.Deselect();
+		Select();
+	}
 }
