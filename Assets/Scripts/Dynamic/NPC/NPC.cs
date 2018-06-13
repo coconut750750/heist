@@ -112,13 +112,13 @@ public class NPC : Character {
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
 		// TODO: testing only!!
-		int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
-		if (i == 0) {
-			interactable.ShowQuestAlert();
-		}
+		// int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
+		// if (i == 0) {
+		// 	interactable.InitQuestIcon();
+		// }
 
 		// TODO: remove
-		interactable.ShowQuestAlert();
+		interactable.InitQuestIcon();
 	}
 
 	protected override void Start() {
@@ -154,7 +154,7 @@ public class NPC : Character {
 	}
 
 	public void Recall() {
-		interactable.HideAllPopUps();
+		interactable.DestroyAllPopUps();
 	}
 
 	protected override void FixedUpdate() {
@@ -252,7 +252,6 @@ public class NPC : Character {
 
 		StartRetaliateAnimator();
 
-		interactable.HideAllPopUps();
 		interactable.ShowFightAlert(other);
 
 		AdjustFriendliness(ATTACK_FRIENDLY_DELTA);
@@ -276,18 +275,17 @@ public class NPC : Character {
 		}
 
 		// TODO: remove if statement and see if it stil works
-		if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
-			// this means npc far enough to update dest
-			if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
-				displacement.y = 0;
-			} else {
-				displacement.x = 0;
-			}
-			// mag == x + y since either one is a non-zero and the other is 0
-			Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
-
-			SetNewDestination(opponent.transform.position - offset);
+		//if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
+		// this means npc far enough to update dest
+		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
+			displacement.y = 0;
+		} else {
+			displacement.x = 0;
 		}
+		// mag == x + y since either one is a non-zero and the other is 0
+		Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
+
+		SetNewDestination(opponent.transform.position - offset);
 	}
 
 	// TODO: use Character.Attack() instead?

@@ -19,4 +19,12 @@ public class Alert : PopUp {
       Display();
 	  transform.SetSiblingIndex(0);
     }
+
+    public void Enable() {
+        gameObject.SetActive(true);
+    }
+
+    public void Disable() {
+        gameObject.SetActive(false);
+    }
 }
