@@ -32,14 +32,26 @@ public class NPCQuest : MonoBehaviour {
 
 		this.npc = npc;
 		this.quest = npc.GetQuest();
-		if (this.quest != null) {
+		if (this.quest != null && !this.quest.IsActive()) {
 			questText.text = this.quest.GetCurrentDetails();
 			rewardText.text = this.quest.GetCurrentReward().ToString();
+			EnableButtons();
 		} else {
 			questText.text = "No quest at this time right now.";
-			foreach (Button button in GetComponentsInChildren<Button>()) {
-				button.interactable = false;
-			}
+			rewardText.text = "--";
+			DisableButtons();
+		}
+	}
+
+	private void EnableButtons() {
+		foreach (Button button in GetComponentsInChildren<Button>()) {
+			button.interactable = true;
+		}
+	}
+
+	private void DisableButtons() {
+		foreach (Button button in GetComponentsInChildren<Button>()) {
+			button.interactable = false;
 		}
 	}
 
@@ -51,9 +63,11 @@ public class NPCQuest : MonoBehaviour {
 
 	public void AcceptedQuest() {
 		quest.OnAccept();
+		DisableButtons();
 	}
 
 	public void RejectedQuest() {
 		quest.OnReject();
+		DisableButtons();
 	}
 }

@@ -9,18 +9,22 @@ public abstract class Quest {
 	protected int currentStage;
 
 	public NPC reporter;
+	private bool active;
 
 	public Quest(NPC reporter, string questName) {
 		this.reporter = reporter;
 		this.name = questName;
 		this.stages = GenerateQuestStages();
 		currentStage = 0;
+		active = false;
 	}
 
 	protected abstract QuestStage[] GenerateQuestStages();
 
 	public void OnAccept() {
 		reporter.AcceptedQuest();
+		QuestManager.instance.OnAcceptQuest(this);
+		active = true;
 	}
 
 	public void OnReject() {
@@ -28,7 +32,7 @@ public abstract class Quest {
 	}
 
 	public T GetCurrentStage<T>() where T : QuestStage {
-		if (CompletedAll()) {
+		if (HasCompletedAll()) {
 			return null;
 		}
 		return stages[currentStage] as T;
@@ -42,19 +46,20 @@ public abstract class Quest {
 		return stages[currentStage].GetReward();
 	}
 
-	public bool CompletedAll() {
+	public bool HasCompletedAll() {
 		return currentStage >= stages.Length;
 	}
 
 	public virtual void CompleteQuestStage() {
 		stages[currentStage].OnComplete(reporter);
 		currentStage++;
-		if (CompletedAll()) {
+		if (HasCompletedAll()) {
 			OnCompletedAll();
 		}
 	}
 
 	public virtual void OnCompletedAll() {
+		active = false;
 		reporter.CompletedEntireQuest();
 		QuestManager.instance.OnCompleteQuest(this);
 	}
@@ -66,4 +71,8 @@ public abstract class Quest {
 	public abstract void OnDefeatedNPC(Player player, NPC npc);
 
 	public abstract void OnSellItem(Player player, NPC npc, Item item);
+
+	public bool IsActive() {
+		return active;
+	}
 }

@@ -29,8 +29,12 @@ public class QuestManager : MonoBehaviour {
 		return new SellingQuest(npc);
 	}
 
+	public void OnAcceptQuest(Quest quest) {
+		eventHandler.AddQuest(quest);
+	}
+
 	public void OnCompleteQuest(Quest quest) {
-		eventHandler.OnCompleteQuest(quest);
+		eventHandler.CompleteQuest(quest);
 		outstandingQuests--;
 	}
 }

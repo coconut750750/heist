@@ -51,7 +51,7 @@ public class NPC : Character {
 	private Inventory inventory;
 	private NPCInteractable interactable;
 	private Quest currentQuest;
-	
+
 	private Nav2DAgent agent {
 		get {
 			return gameObject.GetComponent<Nav2DAgent>();
@@ -207,15 +207,18 @@ public class NPC : Character {
 	}
 
 	public void AcceptedQuest() {
+		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 	}
 
 	public void CompletedQuestStage() {
+		interactable.InitQuestIcon();
 		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
 	}
 
 	public void CompletedEntireQuest() {
 		currentQuest = null;
+		interactable.DestroyQuestIcon();
 		interactable.DestroyQuestIcon();
 	}
 

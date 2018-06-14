@@ -16,15 +16,16 @@ public class QuestEventHandler {
 		return quests.Count < TOTAL_ACTIVE_QUESTS;
 	}
 
-	public void OnAcceptQuest(Quest quest) {
+	public void AddQuest(Quest quest) {
 		if (!CanAcceptQuest()) {
 			// TODO: throw error
 			return;
 		}
+		Debug.Log("ACCEPTED");
 		quests.Add(quest);
 	}
 
-	public void OnCompleteQuest(Quest quest) {
+	public void CompleteQuest(Quest quest) {
 		quests.Remove(quest);
 		quest = null;
 	}
