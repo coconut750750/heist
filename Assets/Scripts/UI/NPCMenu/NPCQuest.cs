@@ -50,10 +50,10 @@ public class NPCQuest : MonoBehaviour {
 	}
 
 	public void AcceptedQuest() {
-		Debug.Log("accepted!");
+		quest.OnAccept();
 	}
 
 	public void RejectedQuest() {
-		Debug.Log("rejected :(");
+		quest.OnReject();
 	}
 }

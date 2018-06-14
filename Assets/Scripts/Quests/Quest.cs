@@ -19,8 +19,12 @@ public abstract class Quest {
 
 	protected abstract QuestStage[] GenerateQuestStages();
 
-	public void OnAccept(NPC reporter) {
+	public void OnAccept() {
 		reporter.AcceptedQuest();
+	}
+
+	public void OnReject() {
+		reporter.RejectedQuest();
 	}
 
 	public T GetCurrentStage<T>() where T : QuestStage {
@@ -51,7 +55,7 @@ public abstract class Quest {
 	}
 
 	public virtual void OnCompletedAll() {
-		// TODO: Delete quest from quest manager
+		reporter.CompletedEntireQuest();
 		QuestManager.instance.OnCompleteQuest(this);
 	}
 

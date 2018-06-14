@@ -214,8 +214,15 @@ public class NPC : Character {
 		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
 	}
 
+	public void CompletedEntireQuest() {
+		currentQuest = null;
+		interactable.DestroyQuestIcon();
+	}
+
 	public void RejectedQuest() {
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
+		currentQuest = null;
+		interactable.DestroyQuestIcon();
 	}
 
 	public void BoughtOrTraded() {
