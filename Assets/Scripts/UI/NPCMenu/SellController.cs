@@ -48,6 +48,8 @@ public class SellController : MonoBehaviour {
 		npc.GetInventory().AddItem(sellingItem);
 		sellingItem.ChangedHands();
 
+		QuestEventHandler.instance.OnSellItem(npc, sellingItem);
+
 		sellingStash.RemoveItem(sellingItem);
 		sellingItem = null;
 		sellingPrice = -1;

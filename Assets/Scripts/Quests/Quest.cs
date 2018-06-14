@@ -64,13 +64,13 @@ public abstract class Quest {
 		QuestManager.instance.OnCompleteQuest(this);
 	}
 
-	public abstract void OnStealItem(Player player, NPC npc, Item item);
+	public abstract void OnStealItem(NPC npc, Item item);
 
-	public abstract void OnCraftItem(Player player, Item item);
+	public abstract void OnCraftItem(Item item);
 
-	public abstract void OnDefeatedNPC(Player player, NPC npc);
+	public abstract void OnDefeatedNPC(NPC npc);
 
-	public abstract void OnSellItem(Player player, NPC npc, Item item);
+	public abstract void OnSellItem(NPC npc, Item item);
 
 	public bool IsActive() {
 		return active;

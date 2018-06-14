@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class QuestEventHandler {
 
+	public static QuestEventHandler instance = null;
+
 	public const int TOTAL_ACTIVE_QUESTS = 3;
 
 	private List<Quest> quests;
 	
 	public QuestEventHandler() {
 		quests = new List<Quest>();
+		instance = this;
 	}
 
 	public bool CanAcceptQuest() {
@@ -30,27 +33,27 @@ public class QuestEventHandler {
 		quest = null;
 	}
 	
-	public void OnStealItem(Player player, NPC npc, Item item) {
+	public void OnStealItem(NPC npc, Item item) {
 		foreach (Quest quest in quests) {
-			quest.OnStealItem(player, npc, item);
+			quest.OnStealItem(npc, item);
 		}
 	}
 
-	public void OnCraftItem(Player player, Item item) {
+	public void OnCraftItem(Item item) {
 		foreach (Quest quest in quests) {
-			quest.OnCraftItem(player, item);
+			quest.OnCraftItem(item);
 		}
 	}
 
-	public void OnDefeatedNPC(Player player, NPC npc) {
+	public void OnDefeatedNPC(NPC npc) {
 		foreach (Quest quest in quests) {
-			quest.OnDefeatedNPC(player, npc);
+			quest.OnDefeatedNPC(npc);
 		}
 	}
 
-	public void OnSellItem(Player player, NPC npc, Item item) {
+	public void OnSellItem(NPC npc, Item item) {
 		foreach (Quest quest in quests) {
-			quest.OnSellItem(player, npc, item);
+			quest.OnSellItem(npc, item);
 		}
 	}
 }
