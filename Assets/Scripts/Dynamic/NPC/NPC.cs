@@ -27,8 +27,8 @@ public class NPC : Character {
 
 	// friendliness constants
 	public const int BUY_FRIENDLY_DELTA = 1;
-	public const int COMPLETE_QUEST_FRIENDLY_DELTA = 15;
-	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 5;
+	public const int COMPLETE_QUEST_STAGE_FRIENDLY_DELTA = 5;
+	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 3;
 	public const int ATTACK_FRIENDLY_DELTA = -35;
 	public const int REJECT_QUEST_FRIENDLY_DELTA = -10;
 
@@ -50,7 +50,8 @@ public class NPC : Character {
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
-	
+	private Quest currentQuest;
+
 	private Nav2DAgent agent {
 		get {
 			return gameObject.GetComponent<Nav2DAgent>();
@@ -110,15 +111,6 @@ public class NPC : Character {
 		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
-
-		// TODO: testing only!!
-		// int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
-		// if (i == 0) {
-		// 	interactable.InitQuestIcon();
-		// }
-
-		// TODO: remove
-		interactable.InitQuestIcon();
 	}
 
 	protected override void Start() {
@@ -132,8 +124,9 @@ public class NPC : Character {
 
 		agent.maxSpeed = moveSpeed;
 
-		// floor = startFloor - 1;
-		// OnFloorChanged();
+		// TODO: testing only!!
+		currentQuest = QuestManager.instance.GetRandomQuest(this);
+		interactable.InitQuestIcon();
 	}
 
 	void OnEnable() {
@@ -193,13 +186,13 @@ public class NPC : Character {
 		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
 
 		// TODO: debugging
-		if (transform.position.z == 0) {
-			return new Vector3(-9, 11, -0.1f);
-		} else {
-			return new Vector3(-9, 11, 0);
-		}
+		// if (transform.position.z == 0) {
+		// 	return new Vector3(-9, 11, -0.1f);
+		// } else {
+		// 	return new Vector3(-9, 11, 0);
+		// }
 
-		//return new Vector3(x, y);
+		return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -209,21 +202,29 @@ public class NPC : Character {
 		return "Hello there!";
 	}
 
-	public string GetQuest() {
-		// TODO: change quest
-		return "Order me an omelette.";
+	public Quest GetQuest() {
+		return currentQuest;
 	}
 
 	public void AcceptedQuest() {
+		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 	}
 
-	public void CompletedQuest() {
-		AdjustFriendliness(COMPLETE_QUEST_FRIENDLY_DELTA);
+	public void CompletedQuestStage() {
+		interactable.InitQuestIcon();
+		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
+	}
+
+	public void CompletedEntireQuest() {
+		currentQuest = null;
+		interactable.DestroyQuestIcon();
 	}
 
 	public void RejectedQuest() {
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
+		currentQuest = null;
+		interactable.DestroyQuestIcon();
 	}
 
 	public void BoughtOrTraded() {
@@ -274,8 +275,6 @@ public class NPC : Character {
 			StartCoroutine(EndFight());
 		}
 
-		// TODO: remove if statement and see if it stil works
-		//if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
 		// this means npc far enough to update dest
 		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 			displacement.y = 0;
