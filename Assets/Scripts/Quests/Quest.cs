@@ -19,19 +19,39 @@ public abstract class Quest {
 
 	protected abstract QuestStage[] GenerateQuestStages();
 
-	public QuestStage GetCurrentStage() {
-		if (currentStage >= stages.Length) {
+	public void OnAccept(NPC reporter) {
+		reporter.AcceptedQuest();
+	}
+
+	public T GetCurrentStage<T>() where T : QuestStage {
+		if (CompletedAll()) {
 			return null;
 		}
-		return stages[currentStage];
+		return stages[currentStage] as T;
 	}
 
 	public bool CompletedAll() {
 		return currentStage >= stages.Length;
 	}
 
-	public virtual void CompleteQuestStage(Player player) {
-		stages[currentStage].OnComplete(reporter, player);
+	public virtual void CompleteQuestStage() {
+		stages[currentStage].OnComplete(reporter);
 		currentStage++;
+		if (CompletedAll()) {
+			OnCompletedAll();
+		}
 	}
+
+	public virtual void OnCompletedAll() {
+		// TODO: Delete quest from quest manager
+		QuestEventHandler.instance.OnCompleteQuest(this);
+	}
+
+	public abstract void OnStealItem(Player player, NPC npc, Item item);
+
+	public abstract void OnCraftItem(Player player, Item item);
+
+	public abstract void OnDefeatedNPC(Player player, NPC npc);
+
+	public abstract void OnSellItem(Player player, NPC npc, Item item);
 }

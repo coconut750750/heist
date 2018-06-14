@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestStage {
+public abstract class QuestStage {
 
 	public string details;
 	private int stageNum;
@@ -15,12 +15,9 @@ public class QuestStage {
 		this.reward = reward;
 	}
 
-	public void OnComplete(NPC reporter, Player player) {
-		reporter.CompletedQuest();
-		player.SetMoney(player.GetMoney() + reward);
-	}
-
-	public void OnAccept(NPC reporter, Player player) {
-		reporter.AcceptedQuest();
+	public void OnComplete(NPC reporter) {
+		// TODO: UI pops up
+		reporter.CompletedQuestStage();
+		GameManager.instance.mainPlayer.SetMoney(GameManager.instance.mainPlayer.GetMoney() + reward);
 	}
 }

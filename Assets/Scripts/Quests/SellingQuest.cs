@@ -20,4 +20,26 @@ public class SellingQuest : Quest {
         return stages;
     }
 
+    public override void OnCraftItem(Player player, Item item)
+    {
+        return;
+    }
+
+    public override void OnDefeatedNPC(Player player, NPC npc)
+    {
+        return;
+    }
+
+    public override void OnSellItem(Player player, NPC npc, Item item)
+    {
+        if (GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item)) {
+            CompleteQuestStage();
+        }
+    }
+
+    public override void OnStealItem(Player player, NPC npc, Item item)
+    {
+        return;
+    }
+
 }

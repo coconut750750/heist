@@ -10,4 +10,8 @@ public class SellingQuestStage : QuestStage
                          base(details, stageNum, reward) {
         this.requirement = requirement;
     }
+
+    public bool FulfillsRequirement(Item item) {
+        return item.itemName == requirement.itemName;
+    }
 }

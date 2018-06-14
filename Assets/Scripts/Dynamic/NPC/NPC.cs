@@ -27,7 +27,7 @@ public class NPC : Character {
 
 	// friendliness constants
 	public const int BUY_FRIENDLY_DELTA = 1;
-	public const int COMPLETE_QUEST_FRIENDLY_DELTA = 10;
+	public const int COMPLETE_QUEST_STAGE_FRIENDLY_DELTA = 5;
 	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 3;
 	public const int ATTACK_FRIENDLY_DELTA = -35;
 	public const int REJECT_QUEST_FRIENDLY_DELTA = -10;
@@ -215,8 +215,8 @@ public class NPC : Character {
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 	}
 
-	public void CompletedQuest() {
-		AdjustFriendliness(COMPLETE_QUEST_FRIENDLY_DELTA);
+	public void CompletedQuestStage() {
+		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
 	}
 
 	public void RejectedQuest() {
