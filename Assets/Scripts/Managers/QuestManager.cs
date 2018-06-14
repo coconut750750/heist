@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//  	The Quest Manager keeps track of how many outstanding quests there are and 
+//  gives NPC random quests on demand. It also is the interface between Quests themselves
+//  and the Quest Event handler. 
+
 public class QuestManager : MonoBehaviour {
 
 	public const int MAX_OUTSTANDING_QUESTS = 5;
@@ -10,8 +14,6 @@ public class QuestManager : MonoBehaviour {
 
 	private int outstandingQuests = 0;
 	private QuestEventHandler eventHandler;
-	[SerializeField]
-	private QuestStageCompletionMenu stageCompletionMenu;
 
 	void Awake () {
 		if (instance == null) {
@@ -37,7 +39,10 @@ public class QuestManager : MonoBehaviour {
 		} catch (QuestOverflowException e) {
 			throw e;
 		}
-		
+	}
+
+	public void OnRejectQuest(Quest quest) {
+		outstandingQuests--;
 	}
 
 	public void OnCompleteQuest(Quest quest) {

@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 		Quest Event Handler maintains the active quests. When certain events happen
+// 	in game, this handler calls the event functions for each active quests in case
+// 	an active quest was accomplished due to the event. 
+// 		Game facing objects use the instance to call event functions (such as sell controller)
+//		Quest manager use the instance to add and complete quests
 public class QuestEventHandler {
 
 	public static QuestEventHandler instance = null;

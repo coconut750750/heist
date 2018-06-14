@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//  	Each quest has a reporter and a number of stages (1, 2, 3, etc). This object
+//  keeps track of the stages as well as what happens when a quest is accepted, 
+//  rejected, and completed. 
+
 public abstract class Quest {
 
 	public string name;
@@ -34,6 +38,7 @@ public abstract class Quest {
 	}
 
 	public void OnReject() {
+		QuestManager.instance.OnRejectQuest(this);
 		reporter.RejectedQuest();
 	}
 
