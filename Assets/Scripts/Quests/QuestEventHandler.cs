@@ -9,6 +9,8 @@ public class QuestEventHandler {
 	public const int TOTAL_ACTIVE_QUESTS = 3;
 
 	private List<Quest> quests;
+
+	private bool iterationHadCompletedQuest;
 	
 	public QuestEventHandler() {
 		quests = new List<Quest>();
@@ -29,31 +31,48 @@ public class QuestEventHandler {
 	}
 
 	public void CompleteQuest(Quest quest) {
+		iterationHadCompletedQuest = true;
 		quests.Remove(quest);
 		quest = null;
 	}
 	
 	public void OnStealItem(NPC npc, Item item) {
+		iterationHadCompletedQuest = false;
 		foreach (Quest quest in quests) {
 			quest.OnStealItem(npc, item);
+			if (iterationHadCompletedQuest) {
+				return;
+			}
 		}
 	}
 
 	public void OnCraftItem(Item item) {
+		iterationHadCompletedQuest = false;
 		foreach (Quest quest in quests) {
 			quest.OnCraftItem(item);
+			if (iterationHadCompletedQuest) {
+				return;
+			}
 		}
 	}
 
 	public void OnDefeatedNPC(NPC npc) {
+		iterationHadCompletedQuest = false;
 		foreach (Quest quest in quests) {
 			quest.OnDefeatedNPC(npc);
+			if (iterationHadCompletedQuest) {
+				return;
+			}
 		}
 	}
 
 	public void OnSellItem(NPC npc, Item item) {
+		iterationHadCompletedQuest = false;
 		foreach (Quest quest in quests) {
 			quest.OnSellItem(npc, item);
+			if (iterationHadCompletedQuest) {
+				return;
+			}
 		}
 	}
 }

@@ -15,7 +15,7 @@ public abstract class QuestStage {
 		this.reward = reward;
 	}
 
-	public void OnComplete(NPC reporter) {
+	public void  OnComplete(NPC reporter) {
 		// TODO: UI pops up
 		reporter.CompletedQuestStage();
 		GameManager.instance.mainPlayer.SetMoney(GameManager.instance.mainPlayer.GetMoney() + reward);

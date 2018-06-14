@@ -219,7 +219,6 @@ public class NPC : Character {
 	public void CompletedEntireQuest() {
 		currentQuest = null;
 		interactable.DestroyQuestIcon();
-		interactable.DestroyQuestIcon();
 	}
 
 	public void RejectedQuest() {

@@ -33,8 +33,7 @@ public class SellingQuest : Quest {
     public override void OnSellItem(NPC npc, Item item)
     {
         if (GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item)) {
-            Debug.Log("completed stage!!!");
-            //CompleteQuestStage();
+            CompleteQuestStage();
         }
     }
 
