@@ -31,6 +31,9 @@ public class SellingQuest : Quest {
 
     public override void OnSellItem(NPC npc, Item item)
     {
+        if (npc != reporter) {
+            return;
+        }
         if (GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item)) {
             CompleteQuestStage();
         }
