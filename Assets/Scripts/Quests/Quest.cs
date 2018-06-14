@@ -30,6 +30,14 @@ public abstract class Quest {
 		return stages[currentStage] as T;
 	}
 
+	public string GetCurrentDetails() {
+		return stages[currentStage].GetDetails();
+	}
+
+	public int GetCurrentReward() {
+		return stages[currentStage].GetReward();
+	}
+
 	public bool CompletedAll() {
 		return currentStage >= stages.Length;
 	}
@@ -44,7 +52,7 @@ public abstract class Quest {
 
 	public virtual void OnCompletedAll() {
 		// TODO: Delete quest from quest manager
-		QuestEventHandler.instance.OnCompleteQuest(this);
+		QuestManager.instance.OnCompleteQuest(this);
 	}
 
 	public abstract void OnStealItem(Player player, NPC npc, Item item);

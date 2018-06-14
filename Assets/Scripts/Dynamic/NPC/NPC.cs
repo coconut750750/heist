@@ -50,7 +50,7 @@ public class NPC : Character {
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
-	private Quest reportedQuest;
+	private Quest currentQuest;
 	
 	private Nav2DAgent agent {
 		get {
@@ -111,10 +111,6 @@ public class NPC : Character {
 		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
-
-		// TODO: testing only!!
-		reportedQuest = QuestManager.instance.GetRandomQuest(this);
-		interactable.InitQuestIcon();
 	}
 
 	protected override void Start() {
@@ -128,8 +124,9 @@ public class NPC : Character {
 
 		agent.maxSpeed = moveSpeed;
 
-		// floor = startFloor - 1;
-		// OnFloorChanged();
+		// TODO: testing only!!
+		currentQuest = QuestManager.instance.GetRandomQuest(this);
+		interactable.InitQuestIcon();
 	}
 
 	void OnEnable() {
@@ -205,9 +202,8 @@ public class NPC : Character {
 		return "Hello there!";
 	}
 
-	public string GetQuest() {
-		// TODO: change quest
-		return "Order me an omelette.";
+	public Quest GetQuest() {
+		return currentQuest;
 	}
 
 	public void AcceptedQuest() {

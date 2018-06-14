@@ -4,10 +4,10 @@ using UnityEngine;
 
 public abstract class QuestStage {
 
-	public string details;
+	private string details;
 	private int stageNum;
 
-	public int reward;
+	private int reward;
 
 	public QuestStage(string details, int stageNum, int reward) {
 		this.details = details;
@@ -19,5 +19,13 @@ public abstract class QuestStage {
 		// TODO: UI pops up
 		reporter.CompletedQuestStage();
 		GameManager.instance.mainPlayer.SetMoney(GameManager.instance.mainPlayer.GetMoney() + reward);
+	}
+
+	public string GetDetails() {
+		return details;
+	}
+
+	public int GetReward() {
+		return reward;
 	}
 }

@@ -2,20 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestEventHandler : MonoBehaviour {
+public class QuestEventHandler {
 
 	public const int TOTAL_ACTIVE_QUESTS = 3;
 
-	public static QuestEventHandler instance = null;
-
-	private List<Quest> quests = new List<Quest>();
+	private List<Quest> quests;
 	
-	void Awake () {
-		if (instance == null) {
-			instance = this;
-		} else if (instance != this) {
-			Destroy (gameObject);
-		}
+	public QuestEventHandler() {
+		quests = new List<Quest>();
 	}
 
 	public bool CanAcceptQuest() {
@@ -33,7 +27,6 @@ public class QuestEventHandler : MonoBehaviour {
 	public void OnCompleteQuest(Quest quest) {
 		quests.Remove(quest);
 		quest = null;
-		QuestManager.instance.OnFinishedQuest();
 	}
 	
 	public void OnStealItem(Player player, NPC npc, Item item) {

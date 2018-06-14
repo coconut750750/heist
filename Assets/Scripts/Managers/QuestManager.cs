@@ -9,6 +9,7 @@ public class QuestManager : MonoBehaviour {
 	public static QuestManager instance = null;
 
 	private int outstandingQuests = 0;
+	private QuestEventHandler eventHandler;
 
 	void Awake () {
 		if (instance == null) {
@@ -16,6 +17,8 @@ public class QuestManager : MonoBehaviour {
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
+
+		eventHandler = new QuestEventHandler();
 	}
 
 	public Quest GetRandomQuest(NPC npc) {
@@ -26,7 +29,8 @@ public class QuestManager : MonoBehaviour {
 		return new SellingQuest(npc);
 	}
 
-	public void OnFinishedQuest() {
+	public void OnCompleteQuest(Quest quest) {
+		eventHandler.OnCompleteQuest(quest);
 		outstandingQuests--;
 	}
 }
