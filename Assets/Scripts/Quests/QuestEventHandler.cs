@@ -26,7 +26,6 @@ public class QuestEventHandler {
 			// TODO: throw error
 			return;
 		}
-		Debug.Log("ACCEPTED");
 		quests.Add(quest);
 	}
 
