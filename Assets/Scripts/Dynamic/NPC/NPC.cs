@@ -126,7 +126,9 @@ public class NPC : Character {
 
 		// TODO: testing only!!
 		currentQuest = QuestManager.instance.GetRandomQuest(this);
-		interactable.InitQuestIcon();
+		if (currentQuest != null) {
+			interactable.InitQuestIcon();
+		}
 	}
 
 	void OnEnable() {

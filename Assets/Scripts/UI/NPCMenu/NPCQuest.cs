@@ -64,10 +64,14 @@ public class NPCQuest : MonoBehaviour {
 	public void AcceptedQuest() {
 		quest.OnAccept();
 		DisableButtons();
+
+		Hide();
 	}
 
 	public void RejectedQuest() {
 		quest.OnReject();
 		DisableButtons();
+
+		Hide();
 	}
 }
