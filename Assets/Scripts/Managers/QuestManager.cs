@@ -32,7 +32,12 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public void OnAcceptQuest(Quest quest) {
-		eventHandler.AddQuest(quest);
+		try {
+			eventHandler.AddQuest(quest);
+		} catch (QuestOverflowException e) {
+			throw e;
+		}
+		
 	}
 
 	public void OnCompleteQuest(Quest quest) {

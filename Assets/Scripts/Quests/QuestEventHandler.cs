@@ -23,8 +23,7 @@ public class QuestEventHandler {
 
 	public void AddQuest(Quest quest) {
 		if (!CanAcceptQuest()) {
-			// TODO: throw error
-			return;
+			throw new QuestOverflowException();
 		}
 		quests.Add(quest);
 	}
@@ -74,4 +73,8 @@ public class QuestEventHandler {
 			}
 		}
 	}
+}
+
+public class QuestOverflowException : System.Exception {
+
 }

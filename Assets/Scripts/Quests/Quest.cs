@@ -22,8 +22,14 @@ public abstract class Quest {
 	protected abstract QuestStage[] GenerateQuestStages();
 
 	public void OnAccept() {
+		try {
+			QuestManager.instance.OnAcceptQuest(this);
+		} catch (QuestOverflowException e) {
+			throw e;
+		}
+
 		reporter.AcceptedQuest();
-		QuestManager.instance.OnAcceptQuest(this);
+		
 		active = true;
 	}
 

@@ -62,7 +62,12 @@ public class NPCQuest : MonoBehaviour {
 	}
 
 	public void AcceptedQuest() {
-		quest.OnAccept();
+		try {
+			quest.OnAccept();
+		} catch (QuestOverflowException) {
+			return;
+		}
+		
 		DisableButtons();
 
 		Hide();
