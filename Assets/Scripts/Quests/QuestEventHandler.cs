@@ -33,6 +33,7 @@ public class QuestEventHandler : MonoBehaviour {
 	public void OnCompleteQuest(Quest quest) {
 		quests.Remove(quest);
 		quest = null;
+		QuestManager.instance.OnFinishedQuest();
 	}
 	
 	public void OnStealItem(Player player, NPC npc, Item item) {

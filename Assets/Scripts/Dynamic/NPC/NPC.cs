@@ -50,6 +50,7 @@ public class NPC : Character {
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
+	private Quest reportedQuest;
 	
 	private Nav2DAgent agent {
 		get {
@@ -112,10 +113,8 @@ public class NPC : Character {
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
 		// TODO: testing only!!
-		int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
-		if (i == 0) {
-			interactable.InitQuestIcon();
-		}
+		reportedQuest = QuestManager.instance.GetRandomQuest(this);
+		interactable.InitQuestIcon();
 	}
 
 	protected override void Start() {
