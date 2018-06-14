@@ -10,6 +10,8 @@ public class QuestManager : MonoBehaviour {
 
 	private int outstandingQuests = 0;
 	private QuestEventHandler eventHandler;
+	[SerializeField]
+	private QuestStageCompletionMenu stageCompletionMenu;
 
 	void Awake () {
 		if (instance == null) {

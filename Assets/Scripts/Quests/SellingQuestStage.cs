@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class SellingQuestStage : QuestStage
 {
+    private const string QUEST_DETAILS = "Sell me a ";
     private Item requirement;
 
-    public SellingQuestStage(Item requirement, string details, int stageNum, int reward) : 
-                         base(details, stageNum, reward) {
+    public SellingQuestStage(Item requirement, int reward) : 
+                         base(QUEST_DETAILS + requirement.itemName, reward) {
         this.requirement = requirement;
     }
 

@@ -14,8 +14,7 @@ public class SellingQuest : Quest {
 
     protected override QuestStage[] GenerateQuestStages() {
         QuestStage[] stages = new QuestStage[NUM_STAGES];
-        stages[0] = new SellingQuestStage(ItemManager.instance.GetItem("Apple"),
-                                            "Steal an Apple.", 0, 15);
+        stages[0] = new SellingQuestStage(ItemManager.instance.GetItem("Apple"), 15);
 
         return stages;
     }
