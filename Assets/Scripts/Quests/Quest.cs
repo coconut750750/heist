@@ -62,7 +62,7 @@ public abstract class Quest {
 	}
 
 	public virtual void CompleteQuestStage() {
-		QuestAlertMenu.instance.Display(stages[currentStage], reporter);
+		QuestCompletionMenu.instance.Display(stages[currentStage], reporter);
 
 		stages[currentStage].OnComplete(reporter);
 		QuestManager.instance.OnCompleteQuestStage(this);

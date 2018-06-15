@@ -16,7 +16,7 @@ public class QuestEventHandler {
 	private List<Quest> activeQuests;
 
 	private bool iterationHadCompletedQuestStage;
-	
+
 	public QuestEventHandler() {
 		activeQuests = new List<Quest>();
 		instance = this;
@@ -28,7 +28,7 @@ public class QuestEventHandler {
 
 	public void AddQuest(Quest quest) {
 		if (!CanAcceptQuest()) {
-			throw new QuestOverflowException();
+			throw new QuestOverflowException();	
 		}
 		activeQuests.Add(quest);
 	}

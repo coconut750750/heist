@@ -28,6 +28,7 @@ public class Door : MonoBehaviour {
 		}
 
 		GetComponent<SpriteRenderer>().sprite = null;
+		open = true;
 
 		if (other.gameObject.CompareTag (PLAYER_TAG)) {
 			other.gameObject.GetComponent<Player>().StartDoorDelay();
