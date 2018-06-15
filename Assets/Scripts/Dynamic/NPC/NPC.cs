@@ -112,7 +112,7 @@ public class NPC : Character {
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
-		OnFloorChanged();
+		UpdateSortingLayer();
 	}
 
 	protected override void Start() {
@@ -167,7 +167,7 @@ public class NPC : Character {
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (other.CompareTag(Constants.STAIRS_TAG)) {
-			OnFloorChanged();
+			UpdateSortingLayer();
 		}
 	}
 
@@ -393,12 +393,6 @@ public class NPC : Character {
 		PopulateInventory();
 	}
 
-	// called when npc enters trigger (could be stairs)
-	// called when first loads
-	private void OnFloorChanged() {
-		UpdateSortingLayer();
-	}
-
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
 	}
@@ -416,18 +410,16 @@ public class NPC : Character {
 	// called every frame
 	// if npc and player not on same floor, hide npc
 	private void UpdateVisibility() {
-		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visibleByCamera) {
-			SetVisibility(false);
-		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visibleByCamera) {
-			SetVisibility(true);
+		this.visibleByCamera = GetFloor() == GameManager.instance.GetVisibleFloor();
+		GetComponent<NPCInteractable>().SetEnabled(visibleByCamera);
+		
+		if (GetFloor() > GameManager.instance.GetVisibleFloor()) {
+			GetComponent<SpriteRenderer>().enabled = false;
+			GetComponent<Animator>().enabled = false;
+		} else {
+			GetComponent<SpriteRenderer>().enabled = true;
+			GetComponent<Animator>().enabled = true;
 		}
-	}
-
-	private void SetVisibility(bool visible) {
-		this.visibleByCamera = visible;
-		GetComponent<SpriteRenderer>().enabled = visible;
-		GetComponent<Animator>().enabled = visible;
-		GetComponent<NPCInteractable>().SetEnabled(visible);
 	}
 
 	public Inventory GetInventory() {
@@ -511,8 +503,7 @@ public class NPC : Character {
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
 
-			SetVisibility(data.visible);
-			OnFloorChanged();
+			UpdateSortingLayer();
 
 			if (isMoving) {
 				SetNewDestination(destination);

@@ -169,6 +169,8 @@ public class NPCInteractable : Interactable {
     }
 
     public void InitQuestIcon() {
+        Debug.Log("here");
+
         questInstance = Instantiate(quest);
         questInstance.Display(gameObject);
     }
@@ -191,9 +193,9 @@ public class NPCInteractable : Interactable {
     public override void Enable() {
         base.Enable();
         if (exclaimInstance != null) {
-            InitExclaimIcon();
+            exclaimInstance.Enable();
         } else if (questInstance != null) {
-            InitQuestIcon();
+            questInstance.Enable();
         }
     }
 
