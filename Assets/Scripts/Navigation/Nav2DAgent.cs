@@ -144,8 +144,14 @@ public class Nav2DAgent : MonoBehaviour{
 		rb2d = gameObject.GetComponent<Rigidbody2D>();
 	}
 
+	public Vector3 GetRandomValidDestination() {
+		return polyNav.GetRandomValidDestination();
+	}
+
 	///Set the destination for the agent. As a result the agent starts moving
-	public bool SetDestination(Vector3 goal){ return SetDestination(goal, null); }
+	public bool SetDestination(Vector3 goal){
+		return SetDestination(goal, null);
+	}
 
 	///Set the destination for the agent. As a result the agent starts moving. Only the callback from the last SetDestination will be called upon arrival
 	public bool SetDestination(Vector3 goal, Action<bool> callback){
@@ -256,9 +262,8 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 
 		if (repath) {
-
 			//repath if there is no LOS with the next point
-			if (polyNav.CheckLOS(position, nextPoint) == false) {
+			if (polyNav.CheckLineOfSight(position, nextPoint) == false) {
 				Repath();
 			}
 			//in case just after repath-ing there is no path

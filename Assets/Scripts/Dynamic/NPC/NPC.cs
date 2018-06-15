@@ -171,34 +171,6 @@ public class NPC : Character {
 		}
 	}
 
-	// Generates random destination within bound and within the destination range
-	protected Vector3 GenerateRandomDest(Bounds bound) {
-		Vector2 currPos = transform.position;
-
-		float posMinX = currPos.x - destinationRange;
-		float posMaxX = currPos.x + destinationRange;
-		float posMinY = currPos.y - destinationRange;
-		float posMaxY = currPos.y + destinationRange;
-
-		float minX = Mathf.Max(bound.min.x, posMinX);
-		float maxX = Mathf.Min(bound.max.x, posMaxX);
-		float minY = Mathf.Max(bound.min.y, posMinY);
-		float maxY = Mathf.Min(bound.max.y, posMaxY);
-
-		float x = Mathf.Round(UnityEngine.Random.Range(minX, maxX));
-		float y = Mathf.Round(UnityEngine.Random.Range(minY, maxY));
-		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
-
-		// TODO: debugging
-		// if (transform.position.z == 0) {
-		// 	return new Vector3(-9, 11, -0.1f);
-		// } else {
-		// 	return new Vector3(-9, 11, 0);
-		// }
-
-		return new Vector3(x, y);
-	}
-
 	/// INTERACTION ///
 
 	public string Greet() {
@@ -368,9 +340,9 @@ public class NPC : Character {
 	}
 
 	protected void SetNewRandomDestination() {
-		Bounds nav2DBounds = agent.polyNav.masterBounds;
-		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
+		Vector3 randomDest = agent.GetRandomValidDestination();
 
+		// TODO: move this check() and this set() into agent
 		// this check ensures the npc's travel is significant enough
 		if ((randomDest - transform.position).sqrMagnitude >= closestDestinationSquared || 
 				randomDest.z != transform.position.z) {
@@ -507,8 +479,6 @@ public class NPC : Character {
 
 			if (isMoving) {
 				SetNewDestination(destination);
-				// TODO: debugging purposes
-				//SetNewDestination(new Vector3(-11, 14, 0)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}

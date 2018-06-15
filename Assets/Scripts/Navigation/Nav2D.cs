@@ -107,8 +107,7 @@ public class Nav2D : MonoBehaviour {
 
 	///Find a path 'from' and 'to', providing a callback for when path is ready containing the path.
 	public void FindPath(Vector3 start, Vector3 end, System.Action<Vector3[], bool> callback) {
-
-		if (CheckLOS(start, end)) {
+		if (CheckLineOfSight(start, end)) {
 			callback( new Vector3[]{start, end}, true );
 			return;
 		}
@@ -291,7 +290,7 @@ public class Nav2D : MonoBehaviour {
 
 		for (int p = 0; p < map.allPolygons.Length; p++) {
 			Polygon poly = map.allPolygons[p];
-			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
+			//Inflate even more for nodes, by a marginal value to allow CheckLineOfSight between them
 
 			Vector3[] inflatedPoints = InflatePolygon(poly.points, inflateRadius);
 			for (int i = 0; i < inflatedPoints.Length; i++) {
@@ -301,7 +300,7 @@ public class Nav2D : MonoBehaviour {
 				}
 				
 				//round the position vector to ensure objects fit through doors
-				//also need to round to allow CheckLOS() between them
+				//also need to round to allow CheckLineOfSight() between them
 				Vector3 rounded = new Vector3(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y), inflatedPoints[i].z);				
 				
 				//if point is not in valid area dont create a node
@@ -331,7 +330,7 @@ public class Nav2D : MonoBehaviour {
 				PathNode nodeA = nodeList[a];
 				PathNode nodeB = nodeList[b];
 				
-				if (CheckLOS(nodeA.pos, nodeB.pos)) {
+				if (CheckLineOfSight(nodeA.pos, nodeB.pos)) {
 					nodeList[a].links.Add(nodeB);
 					nodeList[b].links.Add(nodeA);
 				}
@@ -344,7 +343,7 @@ public class Nav2D : MonoBehaviour {
 	//Link the start node in
 	void LinkStart(PathNode start, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
-			if (CheckLOS(start.pos, toNodes[i].pos)) {
+			if (CheckLineOfSight(start.pos, toNodes[i].pos)) {
 				start.links.Add(toNodes[i]);
 				toNodes[i].links.Add(start);
 			}			
@@ -354,7 +353,7 @@ public class Nav2D : MonoBehaviour {
 	//Link the end node in
 	void LinkEnd(PathNode end, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
-			if (CheckLOS(end.pos, toNodes[i].pos)) {
+			if (CheckLineOfSight(end.pos, toNodes[i].pos)) {
 				toNodes[i].links.Add(end);
 				end.links.Add(toNodes[i]);
 			}			
@@ -410,8 +409,12 @@ public class Nav2D : MonoBehaviour {
 		nodes = nonLoneNodes; 
 	}
 
+	public Vector3 GetRandomValidDestination() {
+		return validDestinations[UnityEngine.Random.Range(0, validDestinations.Count - 1)];
+	}
+
 	///Determine if 2 points see each other.
-	public bool CheckLOS (Vector3 posA, Vector3 posB) {
+	public bool CheckLineOfSight (Vector3 posA, Vector3 posB) {
 		if (posA.z != posB.z) {
 			return false;
 		}
