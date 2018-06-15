@@ -31,6 +31,7 @@ public class SellController : MonoBehaviour {
 
 	public void Reset() {
 		Disable();
+		sellingStash.RemoveAll();
 		sellingItem = null;
 		sellingPrice = -1;
 		npcWillBuy = false;
@@ -52,11 +53,7 @@ public class SellController : MonoBehaviour {
 
 		QuestEventHandler.instance.OnSellItem(npc, sellingItem);
 
-		sellingStash.RemoveItem(sellingItem);
-		sellingItem = null;
-		sellingPrice = -1;
-		npcWillBuy = false;
-		priceText.text = EMPTY_PRICE_TEXT;
+		Reset();
 
 		return true;
 	}
@@ -65,7 +62,6 @@ public class SellController : MonoBehaviour {
 		Disable();
 
 		NPC npc = NPCTrade.instance.GetNPC();
-		Debug.Log(npc.GetInventory().GetNumItems() + " hereher " + npc.GetInventory().GetCapacity());
 		if (npc.GetInventory().IsFull()) {
 			return;
 		}
