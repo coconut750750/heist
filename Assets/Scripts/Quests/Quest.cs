@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//  	Each quest has a reporter and a number of stages (1, 2, 3, etc). This object
+//  keeps track of the stages as well as what happens when a quest is accepted, 
+//  rejected, and completed. 
+
 public abstract class Quest {
 
 	public string name;
@@ -22,12 +26,19 @@ public abstract class Quest {
 	protected abstract QuestStage[] GenerateQuestStages();
 
 	public void OnAccept() {
+		try {
+			QuestManager.instance.OnAcceptQuest(this);
+		} catch (QuestOverflowException e) {
+			throw e;
+		}
+
 		reporter.AcceptedQuest();
-		QuestManager.instance.OnAcceptQuest(this);
+		
 		active = true;
 	}
 
 	public void OnReject() {
+		QuestManager.instance.OnRejectQuest(this);
 		reporter.RejectedQuest();
 	}
 
@@ -51,17 +62,20 @@ public abstract class Quest {
 	}
 
 	public virtual void CompleteQuestStage() {
+		QuestAlertMenu.instance.Display(stages[currentStage], reporter);
+
 		stages[currentStage].OnComplete(reporter);
+		QuestManager.instance.OnCompleteQuestStage(this);
+
 		currentStage++;
+		active = false;
 		if (HasCompletedAll()) {
 			OnCompletedAll();
 		}
 	}
 
 	public virtual void OnCompletedAll() {
-		active = false;
 		reporter.CompletedEntireQuest();
-		QuestManager.instance.OnCompleteQuest(this);
 	}
 
 	public abstract void OnStealItem(NPC npc, Item item);

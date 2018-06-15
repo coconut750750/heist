@@ -48,6 +48,7 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
+            InitHoverText();
         } else {
             StartInteraction();
         }
@@ -83,6 +84,7 @@ public class NPCInteractable : Interactable {
 
     public override void ExitRange(Player player)
     {
+        FinishInteraction();
         DestroyHoverText();
     }
 
@@ -108,7 +110,6 @@ public class NPCInteractable : Interactable {
 
         npc.Resume();
         player.Resume();
-        InitHoverText();
     }
 
     private void InitHoverText() {
