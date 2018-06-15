@@ -17,15 +17,8 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		image = gameObject.GetComponent<Image>();
 	}
 	
-	void Update() {
-		if (itemBeingDragged != this) {
-			transform.localPosition = Vector3.zero;
-			GetComponent<CanvasGroup>().blocksRaycasts = true;
-		}
-	}
-
 	void OnApplicationPause() {
-		itemBeingDragged = null;
+		EndDrag();
 	}
 	
 	public Image GetImage() {
@@ -69,8 +62,14 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		if (!parentSlot.OutputAllowed()) {
 			return;
 		}
-        itemBeingDragged = null;
+        EndDrag();
     }
+	
+	private void EndDrag() {
+		itemBeingDragged = null;
+		transform.localPosition = Vector3.zero;
+		GetComponent<CanvasGroup>().blocksRaycasts = true;
+	}
 
 	public bool CanDrag() {
 		return !parentSlot.IsEmpty() && parentSlot.OutputAllowed();
