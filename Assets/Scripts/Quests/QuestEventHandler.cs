@@ -11,12 +11,12 @@ public class QuestEventHandler {
 
 	public static QuestEventHandler instance = null;
 
-	public const int TOTAL_ACTIVE_QUESTS = 3;
+	public const int TOTAL_ACTIVE_QUESTS = 0;
 
 	private List<Quest> activeQuests;
 
 	private bool iterationHadCompletedQuestStage;
-	
+
 	public QuestEventHandler() {
 		activeQuests = new List<Quest>();
 		instance = this;
@@ -28,7 +28,7 @@ public class QuestEventHandler {
 
 	public void AddQuest(Quest quest) {
 		if (!CanAcceptQuest()) {
-			throw new QuestOverflowException();
+			throw new QuestOverflowException();	
 		}
 		activeQuests.Add(quest);
 	}

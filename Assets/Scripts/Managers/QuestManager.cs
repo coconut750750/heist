@@ -15,6 +15,9 @@ public class QuestManager : MonoBehaviour {
 	private int outstandingQuests = 0;
 	private QuestEventHandler eventHandler;
 
+	[SerializeField]
+	private GameObject questOverflowAlert;
+	
 	void Awake () {
 		if (instance == null) {
 			instance = this;
@@ -37,6 +40,7 @@ public class QuestManager : MonoBehaviour {
 		try {
 			eventHandler.AddQuest(quest);
 		} catch (QuestOverflowException e) {
+			questOverflowAlert.SetActive(true);
 			throw e;
 		}
 	}
