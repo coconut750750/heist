@@ -46,7 +46,10 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public void OnCompleteQuestStage(Quest quest) {
-		eventHandler.CompleteQuestStage(quest);
+		eventHandler.CompleteQuestStage(quest);	
+	}
+
+	public void OnCompleteEntireQuest() {
 		outstandingQuests--;
 	}
 }
