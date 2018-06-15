@@ -13,67 +13,66 @@ public class QuestEventHandler {
 
 	public const int TOTAL_ACTIVE_QUESTS = 3;
 
-	private List<Quest> quests;
+	private List<Quest> activeQuests;
 
-	private bool iterationHadCompletedQuest;
+	private bool iterationHadCompletedQuestStage;
 	
 	public QuestEventHandler() {
-		quests = new List<Quest>();
+		activeQuests = new List<Quest>();
 		instance = this;
 	}
 
 	public bool CanAcceptQuest() {
-		return quests.Count < TOTAL_ACTIVE_QUESTS;
+		return activeQuests.Count < TOTAL_ACTIVE_QUESTS;
 	}
 
 	public void AddQuest(Quest quest) {
 		if (!CanAcceptQuest()) {
 			throw new QuestOverflowException();
 		}
-		quests.Add(quest);
+		activeQuests.Add(quest);
 	}
 
-	public void CompleteQuest(Quest quest) {
-		iterationHadCompletedQuest = true;
-		quests.Remove(quest);
-		quest = null;
+	public void CompleteQuestStage(Quest quest) {
+		iterationHadCompletedQuestStage = true;
+		activeQuests.Remove(quest);
 	}
 	
 	public void OnStealItem(NPC npc, Item item) {
-		iterationHadCompletedQuest = false;
-		foreach (Quest quest in quests) {
+		iterationHadCompletedQuestStage = false;
+		foreach (Quest quest in activeQuests) {
 			quest.OnStealItem(npc, item);
-			if (iterationHadCompletedQuest) {
+			if (iterationHadCompletedQuestStage) {
 				return;
 			}
 		}
 	}
 
 	public void OnCraftItem(Item item) {
-		iterationHadCompletedQuest = false;
-		foreach (Quest quest in quests) {
+		iterationHadCompletedQuestStage = false;
+		foreach (Quest quest in activeQuests) {
 			quest.OnCraftItem(item);
-			if (iterationHadCompletedQuest) {
+			if (iterationHadCompletedQuestStage) {
 				return;
 			}
 		}
 	}
 
 	public void OnDefeatedNPC(NPC npc) {
-		iterationHadCompletedQuest = false;
-		foreach (Quest quest in quests) {
+		iterationHadCompletedQuestStage = false;
+		foreach (Quest quest in activeQuests) {
 			quest.OnDefeatedNPC(npc);
-			if (iterationHadCompletedQuest) {
+			if (iterationHadCompletedQuestStage) {
 				return;
 			}
 		}
 	}
 
 	public void OnSellItem(NPC npc, Item item) {
-		iterationHadCompletedQuest = false;
-		foreach (Quest quest in quests) {
+		iterationHadCompletedQuestStage = false;
+		foreach (Quest quest in activeQuests) {
 			quest.OnSellItem(npc, item);
-			if (iterationHadCompletedQuest) {
+			if (iterationHadCompletedQuestStage) {
 				return;
 			}
 		}

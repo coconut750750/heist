@@ -62,17 +62,20 @@ public abstract class Quest {
 	}
 
 	public virtual void CompleteQuestStage() {
+		QuestAlertMenu.instance.Display(stages[currentStage], reporter);
+
 		stages[currentStage].OnComplete(reporter);
+		QuestManager.instance.OnCompleteQuestStage(this);
+
 		currentStage++;
+		active = false;
 		if (HasCompletedAll()) {
 			OnCompletedAll();
 		}
 	}
 
 	public virtual void OnCompletedAll() {
-		active = false;
 		reporter.CompletedEntireQuest();
-		QuestManager.instance.OnCompleteQuest(this);
 	}
 
 	public abstract void OnStealItem(NPC npc, Item item);

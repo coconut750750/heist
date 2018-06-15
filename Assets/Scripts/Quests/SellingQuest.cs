@@ -36,6 +36,7 @@ public class SellingQuest : Quest {
             return;
         }
         if (GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item)) {
+            Debug.Log("here");
             CompleteQuestStage();
         }
     }
