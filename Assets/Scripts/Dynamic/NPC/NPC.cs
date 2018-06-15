@@ -111,6 +111,8 @@ public class NPC : Character {
 		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
+
+		UpdateSortingLayer();
 	}
 
 	protected override void Start() {
@@ -165,7 +167,7 @@ public class NPC : Character {
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (other.CompareTag(Constants.STAIRS_TAG)) {
-			OnFloorChanged();
+			UpdateSortingLayer();
 		}
 	}
 
@@ -391,12 +393,6 @@ public class NPC : Character {
 		PopulateInventory();
 	}
 
-	// called when npc enters trigger (could be stairs)
-	// called when first loads
-	private void OnFloorChanged() {
-		UpdateSortingLayer();
-	}
-
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
 	}
@@ -414,18 +410,16 @@ public class NPC : Character {
 	// called every frame
 	// if npc and player not on same floor, hide npc
 	private void UpdateVisibility() {
-		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visibleByCamera) {
-			SetVisibility(false);
-		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visibleByCamera) {
-			SetVisibility(true);
+		this.visibleByCamera = GetFloor() == GameManager.instance.GetVisibleFloor();
+		GetComponent<NPCInteractable>().SetEnabled(visibleByCamera);
+		
+		if (GetFloor() > GameManager.instance.GetVisibleFloor()) {
+			GetComponent<SpriteRenderer>().enabled = false;
+			GetComponent<Animator>().enabled = false;
+		} else {
+			GetComponent<SpriteRenderer>().enabled = true;
+			GetComponent<Animator>().enabled = true;
 		}
-	}
-
-	private void SetVisibility(bool visible) {
-		this.visibleByCamera = visible;
-		GetComponent<SpriteRenderer>().enabled = visible;
-		GetComponent<Animator>().enabled = visible;
-		GetComponent<NPCInteractable>().SetEnabled(visible);
 	}
 
 	public Inventory GetInventory() {
@@ -502,14 +496,14 @@ public class NPC : Character {
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
 
+			npcName = data.name;
 			friendliness = data.friendliness;
 
 			destination = new Vector3(data.destX, data.destY, data.destZ);
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
 
-			SetVisibility(data.visible);
-			OnFloorChanged();
+			UpdateSortingLayer();
 
 			if (isMoving) {
 				SetNewDestination(destination);
@@ -518,8 +512,6 @@ public class NPC : Character {
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
-		} else {
-			//Destroy(this);
 		}
 	}
 }
@@ -532,6 +524,7 @@ public class NPCData : CharacterData {
 	public float destY;
 	public float destZ;
 
+	public string name;
 	public int friendliness;
 	public bool isMoving;
 	public bool canSearchForDest;
@@ -543,6 +536,7 @@ public class NPCData : CharacterData {
 		destY = npc.GetDestination().y;
 		destZ = npc.GetDestination().z;
 
+		this.name = npc.GetName();
 		this.friendliness = npc.GetFriendliness();
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();
