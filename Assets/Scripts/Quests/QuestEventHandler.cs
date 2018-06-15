@@ -11,7 +11,7 @@ public class QuestEventHandler {
 
 	public static QuestEventHandler instance = null;
 
-	public const int TOTAL_ACTIVE_QUESTS = 0;
+	public const int TOTAL_ACTIVE_QUESTS = 3;
 
 	private List<Quest> activeQuests;
 

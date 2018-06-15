@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuestAlertMenu : MonoBehaviour {
+public class QuestCompletionMenu : MonoBehaviour {
 
-	public static QuestAlertMenu instance = null;
+	public static QuestCompletionMenu instance = null;
 
 	[SerializeField]
 	private Text nameText;

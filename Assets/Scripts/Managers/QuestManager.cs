@@ -26,6 +26,7 @@ public class QuestManager : MonoBehaviour {
 		}
 
 		eventHandler = new QuestEventHandler();
+		questOverflowAlert.SetActive(false);
 	}
 
 	public Quest GetRandomQuest(NPC npc) {

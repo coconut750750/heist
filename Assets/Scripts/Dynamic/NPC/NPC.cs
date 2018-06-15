@@ -160,8 +160,6 @@ public class NPC : Character {
 		}
 
 		UpdateVisibility();
-
-		Debug.Log(GetQuest() == null);
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
