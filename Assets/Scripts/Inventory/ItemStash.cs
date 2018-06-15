@@ -26,12 +26,6 @@ public abstract class ItemStash : MonoBehaviour {
 
 	protected virtual void Start() {
 		capacity = items.Length;
-		for (int i = 0; i < capacity; i++) {
-			if (items[i] != null) {
-				count++;
-				items[i] = UnityEngine.Object.Instantiate(items[i]);
-			}
-		}
 
 		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
 		Load();

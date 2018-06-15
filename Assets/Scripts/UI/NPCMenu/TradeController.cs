@@ -25,15 +25,19 @@ public class TradeController : MonoBehaviour {
 	private bool willTrade;
 
 	void Awake () {
+		Reset();
+
+		tradingStash.OnAdded += TradeItemEntered;
+		tradingStash.OnRemoved += TradeItemRemoved;
+	}
+
+	public void Reset() {
 		Disable();
 		tradingItem = null;
 		willTrade = false;
 
 		selectedItem = null;
 		selectedIndex = -1;
-
-		tradingStash.OnAdded += TradeItemEntered;
-		tradingStash.OnRemoved += TradeItemRemoved;
 	}
 
 	public bool Trade(NPC npc) {
