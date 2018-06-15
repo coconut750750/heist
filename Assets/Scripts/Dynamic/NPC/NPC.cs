@@ -111,6 +111,8 @@ public class NPC : Character {
 		inventory.SetIndependent(false); // set the inventory as dependent on the NPC
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
+
+		OnFloorChanged();
 	}
 
 	protected override void Start() {
@@ -502,6 +504,7 @@ public class NPC : Character {
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
 
+			npcName = data.name;
 			friendliness = data.friendliness;
 
 			destination = new Vector3(data.destX, data.destY, data.destZ);
@@ -518,8 +521,6 @@ public class NPC : Character {
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
-		} else {
-			//Destroy(this);
 		}
 	}
 }
@@ -532,6 +533,7 @@ public class NPCData : CharacterData {
 	public float destY;
 	public float destZ;
 
+	public string name;
 	public int friendliness;
 	public bool isMoving;
 	public bool canSearchForDest;
@@ -543,6 +545,7 @@ public class NPCData : CharacterData {
 		destY = npc.GetDestination().y;
 		destZ = npc.GetDestination().z;
 
+		this.name = npc.GetName();
 		this.friendliness = npc.GetFriendliness();
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();

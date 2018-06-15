@@ -12,6 +12,9 @@ public class HoverName : PopUp {
     }
 
     void LateUpdate() {
+      if (baseObject == null) {
+        Destroy();
+      }
       UpdatePosition(baseObject.transform.position);
     }
 
