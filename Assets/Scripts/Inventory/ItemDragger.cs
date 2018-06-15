@@ -17,6 +17,17 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		image = gameObject.GetComponent<Image>();
 	}
 	
+	void Update() {
+		if (itemBeingDragged != this) {
+			transform.localPosition = Vector3.zero;
+			GetComponent<CanvasGroup>().blocksRaycasts = true;
+		}
+	}
+
+	void OnApplicationPause() {
+		itemBeingDragged = null;
+	}
+	
 	public Image GetImage() {
 		return image;
 	}
@@ -42,7 +53,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         itemBeingDragged = this;
 		parentSlot.Select();
-		GetComponent<CanvasGroup>().blocksRaycasts = false;		
+		GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -58,9 +69,7 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		if (!parentSlot.OutputAllowed()) {
 			return;
 		}
-		transform.localPosition = Vector3.zero;
         itemBeingDragged = null;
-		GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
 	public bool CanDrag() {
