@@ -86,7 +86,9 @@ public class NPCInteractable : Interactable {
         if (activeInstance == this) {
             activeInstance = null;
         }
-        DestroyHoverText();
+        DestroyInteractPopups();
+        player.Resume();
+        npc.Resume();
     }
 
     private void StartInteraction() {
@@ -183,10 +185,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    public void DestroyAllPopUps() {
+    private void DestroyInteractPopups() {
         DestroyHoverText();
         DestroySpeechBubble();
         DestroyNPCOptions();
+    }
+
+    public void DestroyAllPopUps() {
+        DestroyInteractPopups();
         DestroyExclaimIcon();
         DestroyQuestIcon();
     }
