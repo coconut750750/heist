@@ -48,27 +48,10 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
-            InitHoverText();
+            // InitHoverText();
         } else {
             StartInteraction();
         }
-    }
-
-    public void ShowFightAlert(Character opponent) {
-        DestroyHoverText();
-        DestroyNPCOptions();
-        DestroySpeechBubble();
-        if (questInstance != null) {
-            questInstance.Disable();
-        }
-        InitExclaimIcon();
-    }
-
-    public void HideFightAlert() {
-        if (questInstance != null) {
-            questInstance.Enable();
-        }
-        DestroyExclaimIcon();
     }
 
     public override void EnterRange(Player player)
@@ -111,6 +94,34 @@ public class NPCInteractable : Interactable {
 
         npc.Resume();
         player.Resume();
+    }
+
+    public void ShowFightAlert(Character opponent) {
+        DestroyHoverText();
+        DestroyInteractPopups();
+        if (questInstance != null) {
+            questInstance.Disable();
+        }
+        InitExclaimIcon();
+    }
+
+    public void HideFightAlert() {
+        if (questInstance != null) {
+            questInstance.Enable();
+        }
+        DestroyExclaimIcon();
+    }
+
+    public void InitQuestIcon() {
+        questInstance = Instantiate(quest);
+        questInstance.Display(gameObject);
+    }
+
+    public void DestroyQuestIcon() {
+        if (questInstance != null) {
+            questInstance.Destroy();
+            questInstance = null;
+        }
     }
 
     private void InitHoverText() {
@@ -169,20 +180,6 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    public void InitQuestIcon() {
-        Debug.Log("here");
-
-        questInstance = Instantiate(quest);
-        questInstance.Display(gameObject);
-    }
-
-    public void DestroyQuestIcon() {
-        if (questInstance != null) {
-            questInstance.Destroy();
-            questInstance = null;
-        }
-    }
-
     private void DestroyInteractPopups() {
         DestroySpeechBubble();
         DestroyNPCOptions();
@@ -207,8 +204,7 @@ public class NPCInteractable : Interactable {
     public override void Disable() {
         base.Disable();
         DestroyHoverText();
-        DestroySpeechBubble();
-        DestroyNPCOptions();
+        DestroyInteractPopups();
         if (exclaimInstance != null) {
             exclaimInstance.Disable();
         }
