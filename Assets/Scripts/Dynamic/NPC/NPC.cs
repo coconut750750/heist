@@ -166,9 +166,10 @@ public class NPC : Character {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		if (other.CompareTag(Constants.STAIRS_TAG)) {
-			UpdateSortingLayer();
-		}
+	}
+
+	protected override void OnEnterStairs() {
+		UpdateSortingLayer();
 	}
 
 	/// INTERACTION ///

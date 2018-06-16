@@ -48,7 +48,6 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
-            // InitHoverText();
         } else {
             StartInteraction();
         }
