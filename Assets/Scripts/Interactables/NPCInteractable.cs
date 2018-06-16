@@ -48,6 +48,7 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
+            InitHoverText();
         } else {
             StartInteraction();
         }
@@ -81,14 +82,11 @@ public class NPCInteractable : Interactable {
         InitHoverText();
     }
 
+    // to be safe, when player exits range, finish interaction
     public override void ExitRange(Player player)
     {
-        if (activeInstance == this) {
-            activeInstance = null;
-        }
-        DestroyInteractPopups();
-        player.Resume();
-        npc.Resume();
+        FinishInteraction();
+        DestroyHoverText();
     }
 
     private void StartInteraction() {
@@ -104,12 +102,12 @@ public class NPCInteractable : Interactable {
     }
 
     private void FinishInteraction() {
-        activeInstance = null;
+        if (activeInstance == this) {
+            activeInstance = null;
+        }
         player.EnableButtonB();
 
-        DestroySpeechBubble();
-        DestroyNPCOptions();
-        InitHoverText();
+        DestroyInteractPopups();
 
         npc.Resume();
         player.Resume();
@@ -186,13 +184,13 @@ public class NPCInteractable : Interactable {
     }
 
     private void DestroyInteractPopups() {
-        DestroyHoverText();
         DestroySpeechBubble();
         DestroyNPCOptions();
     }
 
     public void DestroyAllPopUps() {
         DestroyInteractPopups();
+        DestroyHoverText();
         DestroyExclaimIcon();
         DestroyQuestIcon();
     }
