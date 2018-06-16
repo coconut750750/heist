@@ -12,12 +12,16 @@ public class HoverName : PopUp {
     }
 
     void LateUpdate() {
+      if (baseObject == null) {
+        Destroy();
+      }
       UpdatePosition(baseObject.transform.position);
     }
 
     public void Display(string name, GameObject baseObject) {
       this.baseObject = baseObject;
       Display();
+      transform.SetAsFirstSibling(); // display under open pop ups
       GetComponentInChildren<Text>().text = name;
     }
 }

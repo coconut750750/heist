@@ -103,7 +103,6 @@ public class Player : Character {
 			if (!other.gameObject.GetComponent<NPC>().visibleByCamera) {
 				return;
 			}
-			Debug.Log("herlloo");
 		}
 
 		// TODO: remove

@@ -73,8 +73,14 @@ public class NPCTrade : MonoBehaviour {
 		sellController.HideSellingStash();
 
 		gameObject.SetActive(false);
+		ResetAllControllers();
 		
 		GameManager.instance.UnpauseGame();
+	}
+
+	private void ResetAllControllers() {
+		tradeController.Reset();
+		sellController.Reset();
 	}
 
 	public void DeselectAll() {

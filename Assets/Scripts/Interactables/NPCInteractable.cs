@@ -48,8 +48,10 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
+            Debug.Log(gameObject.name + " finish interaction");
         } else {
             StartInteraction();
+            Debug.Log(gameObject.name + " start interaction");
         }
     }
 
@@ -79,14 +81,19 @@ public class NPCInteractable : Interactable {
         }
 
         InitHoverText();
+        Debug.Log(gameObject.name + " enter range");
+
     }
 
     public override void ExitRange(Player player)
     {
+        if (activeInstance == this) {
+            activeInstance = null;
+        }
         DestroyHoverText();
+        Debug.Log(gameObject.name + " exit range");
     }
 
-    // disable button b so player can't attack
     private void StartInteraction() {
         activeInstance = this;
         player.DisableButtonB();
@@ -105,10 +112,10 @@ public class NPCInteractable : Interactable {
 
         DestroySpeechBubble();
         DestroyNPCOptions();
+        InitHoverText();
 
         npc.Resume();
         player.Resume();
-        InitHoverText();
     }
 
     private void InitHoverText() {
@@ -168,6 +175,8 @@ public class NPCInteractable : Interactable {
     }
 
     public void InitQuestIcon() {
+        Debug.Log("here");
+
         questInstance = Instantiate(quest);
         questInstance.Display(gameObject);
     }
@@ -190,9 +199,9 @@ public class NPCInteractable : Interactable {
     public override void Enable() {
         base.Enable();
         if (exclaimInstance != null) {
-            InitExclaimIcon();
+            exclaimInstance.Enable();
         } else if (questInstance != null) {
-            InitQuestIcon();
+            questInstance.Enable();
         }
     }
 

@@ -20,20 +20,23 @@ public class SellController : MonoBehaviour {
 	private int sellingPrice;
 	private bool npcWillBuy;
 
-	void Awake () {
-		Disable();
-		sellingItem = null;
-		sellingPrice = -1;
-		npcWillBuy = false;
-
-		priceText.text = EMPTY_PRICE_TEXT;
-
+	void Awake () {		
 		sellingStash.OnAdded += SellItemEntered;
 		sellingStash.OnRemoved += SellItemRemoved;
 	}
 	
 	void Start () {
+		Reset();
+	}
+
+	public void Reset() {
 		Disable();
+		sellingStash.RemoveAll();
+		sellingItem = null;
+		sellingPrice = -1;
+		npcWillBuy = false;
+
+		priceText.text = EMPTY_PRICE_TEXT;
 	}
 
 	public bool Sell(NPC npc) {
@@ -48,11 +51,9 @@ public class SellController : MonoBehaviour {
 		npc.GetInventory().AddItem(sellingItem);
 		sellingItem.ChangedHands();
 
-		sellingStash.RemoveItem(sellingItem);
-		sellingItem = null;
-		sellingPrice = -1;
-		npcWillBuy = false;
-		priceText.text = EMPTY_PRICE_TEXT;
+		QuestEventHandler.instance.OnSellItem(npc, sellingItem);
+
+		Reset();
 
 		return true;
 	}
@@ -61,7 +62,7 @@ public class SellController : MonoBehaviour {
 		Disable();
 
 		NPC npc = NPCTrade.instance.GetNPC();
-		if (npc.GetInventory().GetNumItems() == npc.GetInventory().GetCapacity()) {
+		if (npc.GetInventory().IsFull()) {
 			return;
 		}
 

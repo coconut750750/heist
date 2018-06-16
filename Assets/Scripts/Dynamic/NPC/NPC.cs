@@ -27,8 +27,8 @@ public class NPC : Character {
 
 	// friendliness constants
 	public const int BUY_FRIENDLY_DELTA = 1;
-	public const int COMPLETE_QUEST_FRIENDLY_DELTA = 15;
-	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 5;
+	public const int COMPLETE_QUEST_STAGE_FRIENDLY_DELTA = 5;
+	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 3;
 	public const int ATTACK_FRIENDLY_DELTA = -35;
 	public const int REJECT_QUEST_FRIENDLY_DELTA = -10;
 
@@ -50,7 +50,8 @@ public class NPC : Character {
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
-	
+	private Quest currentQuest;
+
 	private Nav2DAgent agent {
 		get {
 			return gameObject.GetComponent<Nav2DAgent>();
@@ -111,14 +112,7 @@ public class NPC : Character {
 
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
-		// TODO: testing only!!
-		// int i =  Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
-		// if (i == 0) {
-		// 	interactable.InitQuestIcon();
-		// }
-
-		// TODO: remove
-		interactable.InitQuestIcon();
+		UpdateSortingLayer();
 	}
 
 	protected override void Start() {
@@ -132,8 +126,11 @@ public class NPC : Character {
 
 		agent.maxSpeed = moveSpeed;
 
-		// floor = startFloor - 1;
-		// OnFloorChanged();
+		// TODO: testing only!!
+		currentQuest = QuestManager.instance.GetRandomQuest(this);
+		if (currentQuest != null) {
+			interactable.InitQuestIcon();
+		}
 	}
 
 	void OnEnable() {
@@ -170,36 +167,8 @@ public class NPC : Character {
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 		if (other.CompareTag(Constants.STAIRS_TAG)) {
-			OnFloorChanged();
+			UpdateSortingLayer();
 		}
-	}
-
-	// Generates random destination within bound and within the destination range
-	protected Vector3 GenerateRandomDest(Bounds bound) {
-		Vector2 currPos = transform.position;
-
-		float posMinX = currPos.x - destinationRange;
-		float posMaxX = currPos.x + destinationRange;
-		float posMinY = currPos.y - destinationRange;
-		float posMaxY = currPos.y + destinationRange;
-
-		float minX = Mathf.Max(bound.min.x, posMinX);
-		float maxX = Mathf.Min(bound.max.x, posMaxX);
-		float minY = Mathf.Max(bound.min.y, posMinY);
-		float maxY = Mathf.Min(bound.max.y, posMaxY);
-
-		float x = Mathf.Round(UnityEngine.Random.Range(minX, maxX));
-		float y = Mathf.Round(UnityEngine.Random.Range(minY, maxY));
-		float z = Mathf.Round(UnityEngine.Random.Range(-1, 0)) / 10;
-
-		// TODO: debugging
-		if (transform.position.z == 0) {
-			return new Vector3(-9, 11, -0.1f);
-		} else {
-			return new Vector3(-9, 11, 0);
-		}
-
-		//return new Vector3(x, y);
 	}
 
 	/// INTERACTION ///
@@ -209,21 +178,29 @@ public class NPC : Character {
 		return "Hello there!";
 	}
 
-	public string GetQuest() {
-		// TODO: change quest
-		return "Order me an omelette.";
+	public Quest GetQuest() {
+		return currentQuest;
 	}
 
 	public void AcceptedQuest() {
+		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 	}
 
-	public void CompletedQuest() {
-		AdjustFriendliness(COMPLETE_QUEST_FRIENDLY_DELTA);
+	public void CompletedQuestStage() {
+		interactable.InitQuestIcon();
+		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
+	}
+
+	public void CompletedEntireQuest() {
+		currentQuest = null;
+		interactable.DestroyQuestIcon();
 	}
 
 	public void RejectedQuest() {
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
+		currentQuest = null;
+		interactable.DestroyQuestIcon();
 	}
 
 	public void BoughtOrTraded() {
@@ -274,8 +251,6 @@ public class NPC : Character {
 			StartCoroutine(EndFight());
 		}
 
-		// TODO: remove if statement and see if it stil works
-		//if (floorDiff != 0 || displacement.sqrMagnitude > ATTACK_DISTANCE) {
 		// this means npc far enough to update dest
 		if (Mathf.Abs(displacement.x) >= Mathf.Abs(displacement.y)) {
 			displacement.y = 0;
@@ -358,6 +333,7 @@ public class NPC : Character {
 
 	protected void SetNewDestination(Vector3 newDest) {
 		destination = newDest;
+		destination = new Vector3(-9, 9, 0f);
 		agent.SetDestination(destination);
 		if (debugNav) {
 			Debug.Log(gameObject.name + " setting dest: " + destination + " starting at " + transform.position);
@@ -365,9 +341,9 @@ public class NPC : Character {
 	}
 
 	protected void SetNewRandomDestination() {
-		Bounds nav2DBounds = agent.polyNav.masterBounds;
-		Vector3 randomDest = GenerateRandomDest(nav2DBounds);
+		Vector3 randomDest = agent.GetRandomValidDestination();
 
+		// TODO: move this check() and this set() into agent
 		// this check ensures the npc's travel is significant enough
 		if ((randomDest - transform.position).sqrMagnitude >= closestDestinationSquared || 
 				randomDest.z != transform.position.z) {
@@ -390,12 +366,6 @@ public class NPC : Character {
 		PopulateInventory();
 	}
 
-	// called when npc enters trigger (could be stairs)
-	// called when first loads
-	private void OnFloorChanged() {
-		UpdateSortingLayer();
-	}
-
 	public void SetAgentNav(Nav2D nav) {
 		agent.polyNav = nav;
 	}
@@ -413,18 +383,16 @@ public class NPC : Character {
 	// called every frame
 	// if npc and player not on same floor, hide npc
 	private void UpdateVisibility() {
-		if (GetFloor() != GameManager.instance.GetVisibleFloor() && visibleByCamera) {
-			SetVisibility(false);
-		} else if (GetFloor() == GameManager.instance.GetVisibleFloor() && !visibleByCamera) {
-			SetVisibility(true);
+		this.visibleByCamera = GetFloor() == GameManager.instance.GetVisibleFloor();
+		GetComponent<NPCInteractable>().SetEnabled(visibleByCamera);
+		
+		if (GetFloor() > GameManager.instance.GetVisibleFloor()) {
+			GetComponent<SpriteRenderer>().enabled = false;
+			GetComponent<Animator>().enabled = false;
+		} else {
+			GetComponent<SpriteRenderer>().enabled = true;
+			GetComponent<Animator>().enabled = true;
 		}
-	}
-
-	private void SetVisibility(bool visible) {
-		this.visibleByCamera = visible;
-		GetComponent<SpriteRenderer>().enabled = visible;
-		GetComponent<Animator>().enabled = visible;
-		GetComponent<NPCInteractable>().SetEnabled(visible);
 	}
 
 	public Inventory GetInventory() {
@@ -501,24 +469,20 @@ public class NPC : Character {
 			ItemStashData inventoryData = data.inventoryData;
 			inventory.LoadFromInventoryData(inventoryData);
 
+			npcName = data.name;
 			friendliness = data.friendliness;
 
 			destination = new Vector3(data.destX, data.destY, data.destZ);
 			isMoving = data.isMoving;
 			canSearchForDest = data.canSearchForDest;
 
-			SetVisibility(data.visible);
-			OnFloorChanged();
+			UpdateSortingLayer();
 
 			if (isMoving) {
 				SetNewDestination(destination);
-				// TODO: debugging purposes
-				//SetNewDestination(new Vector3(-11, 14, 0)); //-1, 11
 			} else if (!canSearchForDest) {
 				StartCoroutine(ArriveDelay());
 			}
-		} else {
-			//Destroy(this);
 		}
 	}
 }
@@ -531,6 +495,7 @@ public class NPCData : CharacterData {
 	public float destY;
 	public float destZ;
 
+	public string name;
 	public int friendliness;
 	public bool isMoving;
 	public bool canSearchForDest;
@@ -542,6 +507,7 @@ public class NPCData : CharacterData {
 		destY = npc.GetDestination().y;
 		destZ = npc.GetDestination().z;
 
+		this.name = npc.GetName();
 		this.friendliness = npc.GetFriendliness();
 		this.isMoving = npc.IsMoving();
 		this.canSearchForDest = npc.CanSearchForDest();

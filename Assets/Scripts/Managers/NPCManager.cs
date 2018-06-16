@@ -39,7 +39,6 @@ public class NPCManager : MonoBehaviour {
 		return instance;
 	}
 
-	// TODO: randomize npc names
 	private void RetrieveNames() {
 		names = namesAsset.text.Split('\n');
 	}

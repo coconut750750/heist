@@ -25,15 +25,19 @@ public class TradeController : MonoBehaviour {
 	private bool willTrade;
 
 	void Awake () {
+		Reset();
+
+		tradingStash.OnAdded += TradeItemEntered;
+		tradingStash.OnRemoved += TradeItemRemoved;
+	}
+
+	public void Reset() {
 		Disable();
 		tradingItem = null;
 		willTrade = false;
 
 		selectedItem = null;
 		selectedIndex = -1;
-
-		tradingStash.OnAdded += TradeItemEntered;
-		tradingStash.OnRemoved += TradeItemRemoved;
 	}
 
 	public bool Trade(NPC npc) {
@@ -59,13 +63,9 @@ public class TradeController : MonoBehaviour {
 	public void UpdateButtons() {
 		Disable();
 
-		Debug.Log("updagin buttons");
-
 		if (!GameManager.instance.mainPlayer.CanAddItem()) {
 			return;
 		}
-
-		Debug.Log("update buttons " + (selectedItem != null) + " " + (tradingItem != null));
 
 		if (selectedItem != null && tradingItem != null) {
 			willTrade = tradingItem.GetValue() / selectedItem.GetValue() > NPC.LOWER_BOUND_TRADING_PERC;

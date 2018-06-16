@@ -20,10 +20,6 @@ public class Nav2D : MonoBehaviour {
 	private List<Nav2DCompObstacle> navCompObstacles = new List<Nav2DCompObstacle>();
 	private List<Nav2DStairs> navStairs = new List<Nav2DStairs>();
 
-	// if graph is connected, include all valid points
-	// if graph is not connected, exclude points that are not inside any obstacles
-	public bool isConnected;
-
 	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.5f;
 
@@ -33,8 +29,8 @@ public class Nav2D : MonoBehaviour {
 	private PolyMap map;
 	private List<PathNode> nodes = new List<PathNode>();
 	private List<StairNode> stairNodes = new List<StairNode>();
-	// TODO: create list of valid polygons nav2d agent can use to find valid dest
-	//private List<Polygon> validPolygons = new List<Polygon>();
+	
+	private List<Vector3> validDestinations = new List<Vector3>();
 
 	private Queue<PathRequest> pathRequests = new Queue<PathRequest>();
 	private PathRequest currentRequest;
@@ -111,8 +107,7 @@ public class Nav2D : MonoBehaviour {
 
 	///Find a path 'from' and 'to', providing a callback for when path is ready containing the path.
 	public void FindPath(Vector3 start, Vector3 end, System.Action<Vector3[], bool> callback) {
-
-		if (CheckLOS(start, end)) {
+		if (CheckLineOfSight(start, end)) {
 			callback( new Vector3[]{start, end}, true );
 			return;
 		}
@@ -161,21 +156,19 @@ public class Nav2D : MonoBehaviour {
 		TryNextFindPath();
 	}
 
-	///Generate the map
 	public void GenerateMap(bool generateMaster) {
 		CreatePolyMap(generateMaster);
 		CreateAndCleanNodes();
+
 		// since stairs are non-negotiable, create them after cleaning up nodes
 		CreateAndLinkStairNodes();
 		LinkNodes(nodes);
 	}
 
-	//helper function
 	Vector3[] TransformPoints ( Vector3[] points, Transform t ) {
 		for (int i = 0; i < points.Length; i++) {
 			points[i] = t.TransformPoint(points[i]);
 		}
-			
 		return points;
 	}
 
@@ -202,6 +195,9 @@ public class Nav2D : MonoBehaviour {
 			}
 		}		
 
+		// TODO: assign max and min when master collider is polygon collider
+		Vector2 max = Vector2.zero;
+		Vector2 min = Vector2.zero;
 		if (generateMaster) {
 			if (masterCollider is PolygonCollider2D) {
 				PolygonCollider2D polyCollider = (PolygonCollider2D)masterCollider;
@@ -231,6 +227,9 @@ public class Nav2D : MonoBehaviour {
 				Vector3[] transformed = TransformPoints(new Vector3[]{tl, bl, br, tr}, masterCollider.transform);
 				Vector3[] inflated = InflatePolygon(transformed, Mathf.Max(0.01f, inflateRadius));
 				masterPolys.Add(new Polygon(inflated));
+
+				max = new Vector2(Mathf.Round(tr.x), Mathf.Round(tr.y));
+				min = new Vector2(Mathf.Round(bl.x), Mathf.Round(bl.y));
 			}
 		
 		} else {
@@ -240,11 +239,26 @@ public class Nav2D : MonoBehaviour {
 		//create the main polygon map (based on inverted) also containing the obstacle polygons
 		map = new PolyMap(masterPolys.ToArray(), obstaclePolys.ToArray());
 
+		GenerateValidDestinationsInRange(max, min, -0.1f);
+
 		//The colliders are never used again after this point. They are simply a drawing method.
 	}
 
+	private void GenerateValidDestinationsInRange(Vector2 max, Vector2 min, float minFloor) {
+		for (float x = min.x; x <= max.x; x++) {
+			for (float y = min.y; y <= max.y; y++) {
+				for (float z = 0; z >= minFloor; z -= 0.1f) {
+					Vector3 point = new Vector3(x, y, z);
+					if (PointIsValid(point)) {
+						validDestinations.Add(point);
+					}
+				}
+			}
+		}
+	}
+
 	//Link stairs together
-	void CreateAndLinkStairNodes() {
+	private void CreateAndLinkStairNodes() {
 		// adding stair nodes after deleting surrounded
 		foreach (Nav2DStairs stairs in navStairs) {
 			foreach (Vector3 point in stairs.points) {
@@ -276,7 +290,7 @@ public class Nav2D : MonoBehaviour {
 
 		for (int p = 0; p < map.allPolygons.Length; p++) {
 			Polygon poly = map.allPolygons[p];
-			//Inflate even more for nodes, by a marginal value to allow CheckLOS between them
+			//Inflate even more for nodes, by a marginal value to allow CheckLineOfSight between them
 
 			Vector3[] inflatedPoints = InflatePolygon(poly.points, inflateRadius);
 			for (int i = 0; i < inflatedPoints.Length; i++) {
@@ -286,7 +300,7 @@ public class Nav2D : MonoBehaviour {
 				}
 				
 				//round the position vector to ensure objects fit through doors
-				//also need to round to allow CheckLOS() between them
+				//also need to round to allow CheckLineOfSight() between them
 				Vector3 rounded = new Vector3(Mathf.Round(inflatedPoints[i].x), Mathf.Round(inflatedPoints[i].y), inflatedPoints[i].z);				
 				
 				//if point is not in valid area dont create a node
@@ -316,7 +330,7 @@ public class Nav2D : MonoBehaviour {
 				PathNode nodeA = nodeList[a];
 				PathNode nodeB = nodeList[b];
 				
-				if (CheckLOS(nodeA.pos, nodeB.pos)) {
+				if (CheckLineOfSight(nodeA.pos, nodeB.pos)) {
 					nodeList[a].links.Add(nodeB);
 					nodeList[b].links.Add(nodeA);
 				}
@@ -329,7 +343,7 @@ public class Nav2D : MonoBehaviour {
 	//Link the start node in
 	void LinkStart(PathNode start, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
-			if (CheckLOS(start.pos, toNodes[i].pos)) {
+			if (CheckLineOfSight(start.pos, toNodes[i].pos)) {
 				start.links.Add(toNodes[i]);
 				toNodes[i].links.Add(start);
 			}			
@@ -339,7 +353,7 @@ public class Nav2D : MonoBehaviour {
 	//Link the end node in
 	void LinkEnd(PathNode end, List<PathNode> toNodes) {
 		for (int i = 0; i < toNodes.Count; i++) {
-			if (CheckLOS(end.pos, toNodes[i].pos)) {
+			if (CheckLineOfSight(end.pos, toNodes[i].pos)) {
 				toNodes[i].links.Add(end);
 				end.links.Add(toNodes[i]);
 			}			
@@ -395,8 +409,12 @@ public class Nav2D : MonoBehaviour {
 		nodes = nonLoneNodes; 
 	}
 
+	public Vector3 GetRandomValidDestination() {
+		return validDestinations[UnityEngine.Random.Range(0, validDestinations.Count - 1)];
+	}
+
 	///Determine if 2 points see each other.
-	public bool CheckLOS (Vector3 posA, Vector3 posB) {
+	public bool CheckLineOfSight (Vector3 posA, Vector3 posB) {
 		if (posA.z != posB.z) {
 			return false;
 		}
@@ -441,7 +459,8 @@ public class Nav2D : MonoBehaviour {
 			}
 		}
 
-		if (isConnected) {
+		// if z == 0, on ground floor so anything with even amount of polygons is good
+		if (point.z == 0) {
 			return (inside & 1) == 0;
 		} else {
 			return (inside & 1) == 0 && inside != 0;
@@ -674,7 +693,7 @@ public class Nav2D : MonoBehaviour {
 			// PolygonCollider2D polyCollider = masterCollider as PolygonCollider2D;
 			// for (int i = 0; i < polyCollider.pathCount; ++i ) {
 	        //     for (int p = 0; p < polyCollider.GetPath(i).Length; ++p )
-	        //         DebugDrawPolygon(TransformPoints( polyCollider.GetPath(i), polyCollider.transform ), Color.green );
+	        //         DebugDrawPolygon(TransformPoints( (Vector3[])(polyCollider.GetPath(i)), polyCollider.transform ), Color.green );
 	        // }
         
         } else if (masterCollider is BoxCollider2D) {
@@ -688,6 +707,7 @@ public class Nav2D : MonoBehaviour {
 
 		float nodeSize = 0.15f;
 		Color white = new Color(1, 1f, 1f, 1f);
+
 		foreach (PathNode p in nodes) {
 			Vector3[] square = new Vector3[4];
 			square[0] = p.pos + new Vector3(-nodeSize, 0);

@@ -220,7 +220,8 @@ public class NPCSpawner : MonoBehaviour {
 	private bool CanRecallNPC(int npcIndex) {
 		return !NpcIsInRange(npcs[npcIndex]) && 
 			   npcAwake[npcIndex] &&
-			   !npcs[npcIndex].IsFighting();
+			   !npcs[npcIndex].IsFighting() &&
+			   npcs[npcIndex].GetQuest() == null;
 	}
 
 	public int NumNpcs() {

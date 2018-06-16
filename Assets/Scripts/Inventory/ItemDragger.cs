@@ -11,11 +11,14 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	private Image image;
     
     public static ItemDragger itemBeingDragged = null;
-	Vector3 startPosition;
 
 	void Start() {
 		parentSlot = transform.parent.gameObject.GetComponent<ItemSlot>();
 		image = gameObject.GetComponent<Image>();
+	}
+	
+	void OnApplicationPause() {
+		EndDrag();
 	}
 	
 	public Image GetImage() {
@@ -42,9 +45,8 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		}
 
         itemBeingDragged = this;
-		startPosition = transform.position;
 		parentSlot.Select();
-		GetComponent<CanvasGroup>().blocksRaycasts = false;		
+		GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -60,10 +62,14 @@ public class ItemDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		if (!parentSlot.OutputAllowed()) {
 			return;
 		}
-		transform.position = startPosition;
-        itemBeingDragged = null;
-		GetComponent<CanvasGroup>().blocksRaycasts = true;
+        EndDrag();
     }
+	
+	private void EndDrag() {
+		itemBeingDragged = null;
+		transform.localPosition = Vector3.zero;
+		GetComponent<CanvasGroup>().blocksRaycasts = true;
+	}
 
 	public bool CanDrag() {
 		return !parentSlot.IsEmpty() && parentSlot.OutputAllowed();
