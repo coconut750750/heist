@@ -48,10 +48,8 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
-            Debug.Log(gameObject.name + " finish interaction");
         } else {
             StartInteraction();
-            Debug.Log(gameObject.name + " start interaction");
         }
     }
 
@@ -81,8 +79,6 @@ public class NPCInteractable : Interactable {
         }
 
         InitHoverText();
-        Debug.Log(gameObject.name + " enter range");
-
     }
 
     public override void ExitRange(Player player)
@@ -91,7 +87,6 @@ public class NPCInteractable : Interactable {
             activeInstance = null;
         }
         DestroyHoverText();
-        Debug.Log(gameObject.name + " exit range");
     }
 
     private void StartInteraction() {

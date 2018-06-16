@@ -333,7 +333,6 @@ public class NPC : Character {
 
 	protected void SetNewDestination(Vector3 newDest) {
 		destination = newDest;
-		destination = new Vector3(-9, 9, 0f);
 		agent.SetDestination(destination);
 		if (debugNav) {
 			Debug.Log(gameObject.name + " setting dest: " + destination + " starting at " + transform.position);
