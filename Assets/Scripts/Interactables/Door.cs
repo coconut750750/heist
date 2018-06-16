@@ -27,14 +27,9 @@ public class Door : MonoBehaviour {
 			return;
 		}
 
-		GetComponent<SpriteRenderer>().sprite = null;
 		open = true;
-
-		if (other.gameObject.CompareTag (PLAYER_TAG)) {
-			other.gameObject.GetComponent<Player>().StartDoorDelay();
-		} else if (other.gameObject.CompareTag (NPC_TAG)) {
-			other.gameObject.GetComponent<NPC>().StartDoorDelay();
-		}
+		GetComponent<SpriteRenderer>().sprite = null;
+		ForceCharacterToPause(other);
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
@@ -42,6 +37,14 @@ public class Door : MonoBehaviour {
 		if (count == 0) {
 			GetComponent<SpriteRenderer>().sprite = sprite;
 			open = false;
+		}
+	}
+
+	private void ForceCharacterToPause(Collider2D other) {
+		if (other.gameObject.CompareTag (PLAYER_TAG)) {
+			other.gameObject.GetComponent<Player>().StartDoorDelay();
+		} else if (other.gameObject.CompareTag (NPC_TAG)) {
+			other.gameObject.GetComponent<NPC>().StartDoorDelay();
 		}
 	}
 }

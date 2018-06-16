@@ -103,7 +103,6 @@ public abstract class Character : MonoBehaviour {
 	#endif
 
 	protected virtual void FixedUpdate() {
-		Move(new Vector3(0, 0, 0));		
 	}
 
 	protected void Move(Vector2 movement) {
@@ -246,10 +245,15 @@ public abstract class Character : MonoBehaviour {
 			float currentZ = transform.position.z;
 			float nextZ = -0.1f - currentZ;
 			transform.position = new Vector3 (transform.position.x, transform.position.y, nextZ);
+			OnEnterStairs();
 		}
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
+	}
+
+	protected virtual void OnEnterStairs() {
+
 	}
 
 	public void StartDoorDelay() {

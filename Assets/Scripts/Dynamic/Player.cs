@@ -97,13 +97,6 @@ public class Player : Character {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-		if (other.gameObject.CompareTag(Constants.STAIRS_TAG)) {
-			UpdateVisibleFloorWithGameManager();
-		} else if (other.gameObject.CompareTag(Constants.NPC_TAG)) {
-			if (!other.gameObject.GetComponent<NPC>().visibleByCamera) {
-				return;
-			}
-		}
 
 		// TODO: remove
 		money += 10;
@@ -112,6 +105,10 @@ public class Player : Character {
 
 	protected override void OnTriggerExit2D(Collider2D other) {
 		base.OnTriggerExit2D (other);
+	}
+
+	protected override void OnEnterStairs() {
+		UpdateVisibleFloorWithGameManager();
 	}
 
 	private void UpdateVisibleFloorWithGameManager() {

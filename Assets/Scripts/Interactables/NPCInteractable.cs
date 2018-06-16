@@ -48,28 +48,9 @@ public class NPCInteractable : Interactable {
         interacted = !interacted;
         if (!interacted) { 
             FinishInteraction();
-            Debug.Log(gameObject.name + " finish interaction");
         } else {
             StartInteraction();
-            Debug.Log(gameObject.name + " start interaction");
         }
-    }
-
-    public void ShowFightAlert(Character opponent) {
-        DestroyHoverText();
-        DestroyNPCOptions();
-        DestroySpeechBubble();
-        if (questInstance != null) {
-            questInstance.Disable();
-        }
-        InitExclaimIcon();
-    }
-
-    public void HideFightAlert() {
-        if (questInstance != null) {
-            questInstance.Enable();
-        }
-        DestroyExclaimIcon();
     }
 
     public override void EnterRange(Player player)
@@ -81,17 +62,13 @@ public class NPCInteractable : Interactable {
         }
 
         InitHoverText();
-        Debug.Log(gameObject.name + " enter range");
-
     }
 
+    // to be safe, when player exits range, finish interaction
     public override void ExitRange(Player player)
     {
-        if (activeInstance == this) {
-            activeInstance = null;
-        }
+        FinishInteraction();
         DestroyHoverText();
-        Debug.Log(gameObject.name + " exit range");
     }
 
     private void StartInteraction() {
@@ -107,15 +84,43 @@ public class NPCInteractable : Interactable {
     }
 
     private void FinishInteraction() {
-        activeInstance = null;
+        if (activeInstance == this) {
+            activeInstance = null;
+        }
         player.EnableButtonB();
 
-        DestroySpeechBubble();
-        DestroyNPCOptions();
-        InitHoverText();
+        DestroyInteractPopups();
 
         npc.Resume();
         player.Resume();
+    }
+
+    public void ShowFightAlert(Character opponent) {
+        DestroyHoverText();
+        DestroyInteractPopups();
+        if (questInstance != null) {
+            questInstance.Disable();
+        }
+        InitExclaimIcon();
+    }
+
+    public void HideFightAlert() {
+        if (questInstance != null) {
+            questInstance.Enable();
+        }
+        DestroyExclaimIcon();
+    }
+
+    public void InitQuestIcon() {
+        questInstance = Instantiate(quest);
+        questInstance.Display(gameObject);
+    }
+
+    public void DestroyQuestIcon() {
+        if (questInstance != null) {
+            questInstance.Destroy();
+            questInstance = null;
+        }
     }
 
     private void InitHoverText() {
@@ -174,24 +179,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    public void InitQuestIcon() {
-        Debug.Log("here");
-
-        questInstance = Instantiate(quest);
-        questInstance.Display(gameObject);
-    }
-
-    public void DestroyQuestIcon() {
-        if (questInstance != null) {
-            questInstance.Destroy();
-            questInstance = null;
-        }
+    private void DestroyInteractPopups() {
+        DestroySpeechBubble();
+        DestroyNPCOptions();
     }
 
     public void DestroyAllPopUps() {
+        DestroyInteractPopups();
         DestroyHoverText();
-        DestroySpeechBubble();
-        DestroyNPCOptions();
         DestroyExclaimIcon();
         DestroyQuestIcon();
     }
@@ -208,8 +203,7 @@ public class NPCInteractable : Interactable {
     public override void Disable() {
         base.Disable();
         DestroyHoverText();
-        DestroySpeechBubble();
-        DestroyNPCOptions();
+        DestroyInteractPopups();
         if (exclaimInstance != null) {
             exclaimInstance.Disable();
         }

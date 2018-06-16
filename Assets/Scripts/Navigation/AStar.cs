@@ -32,7 +32,7 @@ static class AStar {
 			if (currentNode == endNode){
 				#if DEBUG
 				sw.Stop();
-				UnityEngine.Debug.Log("Path Found: " + sw.ElapsedMilliseconds + " ms.");
+				//UnityEngine.Debug.Log("Path Found: " + sw.ElapsedMilliseconds + " ms.");
 				#endif
 
 				success = true;

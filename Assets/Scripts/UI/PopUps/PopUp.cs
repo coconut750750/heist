@@ -7,7 +7,7 @@ public class PopUp : MonoBehaviour {
 	private Vector3 offset;
 	protected static Canvas popupCanvas = null;
 
-	void Awake() {
+	protected virtual void Awake() {
 		if (popupCanvas == null) {
 			popupCanvas = GameObject.Find("PopupCanvas").GetComponent<Canvas>();
 		}
