@@ -57,4 +57,8 @@ public class QuestManager : MonoBehaviour {
 	public void OnCompleteEntireQuest() {
 		outstandingQuests--;
 	}
+
+	public void DisplayActiveQuests() {
+		ActiveQuestMenu.instance.Display(eventHandler.GetActiveQuests());
+	}
 }

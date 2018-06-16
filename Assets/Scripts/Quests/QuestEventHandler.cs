@@ -77,6 +77,10 @@ public class QuestEventHandler {
 			}
 		}
 	}
+
+	public Quest[] GetActiveQuests() {
+		return activeQuests.ToArray();
+	}
 }
 
 public class QuestOverflowException : System.Exception {
