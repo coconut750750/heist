@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
-    private static Stack<Interactable> currentInteractables = new Stack<Interactable>();
+    private static List<Interactable> currentInteractables = new List<Interactable>();
     protected static ActionButton buttonA;
     protected static Player player;
 
@@ -62,17 +62,15 @@ public abstract class Interactable : MonoBehaviour {
         Interactable.buttonA.RemoveAllListeners();
         Interactable.buttonA.AddListener(call);
 
-        currentInteractables.Push(this);
+        currentInteractables.Add(this);
     }
 
     private void DisablePlayerInteract(Player player) {
-        if (currentInteractables.Count > 0 && currentInteractables.Pop() == this) {
-            Interactable.buttonA.RemoveAllListeners();
-
-            if (currentInteractables.Count > 0) {
-                Interactable next = currentInteractables.Peek();
-                Interactable.buttonA.AddListener(next.call);
-            }
+        currentInteractables.Remove(this);
+        Interactable.buttonA.RemoveAllListeners();
+        if (currentInteractables.Count > 0) {
+            Interactable next = currentInteractables[currentInteractables.Count - 1];
+            Interactable.buttonA.AddListener(next.call);
         }
         
         call = null;
