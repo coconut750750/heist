@@ -40,6 +40,7 @@ public class QuestManager : MonoBehaviour {
 	public void OnAcceptQuest(Quest quest) {
 		try {
 			eventHandler.AddQuest(quest);
+			ActiveQuestMenu.instance.AddActiveQuest(quest);
 		} catch (QuestOverflowException e) {
 			questOverflowAlert.SetActive(true);
 			throw e;
@@ -52,13 +53,10 @@ public class QuestManager : MonoBehaviour {
 
 	public void OnCompleteQuestStage(Quest quest) {
 		eventHandler.CompleteQuestStage(quest);	
+		ActiveQuestMenu.instance.RemoveActiveQuest(quest);
 	}
 
 	public void OnCompleteEntireQuest() {
 		outstandingQuests--;
-	}
-
-	public void DisplayActiveQuests() {
-		ActiveQuestMenu.instance.Display(eventHandler.GetActiveQuests());
 	}
 }

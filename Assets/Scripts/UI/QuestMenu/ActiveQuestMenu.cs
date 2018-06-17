@@ -11,6 +11,8 @@ public class ActiveQuestMenu : MonoBehaviour {
 	[SerializeField]
 	private GameObject scrollViewContent;
 
+	private List<QuestDetail> questDetailInstances = new List<QuestDetail>();
+
 	void Awake () {
 		if (instance == null) {
 			instance = this;
@@ -20,20 +22,22 @@ public class ActiveQuestMenu : MonoBehaviour {
 
 		gameObject.SetActive(false);
 	}
-	
-	public void Display(Quest[] activeQuests) {
-		Clear();
-		gameObject.SetActive(true);
-		foreach (Quest quest in activeQuests) {
-			GameObject questDetailInstance = Instantiate(questDetailPrefab);
-			questDetailInstance.transform.SetParent(scrollViewContent.transform);
-			questDetailInstance.GetComponent<QuestDetail>().DisplayQuest(quest);
-		}
+
+	public void AddActiveQuest(Quest newQuest) {
+		GameObject questDetailInstance = Instantiate(questDetailPrefab);
+		questDetailInstance.transform.SetParent(scrollViewContent.transform);
+		QuestDetail instance = questDetailInstance.GetComponent<QuestDetail>();
+		instance.DisplayQuest(newQuest);
+		questDetailInstances.Add(instance);
 	}
 
-	private void Clear() {
-		foreach (Transform child in scrollViewContent.transform) {
-			GameObject.Destroy(child.gameObject);
+	public void RemoveActiveQuest(Quest oldQuest) {
+		foreach (QuestDetail instance in questDetailInstances) {
+			if (instance.GetDisplayingQuest() != null && instance.GetDisplayingQuest() == oldQuest) {
+				Destroy(instance.gameObject);
+				questDetailInstances.Remove(instance);
+				return;
+			}
 		}
 	}
 }

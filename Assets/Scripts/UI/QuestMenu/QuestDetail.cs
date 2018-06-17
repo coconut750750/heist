@@ -12,28 +12,28 @@ public class QuestDetail : MonoBehaviour {
 	[SerializeField]
 	private Text rewardText;
 
-	public void InitDisplay() {
+	private Quest displayingQuest = null;
+
+	public void InitDisplay(Quest quest) {
 		transform.localScale = new Vector3(1, 1, 1);
+		displayingQuest = quest;
 	}
 
 	public void DisplayQuest(Quest quest) {
-		InitDisplay();
+		InitDisplay(quest);
 		npcNameText.text = quest.reporter.GetName();
 		questDetailsText.text = quest.GetCurrentDetails();
 		rewardText.text = quest.GetCurrentReward().ToString();
 	}
 
-	public void DisplayQuestStage(QuestStage questStage, NPC reporter) {
-		InitDisplay();
-		npcNameText.text = reporter.GetName();
-		questDetailsText.text = questStage.GetDetails();
-		rewardText.text = questStage.GetReward().ToString();
+	public void DisplayEmptyQuest(NPC npc) {
+		InitDisplay(null);
+		npcNameText.text = npc.GetName();
+		questDetailsText.text = "No quests at this time right now.";
+		rewardText.text = "--";
 	}
 
-	public void DisplayEmptyQuest(NPC npc) {
-		InitDisplay();
-		npcNameText.text = npc.GetName();
-		questDetailsText.text = "No quest at this time right now.";
-		rewardText.text = "--";
+	public Quest GetDisplayingQuest() {
+		return displayingQuest;
 	}
 }

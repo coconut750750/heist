@@ -180,7 +180,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
     public void OnDrop(PointerEventData eventData)
     {
-		if (!inputAllowed) {
+		if (!inputAllowed || ItemDragger.itemBeingDragged == null) {
 			return;
 		}
 
