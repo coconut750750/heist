@@ -188,19 +188,19 @@ public class NPCSpawner : MonoBehaviour {
 		switch (side) {
 			case 0: // left
 				float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-				pos = new Vector2(range.min.x - 1, y);
+				pos = new Vector2(Mathf.Round(range.min.x - 1), y);
 				break;
 			case 1: // top
 				float x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-				pos = new Vector2(x, range.max.y + 1);
+				pos = new Vector2(x, Mathf.Round(range.max.y + 1));
 				break;
 			case 2: // right
 				y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-				pos = new Vector2(range.max.x + 1, y);
+				pos = new Vector2(Mathf.Round(range.max.x + 1), y);
 				break;
 			default: // down
 				x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-				pos = new Vector2(x, range.min.y - 1);
+				pos = new Vector2(x, Mathf.Round(range.min.y - 1));
 				break;
 		}
 
