@@ -79,15 +79,43 @@ public abstract class Quest {
 		QuestManager.instance.OnCompleteEntireQuest();
 	}
 
-	public abstract void OnStealItem(NPC npc, Item item);
+	public virtual void OnStealItem(NPC npc, Item item) {
+		return;
+	}
 
-	public abstract void OnCraftItem(Item item);
+	public virtual void OnCraftItem(Item item) {
+		return;
+	}
 
-	public abstract void OnDefeatedNPC(NPC npc);
+	public virtual void OnDefeatedNPC(NPC npc) {
+		return;
+	}
 
-	public abstract void OnSellItem(NPC npc, Item item);
+	public virtual void OnSellItem(NPC npc, Item item) {
+		return;
+	}
 
 	public bool IsActive() {
 		return active;
+	}
+
+	[System.Serializable]
+	public class QuestData : GameData {
+		public string name;
+		public QuestStageData[] stages;
+		public int currentStage;
+
+		public bool active;
+
+		public QuestData(Quest quest) {
+			this.name = quest.name;
+			QuestStage[] questStages = quest.stages;
+			this.stages = new QuestStageData[questStages.Length];
+			for (int i = 0; i < questStages.Length; i++) {
+				this.stages[i] = new QuestStageData(questStages[i]);
+			}
+			this.currentStage = quest.currentStage;
+			this.active = quest.active;
+		}
 	}
 }

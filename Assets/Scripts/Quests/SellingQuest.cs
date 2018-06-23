@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SellingQuest : Quest {
 
-	public const string QUEST_NAME = "stealing_quest";
+	public const string QUEST_NAME = "selling_quest";
     public const int NUM_STAGES = 2;
 
     public SellingQuest(NPC reporter) : base(reporter, QUEST_NAME)
@@ -20,16 +20,6 @@ public class SellingQuest : Quest {
         return stages;
     }
 
-    public override void OnCraftItem(Item item)
-    {
-        return;
-    }
-
-    public override void OnDefeatedNPC(NPC npc)
-    {
-        return;
-    }
-
     public override void OnSellItem(NPC npc, Item item)
     {
         if (npc != reporter) {
@@ -39,10 +29,4 @@ public class SellingQuest : Quest {
             CompleteQuestStage();
         }
     }
-
-    public override void OnStealItem(NPC npc, Item item)
-    {
-        return;
-    }
-
 }

@@ -26,3 +26,14 @@ public abstract class QuestStage {
 		return reward;
 	}
 }
+
+[System.Serializable]
+public class QuestStageData : GameData {
+	public string details;
+	public int reward;
+
+	public QuestStageData(QuestStage stage) {
+		this.details = stage.GetDetails();
+		this.reward = stage.GetReward();
+	}
+}

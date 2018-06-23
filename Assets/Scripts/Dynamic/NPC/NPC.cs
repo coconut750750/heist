@@ -424,14 +424,6 @@ public class NPC : Character {
 		return friendliness;
 	}
 
-	public bool IsMoving() {
-		return isMoving;
-	}
-
-	public bool CanSearchForDest() {
-		return canSearchForDest;
-	}
-
 	public bool WasSpawned() {
 		return spawned;
 	}
@@ -485,32 +477,32 @@ public class NPC : Character {
 			}
 		}
 	}
-}
 
-[System.Serializable]
-public class NPCData : CharacterData {
+	[System.Serializable]
+	public class NPCData : Character.CharacterData {
 
-	public ItemStashData inventoryData;
-	public float destX;
-	public float destY;
-	public float destZ;
+		public ItemStashData inventoryData;
+		public float destX;
+		public float destY;
+		public float destZ;
 
-	public string name;
-	public int friendliness;
-	public bool isMoving;
-	public bool canSearchForDest;
-	public bool visible;
+		public string name;
+		public int friendliness;
+		public bool isMoving;
+		public bool canSearchForDest;
+		public bool visible;
 
-	public NPCData(NPC npc) : base(npc) {
-		inventoryData = new ItemStashData(npc.GetInventory());
-		destX = npc.GetDestination().x;
-		destY = npc.GetDestination().y;
-		destZ = npc.GetDestination().z;
+		public NPCData(NPC npc) : base(npc) {
+			inventoryData = new ItemStashData(npc.GetInventory());
+			destX = npc.GetDestination().x;
+			destY = npc.GetDestination().y;
+			destZ = npc.GetDestination().z;
 
-		this.name = npc.GetName();
-		this.friendliness = npc.GetFriendliness();
-		this.isMoving = npc.IsMoving();
-		this.canSearchForDest = npc.CanSearchForDest();
-		this.visible = npc.visibleByCamera;
+			this.name = npc.GetName();
+			this.friendliness = npc.GetFriendliness();
+			this.isMoving = npc.isMoving;
+			this.canSearchForDest = npc.canSearchForDest;
+			this.visible = npc.visibleByCamera;
+		}
 	}
 }

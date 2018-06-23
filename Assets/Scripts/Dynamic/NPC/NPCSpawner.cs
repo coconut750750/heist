@@ -269,29 +269,29 @@ public class NPCSpawner : MonoBehaviour {
 			//Destroy(this);
 		}
     }
-}
 
-[System.Serializable]
-public class NPCSpawnerData : GameData {
-	public int numNpcs;
-	public int[] npcIndicies;
-	public bool[] npcAwake;
+	[System.Serializable]
+	public class NPCSpawnerData : GameData {
+		public int numNpcs;
+		public int[] npcIndicies;
+		public bool[] npcAwake;
 
-	public int numAwakeNpcs;
+		public int numAwakeNpcs;
 
-	public NPCData[] npcDatas;
+		public NPC.NPCData[] npcDatas;
 
-	public NPCSpawnerData(NPCSpawner spawner) {
-		numNpcs = spawner.NumNpcs();
-		npcIndicies = spawner.GetNpcIndicies();
-		npcAwake = spawner.GetNpcAwake();
+		public NPCSpawnerData(NPCSpawner spawner) {
+			numNpcs = spawner.NumNpcs();
+			npcIndicies = spawner.GetNpcIndicies();
+			npcAwake = spawner.GetNpcAwake();
 
-		numAwakeNpcs = spawner.GetNumAwakeNpcs();
+			numAwakeNpcs = spawner.GetNumAwakeNpcs();
 
-		npcDatas = new NPCData[numNpcs];
-		NPC[] npcs = spawner.GetNpcs();
-		for (int i = 0; i < numNpcs; i++) {
-			npcDatas[i] = new NPCData(npcs[i]);
+			npcDatas = new NPC.NPCData[numNpcs];
+			NPC[] npcs = spawner.GetNpcs();
+			for (int i = 0; i < numNpcs; i++) {
+				npcDatas[i] = new NPC.NPCData(npcs[i]);
+			}
 		}
 	}
 }

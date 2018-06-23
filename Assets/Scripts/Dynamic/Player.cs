@@ -182,17 +182,17 @@ public class Player : Character {
 
 		UpdateUIInfo();
     }
-}
 
-[System.Serializable]
-public class PlayerData : CharacterData {
+	[System.Serializable]
+	public class PlayerData : Character.CharacterData {
 
-	public PlayerData() {
-		base.SetPositionalData(Player.START_POS);
-		base.SetStats(0, 0, 0, 0);
-	}
+		public PlayerData() {
+			base.SetPositionalData(Player.START_POS);
+			base.SetStats(0, 0, 0, 0);
+		}
 
-	public PlayerData(Player player) : base(player) {
+		public PlayerData(Player player) : base(player) {
 
+		}
 	}
 }
