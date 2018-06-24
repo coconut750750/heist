@@ -27,4 +27,7 @@ public abstract class Constants {
 	/// INPUT AXIS
 	public const string HORIZONTAL = "Horizontal";
 	public const string VERTICAL = "Vertical";
+
+	/// QUESTS
+	public const string SELLING_QUEST = "selling_quest";
 }

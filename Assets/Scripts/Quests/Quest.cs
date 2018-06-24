@@ -102,7 +102,7 @@ public abstract class Quest {
 	[System.Serializable]
 	public class QuestData : GameData {
 		public string name;
-		public QuestStageData[] stages;
+		public QuestStage.QuestStageData[] stages;
 		public int currentStage;
 
 		public bool active;
@@ -110,9 +110,9 @@ public abstract class Quest {
 		public QuestData(Quest quest) {
 			this.name = quest.name;
 			QuestStage[] questStages = quest.stages;
-			this.stages = new QuestStageData[questStages.Length];
+			this.stages = new QuestStage.QuestStageData[questStages.Length];
 			for (int i = 0; i < questStages.Length; i++) {
-				this.stages[i] = new QuestStageData(questStages[i]);
+				this.stages[i] = new QuestStage.QuestStageData(questStages[i]);
 			}
 			this.currentStage = quest.currentStage;
 			this.active = quest.active;
