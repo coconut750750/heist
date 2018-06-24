@@ -10,7 +10,7 @@ public class QuestManager : MonoBehaviour {
 
 	public const int MAX_OUTSTANDING_QUESTS = 5;
 	public const string saveFile = "questmanager.dat";
-	
+
 	public static QuestManager instance = null;
 
 	private List<Quest> outstandingQuests;
@@ -73,14 +73,27 @@ public class QuestManager : MonoBehaviour {
 		outstandingQuests.Remove(quest);
 	}
 
+	public void Save() {
+		QuestManagerData data = new QuestManagerData(this);
+		GameManager.Save(data, saveFile);
+	}
+
+	public void Load() {
+		
+	}
+
 	[System.Serializable]
 	public class QuestManagerData : GameData {
-		List<Quest.QuestData> outstandingQuests;
+		public Quest.QuestData[] outstandingQuests;
+		public string[] questNames;
 
 		public QuestManagerData(QuestManager questManager) {
-			outstandingQuests = new List<Quest.QuestData>();
-			foreach (Quest quest in questManager.outstandingQuests) {
-				outstandingQuests.Add(new Quest.QuestData(quest));
+			int numQuests = questManager.outstandingQuests.Count;
+			outstandingQuests = new Quest.QuestData[numQuests];
+			questNames = new string[numQuests];
+			for (int i = 0; i < numQuests; i++) {
+				outstandingQuests[i] = new Quest.QuestData(questManager.outstandingQuests[i]);
+				questNames[i] = questManager.outstandingQuests[i].name;
 			}
 		}
 	}
