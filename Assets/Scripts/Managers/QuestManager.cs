@@ -50,7 +50,7 @@ public class QuestManager : MonoBehaviour {
 		return null;
 	}
 
-	public void OnAcceptQuest(Quest quest) {
+	public void AddQuest(Quest quest) {
 		try {
 			eventHandler.AddQuest(quest);
 			ActiveQuestMenu.instance.AddActiveQuest(quest);
@@ -73,13 +73,17 @@ public class QuestManager : MonoBehaviour {
 		outstandingQuests.Remove(quest);
 	}
 
-	public void SetQuestReporter(NPC npc) {
+	public void FinishLoadingQuestReporter(NPC npc) {
 		foreach (Quest outstanding in outstandingQuests) {
 			if (outstanding.reporter != null) {
 				continue;
 			}
 			if (outstanding.reporterNameFromLoad == npc.GetName()) {
 				outstanding.reporter = npc;
+				print(outstanding.IsActive());
+				if (outstanding.IsActive()) {
+					AddQuest(outstanding);
+				}
 			}
 		}
 	}
@@ -97,7 +101,8 @@ public class QuestManager : MonoBehaviour {
 			return;
 		}
 		foreach (Quest.QuestData questData in data.outstandingQuests) {
-			outstandingQuests.Add(Quest.GetQuestFromData(questData));
+			Quest quest = Quest.GetQuestFromData(questData);
+			outstandingQuests.Add(quest);
 		}
 	}
 
@@ -107,7 +112,6 @@ public class QuestManager : MonoBehaviour {
 
 		public QuestManagerData(QuestManager questManager) {
 			int numQuests = questManager.outstandingQuests.Count;
-			print(numQuests);
 			outstandingQuests = new Quest.QuestData[numQuests];
 			for (int i = 0; i < numQuests; i++) {
 				outstandingQuests[i] = new Quest.QuestData(questManager.outstandingQuests[i]);

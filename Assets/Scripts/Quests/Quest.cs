@@ -28,7 +28,7 @@ public abstract class Quest {
 
 	public void OnAccept() {
 		try {
-			QuestManager.instance.OnAcceptQuest(this);
+			QuestManager.instance.AddQuest(this);
 		} catch (QuestOverflowException e) {
 			throw e;
 		}
@@ -141,7 +141,7 @@ public abstract class Quest {
 			for (int i = 0; i < questStages.Length; i++) {
 				this.stages[i] = new QuestStage.QuestStageData(questStages[i]);
 			}
-			Debug.Log(quest.reporter == null);
+
 			this.reporterName = quest.reporter.GetName();
 			this.currentStage = quest.currentStage;
 			this.active = quest.active;

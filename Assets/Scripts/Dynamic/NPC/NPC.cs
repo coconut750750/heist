@@ -47,7 +47,10 @@ public class NPC : Character {
 	public int startFloor = 1;
 
 	private string npcName = "Billy";
+
 	private bool hasQuest = false;
+	private bool questActive = false;
+
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
@@ -189,11 +192,13 @@ public class NPC : Character {
 	public void AcceptedQuest() {
 		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
+		questActive = true;
 	}
 
 	public void CompletedQuestStage() {
 		interactable.InitQuestIcon();
 		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
+		questActive = false;
 	}
 
 	public void CompletedEntireQuest() {
@@ -467,8 +472,11 @@ public class NPC : Character {
 
 		npcName = data.name;
 		hasQuest = data.hasQuest;
+		questActive = data.questActive;
 		if (hasQuest) {
-			QuestManager.instance.SetQuestReporter(this);
+			QuestManager.instance.FinishLoadingQuestReporter(this);
+		}
+		if (!questActive) {
 			interactable.InitQuestIcon();
 		}
 		friendliness = data.friendliness;
@@ -496,6 +504,7 @@ public class NPC : Character {
 
 		public string name;
 		public bool hasQuest;
+		public bool questActive;
 		public int friendliness;
 		public bool isMoving;
 		public bool canSearchForDest;
@@ -509,6 +518,7 @@ public class NPC : Character {
 
 			this.name = npc.GetName();
 			this.hasQuest = npc.hasQuest;
+			this.questActive = npc.questActive;
 			this.friendliness = npc.GetFriendliness();
 			this.isMoving = npc.isMoving;
 			this.canSearchForDest = npc.canSearchForDest;
