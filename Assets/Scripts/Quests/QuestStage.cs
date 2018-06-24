@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class QuestStage {
+public class QuestStage {
 
 	private string details;
 	private int reward;
@@ -22,12 +22,30 @@ public abstract class QuestStage {
 		GameManager.instance.mainPlayer.SetMoney(GameManager.instance.mainPlayer.GetMoney() + reward);
 	}
 
+	public bool FulfillsRequirement(Item item, NPC npc) {
+		if (item == null && itemRequirement != "") {
+			return false;
+		} else if (item != null && item.itemName != itemRequirement) {
+			return false;
+		}
+		if (npc == null && npcRequirement != "") {
+			return false;
+		} else if (npc != null && npc.GetName() != npcRequirement) {
+			return false;
+		}
+        return true;
+    }
+
 	public string GetDetails() {
 		return details;
 	}
 
 	public int GetReward() {
 		return reward;
+	}
+
+	public static QuestStage GetQuestStageFromData(QuestStageData data) {
+		return new QuestStage(data.details, data.reward, data.itemRequirement, data.npcRequirement);
 	}
 
 	[System.Serializable]

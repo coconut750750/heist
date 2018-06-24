@@ -9,7 +9,7 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour {
 
 	public const int MAX_OUTSTANDING_QUESTS = 5;
-	public const string saveFile = "questmanager.dat";
+	public static string saveFile = "questmanager.dat";
 
 	public static QuestManager instance = null;
 
@@ -31,12 +31,12 @@ public class QuestManager : MonoBehaviour {
 		questOverflowAlert.SetActive(false);
 		outstandingQuests = new List<Quest>();
 	}
-
 	public Quest GetRandomQuest(NPC npc) {
 		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
 			return null;
 		}
 		Quest quest = new SellingQuest(npc);
+		Debug.Log("added quest");
 		outstandingQuests.Add(quest);
 		return quest;
 	}
@@ -73,27 +73,44 @@ public class QuestManager : MonoBehaviour {
 		outstandingQuests.Remove(quest);
 	}
 
+	public void SetQuestReporter(NPC npc) {
+		foreach (Quest outstanding in outstandingQuests) {
+			if (outstanding.reporter != null) {
+				continue;
+			}
+			if (outstanding.reporterNameFromLoad == npc.GetName()) {
+				outstanding.reporter = npc;
+			}
+		}
+	}
+
 	public void Save() {
 		QuestManagerData data = new QuestManagerData(this);
 		GameManager.Save(data, saveFile);
 	}
 
 	public void Load() {
-		
+		saveFile = Application.persistentDataPath + "/" + saveFile;
+
+		QuestManagerData data = GameManager.Load<QuestManagerData>(saveFile);
+		if (data == null) {
+			return;
+		}
+		foreach (Quest.QuestData questData in data.outstandingQuests) {
+			outstandingQuests.Add(Quest.GetQuestFromData(questData));
+		}
 	}
 
 	[System.Serializable]
 	public class QuestManagerData : GameData {
 		public Quest.QuestData[] outstandingQuests;
-		public string[] questNames;
 
 		public QuestManagerData(QuestManager questManager) {
 			int numQuests = questManager.outstandingQuests.Count;
+			print(numQuests);
 			outstandingQuests = new Quest.QuestData[numQuests];
-			questNames = new string[numQuests];
 			for (int i = 0; i < numQuests; i++) {
 				outstandingQuests[i] = new Quest.QuestData(questManager.outstandingQuests[i]);
-				questNames[i] = questManager.outstandingQuests[i].name;
 			}
 		}
 	}

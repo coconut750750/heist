@@ -41,28 +41,25 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		InitGame ();
-
-		filename = Application.persistentDataPath + "/" + "gamestate.dat";
-		Load();
-
-		timeText.text = "" + GetTimeString();	
-	}
-
-	void InitGame() {
 		Debug.Log("Game Started");
 
 		groundFloor = GameObject.Find("GroundFloor");
 		floor2 = GameObject.Find("SecondFloor");
+		timeText.text = "" + GetTimeString();	
+	}
+
+	void Start() {
+		filename = Application.persistentDataPath + "/" + "gamestate.dat";
+		LoadAll();
 	}
 
 	#if UNITY_EDITOR || UNITY_STANDALONE
 	protected void OnApplicationQuit() {
-		Save();
+		SaveAll();
 	}
 	#elif UNITY_ANDROID || UNITY_IOS
 	protected void OnApplicationPause() {
-		Save();
+		SaveAll();
 	}
 	#endif
 
@@ -191,6 +188,9 @@ public class GameManager : MonoBehaviour {
 			c.Save();
 		}
 
+		// quest manager
+		QuestManager.instance.Save();
+
 		// manager itself
 		Save();
 	}
@@ -210,6 +210,15 @@ public class GameManager : MonoBehaviour {
 		ItemStash[] itemStashes = FindObjectsOfType<ItemStash>();
 		foreach (ItemStash itemStash in itemStashes) {
 			itemStash.Load();
+		}
+
+		// quest manager
+		QuestManager.instance.Load();
+
+		// NPC spawners
+		NPCSpawner[] spawners = FindObjectsOfType<NPCSpawner>();
+		foreach (NPCSpawner spawner in spawners) {
+			spawner.Load();
 		}
 
 		// moving objects including player

@@ -63,20 +63,7 @@ public class NPCSpawner : MonoBehaviour {
 		numAwakeNpcs = 0;
 		
 		StartCoroutine(AlterDelay());
-
-		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
-		Load();
 	}
-
-	#if UNITY_EDITOR || UNITY_STANDALONE
-	protected void OnApplicationQuit() {
-		Save();
-	}
-	#elif UNITY_ANDROID || UNITY_IOS
-	protected void OnApplicationPause() {
-		Save();
-	}
-	#endif
 	
 	void Update () {
 		if (GameManager.instance.IsPaused()) {
@@ -252,6 +239,7 @@ public class NPCSpawner : MonoBehaviour {
 
     public void Load()
     {
+		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
         NPCSpawnerData data = GameManager.Load<NPCSpawnerData>(filename);
 		
         if (data != null) {

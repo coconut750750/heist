@@ -88,19 +88,7 @@ public abstract class Character : MonoBehaviour {
 	}
 
 	protected virtual void Start () {
-		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
-		Load();
 	}
-
-	#if UNITY_EDITOR || UNITY_STANDALONE
-	protected void OnApplicationQuit() {
-		Save();
-	}
-	#elif UNITY_ANDROID || UNITY_IOS
-	protected void OnApplicationPause() {
-		Save();
-	}
-	#endif
 
 	protected virtual void FixedUpdate() {
 	}
@@ -295,12 +283,14 @@ public abstract class Character : MonoBehaviour {
 
 	public abstract void Save();
 
-	public abstract void Load();
+	public virtual void Load() {
+		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
+	}
 
 	protected void LoadFromData(CharacterData data) {
 		rb2D.transform.position = data.getPosition();
 
-		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = 0;//data.strength;
+		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = data.strength;
 	}
 
 	[System.Serializable]

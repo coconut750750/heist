@@ -172,6 +172,7 @@ public class Player : Character {
     }
 
     public override void Load() {
+		base.Load();
 		PlayerData data = GameManager.Load<PlayerData>(base.filename);
 		
         if (data != null) {

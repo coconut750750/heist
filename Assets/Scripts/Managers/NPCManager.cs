@@ -46,7 +46,7 @@ public class NPCManager : MonoBehaviour {
 
 	private string GetRandomName() {
 		int index = Random.Range(0, names.Count - 1);
-		name = names[index];
+		string name = names[index];
 		names.RemoveAt(index);
 		return name;
 	}
