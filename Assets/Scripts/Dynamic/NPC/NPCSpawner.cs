@@ -208,7 +208,7 @@ public class NPCSpawner : MonoBehaviour {
 		return !NpcIsInRange(npcs[npcIndex]) && 
 			   npcAwake[npcIndex] &&
 			   !npcs[npcIndex].IsFighting() &&
-			   !(npcs[npcIndex].GetQuest() != null && npcs[npcIndex].GetQuest().IsActive());
+			   !(npcs[npcIndex].hasQuest && npcs[npcIndex].questActive);
 	}
 
 	public int NumNpcs() {

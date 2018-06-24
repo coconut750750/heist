@@ -48,8 +48,8 @@ public class NPC : Character {
 
 	private string npcName = "Billy";
 
-	private bool hasQuest = false;
-	private bool questActive = false;
+	public bool hasQuest = false;
+	public bool questActive = false;
 
 	private int friendliness = 50;
 	private Inventory inventory;
@@ -203,6 +203,7 @@ public class NPC : Character {
 
 	public void CompletedEntireQuest() {
 		interactable.DestroyQuestIcon();
+		hasQuest = false;
 	}
 
 	public void RejectedQuest() {
@@ -476,9 +477,10 @@ public class NPC : Character {
 		if (hasQuest) {
 			QuestManager.instance.FinishLoadingQuestReporter(this);
 		}
-		if (!questActive) {
+		if (hasQuest && !questActive) {
 			interactable.InitQuestIcon();
 		}
+
 		friendliness = data.friendliness;
 
 		destination = new Vector3(data.destX, data.destY, data.destZ);
