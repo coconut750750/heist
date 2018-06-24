@@ -12,7 +12,8 @@ public class QuestManager : MonoBehaviour {
 
 	public static QuestManager instance = null;
 
-	private int outstandingQuests = 0;
+	private List<Quest> outstandingQuests;
+
 	private QuestEventHandler eventHandler;
 
 	[SerializeField]
@@ -27,14 +28,25 @@ public class QuestManager : MonoBehaviour {
 
 		eventHandler = new QuestEventHandler();
 		questOverflowAlert.SetActive(false);
+		outstandingQuests = new List<Quest>();
 	}
 
 	public Quest GetRandomQuest(NPC npc) {
-		if (outstandingQuests >= MAX_OUTSTANDING_QUESTS) {
+		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
 			return null;
 		}
-		outstandingQuests++;
-		return new SellingQuest(npc);
+		Quest quest = new SellingQuest(npc);
+		outstandingQuests.Add(quest);
+		return quest;
+	}
+
+	public Quest GetCurrentQuest(NPC npc) {
+		foreach (Quest outstanding in outstandingQuests) {
+			if (outstanding.reporter == npc) {
+				return outstanding;
+			}
+		}
+		return null;
 	}
 
 	public void OnAcceptQuest(Quest quest) {
@@ -48,7 +60,7 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public void OnRejectQuest(Quest quest) {
-		outstandingQuests--;
+		outstandingQuests.Remove(quest);
 	}
 
 	public void OnCompleteQuestStage(Quest quest) {
@@ -56,7 +68,7 @@ public class QuestManager : MonoBehaviour {
 		ActiveQuestMenu.instance.RemoveActiveQuest(quest);
 	}
 
-	public void OnCompleteEntireQuest() {
-		outstandingQuests--;
+	public void OnCompleteEntireQuest(Quest quest) {
+		outstandingQuests.Remove(quest);
 	}
 }

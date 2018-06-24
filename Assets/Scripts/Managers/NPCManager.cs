@@ -12,7 +12,7 @@ public class NPCManager : MonoBehaviour {
 	[SerializeField]
 	private TextAsset namesAsset;
 
-	private string[] names;
+	private List<string> names;
 
 	public static NPCManager instance = null;
 
@@ -40,10 +40,14 @@ public class NPCManager : MonoBehaviour {
 	}
 
 	private void RetrieveNames() {
-		names = namesAsset.text.Split('\n');
+		string[] namesArr = namesAsset.text.Split('\n');
+		names = new List<string>(namesArr);
 	}
 
 	private string GetRandomName() {
-		return names[Random.Range(0, names.Length - 1)];
+		int index = Random.Range(0, names.Count - 1);
+		name = names[index];
+		names.RemoveAt(index);
+		return name;
 	}
 }

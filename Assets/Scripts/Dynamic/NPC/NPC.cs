@@ -50,7 +50,6 @@ public class NPC : Character {
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
-	private Quest currentQuest;
 
 	private Nav2DAgent agent {
 		get {
@@ -127,8 +126,8 @@ public class NPC : Character {
 		agent.maxSpeed = moveSpeed;
 
 		// TODO: testing only!!
-		currentQuest = QuestManager.instance.GetRandomQuest(this);
-		if (currentQuest != null) {
+		Quest newQuest = QuestManager.instance.GetRandomQuest(this);
+		if (newQuest != null) {
 			interactable.InitQuestIcon();
 		}
 	}
@@ -180,7 +179,7 @@ public class NPC : Character {
 	}
 
 	public Quest GetQuest() {
-		return currentQuest;
+		return QuestManager.instance.GetCurrentQuest(this);
 	}
 
 	public void AcceptedQuest() {
@@ -194,13 +193,11 @@ public class NPC : Character {
 	}
 
 	public void CompletedEntireQuest() {
-		currentQuest = null;
 		interactable.DestroyQuestIcon();
 	}
 
 	public void RejectedQuest() {
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
-		currentQuest = null;
 		interactable.DestroyQuestIcon();
 	}
 

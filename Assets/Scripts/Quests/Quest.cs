@@ -76,7 +76,7 @@ public abstract class Quest {
 
 	public virtual void OnCompletedAll() {
 		reporter.CompletedEntireQuest();
-		QuestManager.instance.OnCompleteEntireQuest();
+		QuestManager.instance.OnCompleteEntireQuest(this);
 	}
 
 	public virtual void OnStealItem(NPC npc, Item item) {
