@@ -9,7 +9,8 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour {
 
 	public const int MAX_OUTSTANDING_QUESTS = 5;
-
+	public const string saveFile = "questmanager.dat";
+	
 	public static QuestManager instance = null;
 
 	private List<Quest> outstandingQuests;
@@ -70,5 +71,17 @@ public class QuestManager : MonoBehaviour {
 
 	public void OnCompleteEntireQuest(Quest quest) {
 		outstandingQuests.Remove(quest);
+	}
+
+	[System.Serializable]
+	public class QuestManagerData : GameData {
+		List<Quest.QuestData> outstandingQuests;
+
+		public QuestManagerData(QuestManager questManager) {
+			outstandingQuests = new List<Quest.QuestData>();
+			foreach (Quest quest in questManager.outstandingQuests) {
+				outstandingQuests.Add(new Quest.QuestData(quest));
+			}
+		}
 	}
 }
