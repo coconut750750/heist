@@ -31,12 +31,21 @@ public class QuestManager : MonoBehaviour {
 		questOverflowAlert.SetActive(false);
 		outstandingQuests = new List<Quest>();
 	}
+
+	void RemoveQuestsWithoutReporter() {
+		// safety measure in case npc data gets corrupted
+		for (int i = outstandingQuests.Count - 1; i >= 0; i--) {
+			if (outstandingQuests[i].reporter == null) {
+				outstandingQuests.RemoveAt(i);
+			}
+		}
+	}
+
 	public Quest GetRandomQuest(NPC npc) {
 		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
 			return null;
 		}
 		Quest quest = new SellingQuest(npc);
-		Debug.Log("added quest");
 		outstandingQuests.Add(quest);
 		return quest;
 	}
@@ -73,22 +82,8 @@ public class QuestManager : MonoBehaviour {
 		outstandingQuests.Remove(quest);
 	}
 
-	public void FinishLoadingQuestReporter(NPC npc) {
-		foreach (Quest outstanding in outstandingQuests) {
-			if (outstanding.reporter != null) {
-				continue;
-			}
-			if (outstanding.reporterNameFromLoad == npc.GetName()) {
-				outstanding.reporter = npc;
-				print(outstanding.IsActive());
-				if (outstanding.IsActive()) {
-					AddQuest(outstanding);
-				}
-			}
-		}
-	}
-
 	public void Save() {
+		RemoveQuestsWithoutReporter();
 		QuestManagerData data = new QuestManagerData(this);
 		GameManager.Save(data, saveFile);
 	}
@@ -103,6 +98,21 @@ public class QuestManager : MonoBehaviour {
 		foreach (Quest.QuestData questData in data.outstandingQuests) {
 			Quest quest = Quest.GetQuestFromData(questData);
 			outstandingQuests.Add(quest);
+		}
+	}
+
+	public void FinishLoadingQuestReporter(NPC npc) {
+		foreach (Quest outstanding in outstandingQuests) {
+			if (outstanding.reporter != null) {
+				continue;
+			}
+			if (outstanding.reporterNameFromLoad == npc.GetName()) {
+				outstanding.reporter = npc;
+				print(outstanding.IsActive());
+				if (outstanding.IsActive()) {
+					AddQuest(outstanding);
+				}
+			}
 		}
 	}
 
