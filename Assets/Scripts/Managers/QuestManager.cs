@@ -9,10 +9,12 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour {
 
 	public const int MAX_OUTSTANDING_QUESTS = 5;
+	public static string saveFile = "questmanager.dat";
 
 	public static QuestManager instance = null;
 
-	private int outstandingQuests = 0;
+	private List<Quest> outstandingQuests;
+
 	private QuestEventHandler eventHandler;
 
 	[SerializeField]
@@ -27,19 +29,31 @@ public class QuestManager : MonoBehaviour {
 
 		eventHandler = new QuestEventHandler();
 		questOverflowAlert.SetActive(false);
+		outstandingQuests = new List<Quest>();
 	}
-
 	public Quest GetRandomQuest(NPC npc) {
-		if (outstandingQuests >= MAX_OUTSTANDING_QUESTS) {
+		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
 			return null;
 		}
-		outstandingQuests++;
-		return new SellingQuest(npc);
+		Quest quest = new SellingQuest(npc);
+		Debug.Log("added quest");
+		outstandingQuests.Add(quest);
+		return quest;
 	}
 
-	public void OnAcceptQuest(Quest quest) {
+	public Quest GetCurrentQuest(NPC npc) {
+		foreach (Quest outstanding in outstandingQuests) {
+			if (outstanding.reporter == npc) {
+				return outstanding;
+			}
+		}
+		return null;
+	}
+
+	public void AddQuest(Quest quest) {
 		try {
 			eventHandler.AddQuest(quest);
+			ActiveQuestMenu.instance.AddActiveQuest(quest);
 		} catch (QuestOverflowException e) {
 			questOverflowAlert.SetActive(true);
 			throw e;
@@ -47,18 +61,61 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public void OnRejectQuest(Quest quest) {
-		outstandingQuests--;
+		outstandingQuests.Remove(quest);
 	}
 
 	public void OnCompleteQuestStage(Quest quest) {
 		eventHandler.CompleteQuestStage(quest);	
+		ActiveQuestMenu.instance.RemoveActiveQuest(quest);
 	}
 
-	public void OnCompleteEntireQuest() {
-		outstandingQuests--;
+	public void OnCompleteEntireQuest(Quest quest) {
+		outstandingQuests.Remove(quest);
 	}
 
-	public void DisplayActiveQuests() {
-		ActiveQuestMenu.instance.Display(eventHandler.GetActiveQuests());
+	public void FinishLoadingQuestReporter(NPC npc) {
+		foreach (Quest outstanding in outstandingQuests) {
+			if (outstanding.reporter != null) {
+				continue;
+			}
+			if (outstanding.reporterNameFromLoad == npc.GetName()) {
+				outstanding.reporter = npc;
+				print(outstanding.IsActive());
+				if (outstanding.IsActive()) {
+					AddQuest(outstanding);
+				}
+			}
+		}
+	}
+
+	public void Save() {
+		QuestManagerData data = new QuestManagerData(this);
+		GameManager.Save(data, saveFile);
+	}
+
+	public void Load() {
+		saveFile = Application.persistentDataPath + "/" + saveFile;
+
+		QuestManagerData data = GameManager.Load<QuestManagerData>(saveFile);
+		if (data == null) {
+			return;
+		}
+		foreach (Quest.QuestData questData in data.outstandingQuests) {
+			Quest quest = Quest.GetQuestFromData(questData);
+			outstandingQuests.Add(quest);
+		}
+	}
+
+	[System.Serializable]
+	public class QuestManagerData : GameData {
+		public Quest.QuestData[] outstandingQuests;
+
+		public QuestManagerData(QuestManager questManager) {
+			int numQuests = questManager.outstandingQuests.Count;
+			outstandingQuests = new Quest.QuestData[numQuests];
+			for (int i = 0; i < numQuests; i++) {
+				outstandingQuests[i] = new Quest.QuestData(questManager.outstandingQuests[i]);
+			}
+		}
 	}
 }

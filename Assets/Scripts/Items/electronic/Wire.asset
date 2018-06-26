@@ -9,10 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4edaf52185c648f2be9a9c9a066363e, type: 3}
-  m_Name: Key
+  m_Name: Wire
   m_EditorClassIdentifier: 
-  itemName: Key
+  itemName: Wire
   quality: 100
-  sprite: {fileID: 21300000, guid: a99cb54ed2f0c4233893f301b9e9e3f0, type: 3}
-  price: 150
-  chance: 1
+  sprite: {fileID: 21300000, guid: 50628b4013c224eb1b66ab51db9782a4, type: 3}
+  price: 50
+  chance: 30

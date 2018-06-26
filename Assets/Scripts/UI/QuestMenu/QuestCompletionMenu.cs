@@ -19,8 +19,8 @@ public class QuestCompletionMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-	public void Display(QuestStage completedQuestStage, NPC reporter) {
+	public void Display(Quest completedQuest) {
 		gameObject.SetActive(true);
-		questDetail.DisplayQuestStage(completedQuestStage, reporter);
+		questDetail.DisplayQuest(completedQuest);
 	}
 }

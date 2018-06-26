@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Door : MonoBehaviour {
 
+	public bool debug = false;
 	private Sprite sprite;
 	private bool open;
 	private int count;
@@ -23,6 +24,9 @@ public class Door : MonoBehaviour {
 		}
 
 		count++;
+		if (debug) {
+			Debug.Log("enter: " + count);
+		}
 		if (open) {
 			return;
 		}
@@ -33,7 +37,15 @@ public class Door : MonoBehaviour {
 	}
 
 	protected virtual void OnTriggerExit2D(Collider2D other) {
+		// different floors so don't interact
+		if (other.transform.position.z != transform.position.z) {
+			return;
+		}
+
 		count--;
+		if (debug) {
+			Debug.Log("exit: " + count);
+		}
 		if (count == 0) {
 			GetComponent<SpriteRenderer>().sprite = sprite;
 			open = false;

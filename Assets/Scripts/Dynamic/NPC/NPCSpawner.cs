@@ -63,20 +63,7 @@ public class NPCSpawner : MonoBehaviour {
 		numAwakeNpcs = 0;
 		
 		StartCoroutine(AlterDelay());
-
-		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
-		Load();
 	}
-
-	#if UNITY_EDITOR || UNITY_STANDALONE
-	protected void OnApplicationQuit() {
-		Save();
-	}
-	#elif UNITY_ANDROID || UNITY_IOS
-	protected void OnApplicationPause() {
-		Save();
-	}
-	#endif
 	
 	void Update () {
 		if (GameManager.instance.IsPaused()) {
@@ -188,19 +175,19 @@ public class NPCSpawner : MonoBehaviour {
 		switch (side) {
 			case 0: // left
 				float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-				pos = new Vector2(range.min.x - 1, y);
+				pos = new Vector2(Mathf.Round(range.min.x - 1), y);
 				break;
 			case 1: // top
 				float x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-				pos = new Vector2(x, range.max.y + 1);
+				pos = new Vector2(x, Mathf.Round(range.max.y + 1));
 				break;
 			case 2: // right
 				y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-				pos = new Vector2(range.max.x + 1, y);
+				pos = new Vector2(Mathf.Round(range.max.x + 1), y);
 				break;
 			default: // down
 				x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-				pos = new Vector2(x, range.min.y - 1);
+				pos = new Vector2(x, Mathf.Round(range.min.y - 1));
 				break;
 		}
 
@@ -221,7 +208,7 @@ public class NPCSpawner : MonoBehaviour {
 		return !NpcIsInRange(npcs[npcIndex]) && 
 			   npcAwake[npcIndex] &&
 			   !npcs[npcIndex].IsFighting() &&
-			   !(npcs[npcIndex].GetQuest() != null && npcs[npcIndex].GetQuest().IsActive());
+			   !(npcs[npcIndex].hasQuest && npcs[npcIndex].questActive);
 	}
 
 	public int NumNpcs() {
@@ -252,6 +239,7 @@ public class NPCSpawner : MonoBehaviour {
 
     public void Load()
     {
+		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
         NPCSpawnerData data = GameManager.Load<NPCSpawnerData>(filename);
 		
         if (data != null) {
@@ -269,29 +257,29 @@ public class NPCSpawner : MonoBehaviour {
 			//Destroy(this);
 		}
     }
-}
 
-[System.Serializable]
-public class NPCSpawnerData : GameData {
-	public int numNpcs;
-	public int[] npcIndicies;
-	public bool[] npcAwake;
+	[System.Serializable]
+	public class NPCSpawnerData : GameData {
+		public int numNpcs;
+		public int[] npcIndicies;
+		public bool[] npcAwake;
 
-	public int numAwakeNpcs;
+		public int numAwakeNpcs;
 
-	public NPCData[] npcDatas;
+		public NPC.NPCData[] npcDatas;
 
-	public NPCSpawnerData(NPCSpawner spawner) {
-		numNpcs = spawner.NumNpcs();
-		npcIndicies = spawner.GetNpcIndicies();
-		npcAwake = spawner.GetNpcAwake();
+		public NPCSpawnerData(NPCSpawner spawner) {
+			numNpcs = spawner.NumNpcs();
+			npcIndicies = spawner.GetNpcIndicies();
+			npcAwake = spawner.GetNpcAwake();
 
-		numAwakeNpcs = spawner.GetNumAwakeNpcs();
+			numAwakeNpcs = spawner.GetNumAwakeNpcs();
 
-		npcDatas = new NPCData[numNpcs];
-		NPC[] npcs = spawner.GetNpcs();
-		for (int i = 0; i < numNpcs; i++) {
-			npcDatas[i] = new NPCData(npcs[i]);
+			npcDatas = new NPC.NPCData[numNpcs];
+			NPC[] npcs = spawner.GetNpcs();
+			for (int i = 0; i < numNpcs; i++) {
+				npcDatas[i] = new NPC.NPCData(npcs[i]);
+			}
 		}
 	}
 }

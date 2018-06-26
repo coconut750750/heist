@@ -32,6 +32,7 @@ public class Pocket : SingletonStash {
 	}
 
 	public override void Load() {
+		base.Load();
 		ItemStashData data = GameManager.Load<ItemStashData>(base.filename);
 
 		if (data != null) {

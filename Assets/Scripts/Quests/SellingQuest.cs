@@ -4,46 +4,29 @@ using UnityEngine;
 
 public class SellingQuest : Quest {
 
-	public const string QUEST_NAME = "stealing_quest";
     public const int NUM_STAGES = 2;
+    private const string QUEST_DETAILS = "Sell me a ";
 
-    public SellingQuest(NPC reporter) : base(reporter, QUEST_NAME)
+    public SellingQuest(NPC reporter) : base(reporter, Constants.SELLING_QUEST)
     {
 
     }
 
     protected override QuestStage[] GenerateQuestStages() {
+        if (base.reporter == null) {
+            return null;
+        }
         QuestStage[] stages = new QuestStage[NUM_STAGES];
-        stages[0] = new SellingQuestStage(ItemManager.instance.GetItem("Apple"), 15);
-        stages[1] = new SellingQuestStage(ItemManager.instance.GetItem("Apple"), 20);
+        stages[0] = new QuestStage(QUEST_DETAILS + "Apple", 15, "Apple", base.reporter.GetName());
+        stages[1] = new QuestStage(QUEST_DETAILS + "Apple", 20, "Apple", base.reporter.GetName());
 
         return stages;
     }
 
-    public override void OnCraftItem(Item item)
-    {
-        return;
-    }
-
-    public override void OnDefeatedNPC(NPC npc)
-    {
-        return;
-    }
-
     public override void OnSellItem(NPC npc, Item item)
     {
-        if (npc != reporter) {
-            return;
-        }
-        if (GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item)) {
-            Debug.Log("here");
+        if (GetCurrentStage().FulfillsRequirement(item, npc)) {
             CompleteQuestStage();
         }
     }
-
-    public override void OnStealItem(NPC npc, Item item)
-    {
-        return;
-    }
-
 }

@@ -26,20 +26,7 @@ public abstract class ItemStash : MonoBehaviour {
 
 	protected virtual void Start() {
 		capacity = items.Length;
-
-		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
-		Load();
 	}
-
-	#if UNITY_EDITOR || UNITY_STANDALONE
-	protected void OnApplicationQuit() {
-		Save();
-	}
-	#elif UNITY_ANDROID || UNITY_IOS
-	protected void OnApplicationPause() {
-		Save();
-	}
-	#endif
 
 	public virtual bool AddItemAtIndex(Item itemToAdd, int index) {
 		if (itemToAdd == null) {
@@ -155,7 +142,9 @@ public abstract class ItemStash : MonoBehaviour {
 
 	public abstract void Save();
 
-	public abstract void Load();
+	public virtual void Load() {
+		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
+	}
 
 	public void LoadFromData(ItemStashData data) {
 		this.count = data.count;

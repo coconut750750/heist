@@ -65,6 +65,7 @@ public class Inventory : ItemStash {
     }
 
     public override void Load() {
+        base.Load();
         if (independent) {
             ItemStashData data = GameManager.Load<ItemStashData>(base.filename);
 

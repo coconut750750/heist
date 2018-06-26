@@ -708,6 +708,16 @@ public class Nav2D : MonoBehaviour {
 		float nodeSize = 0.15f;
 		Color white = new Color(1, 1f, 1f, 1f);
 
+		// foreach (Vector3 v in validDestinations) {
+		// 	Vector3[] square = new Vector3[4];
+		// 	square[0] = v + new Vector3(-nodeSize, 0);
+		// 	square[1] = v + new Vector3(0, nodeSize);
+		// 	square[2] = v + new Vector3(nodeSize, 0);
+		// 	square[3] = v + new Vector3(0, -nodeSize);
+
+		// 	DebugDrawPolygon(square, white);
+		// }
+
 		foreach (PathNode p in nodes) {
 			Vector3[] square = new Vector3[4];
 			square[0] = p.pos + new Vector3(-nodeSize, 0);

@@ -9,10 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4edaf52185c648f2be9a9c9a066363e, type: 3}
-  m_Name: Key
+  m_Name: ScrapPlastic
   m_EditorClassIdentifier: 
-  itemName: Key
+  itemName: Scrap Plastic
   quality: 100
-  sprite: {fileID: 21300000, guid: a99cb54ed2f0c4233893f301b9e9e3f0, type: 3}
-  price: 150
-  chance: 1
+  sprite: {fileID: 21300000, guid: 70e57ea5e7f194f4cac8b9e8eac2c2d5, type: 3}
+  price: 5
+  chance: 70

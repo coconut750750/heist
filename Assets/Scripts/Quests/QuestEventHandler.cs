@@ -11,7 +11,7 @@ public class QuestEventHandler {
 
 	public static QuestEventHandler instance = null;
 
-	public const int TOTAL_ACTIVE_QUESTS = 3;
+	public const int MAX_ACTIVE_QUESTS = 3;
 
 	private List<Quest> activeQuests;
 
@@ -23,7 +23,7 @@ public class QuestEventHandler {
 	}
 
 	public bool CanAcceptQuest() {
-		return activeQuests.Count < TOTAL_ACTIVE_QUESTS;
+		return activeQuests.Count < MAX_ACTIVE_QUESTS;
 	}
 
 	public void AddQuest(Quest quest) {
