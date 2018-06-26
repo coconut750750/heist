@@ -8,11 +8,7 @@ public class QuestCompletionMenu : MonoBehaviour {
 	public static QuestCompletionMenu instance = null;
 
 	[SerializeField]
-	private Text nameText;
-	[SerializeField]
-	private Text questDetailsText;
-	[SerializeField]
-	private Text rewardText;
+	private QuestDetail questDetail;
 
 	void Awake() {
 		if (instance == null) {
@@ -23,19 +19,8 @@ public class QuestCompletionMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-	public void Display(QuestStage completedQuestStage, NPC reporter) {
+	public void Display(Quest completedQuest) {
 		gameObject.SetActive(true);
-
-		nameText.text = reporter.GetName();
-		questDetailsText.text = completedQuestStage.GetDetails();
-		rewardText.text = completedQuestStage.GetReward().ToString();
-	}
-
-	public void Hide() {
-		gameObject.SetActive(false);
-	}
-	
-	public void OnAccept() {
-		Hide();
+		questDetail.DisplayQuest(completedQuest);
 	}
 }

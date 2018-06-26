@@ -88,19 +88,7 @@ public abstract class Character : MonoBehaviour {
 	}
 
 	protected virtual void Start () {
-		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
-		Load();
 	}
-
-	#if UNITY_EDITOR || UNITY_STANDALONE
-	protected void OnApplicationQuit() {
-		Save();
-	}
-	#elif UNITY_ANDROID || UNITY_IOS
-	protected void OnApplicationPause() {
-		Save();
-	}
-	#endif
 
 	protected virtual void FixedUpdate() {
 	}
@@ -277,10 +265,6 @@ public abstract class Character : MonoBehaviour {
 		return paused;
 	}
 
-	public Vector3 GetPosition() {
-		return rb2D.transform.position;
-	}
-
 	public int GetMoney() { return money; }
 
 	public void SetMoney(int money) { this.money = money; }
@@ -299,49 +283,51 @@ public abstract class Character : MonoBehaviour {
 
 	public abstract void Save();
 
-	public abstract void Load();
+	public virtual void Load() {
+		filename = Application.persistentDataPath + "/" + gameObject.name + "-" + CLASS_NAME + ".dat";
+	}
 
 	protected void LoadFromData(CharacterData data) {
 		rb2D.transform.position = data.getPosition();
 
-		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = 0;//data.strength;
-	}
-}
-
-[System.Serializable]
-public class CharacterData : GameData {
-	public float xPos;
-	public float yPos;
-	public float zPos;
-
-	public int money;
-	public int health;
-	public int exp;
-	public int strength;
-
-	public CharacterData() {
-		
+		this.money = data.money; this.health = data.health; this.exp = data.exp; this.strength = data.strength;
 	}
 
-	public CharacterData(Character moveObj) {
-		SetPositionalData(moveObj.GetPosition());
-		SetStats(moveObj.GetMoney(), moveObj.GetHealth(), moveObj.GetExperience(), moveObj.GetStrength());
-	}
+	[System.Serializable]
+	public class CharacterData : GameData {
+		public float xPos;
+		public float yPos;
+		public float zPos;
 
-	protected void SetPositionalData(Vector3 position) {
-		this.xPos = position.x;
-		this.yPos = position.y;
-		this.zPos = position.z;
-	}
+		public int money;
+		public int health;
+		public int exp;
+		public int strength;
 
-	protected void SetStats(int money, int health, int exp, int strength) {
-		this.money = money;
-		this.health = health;
-		this.exp = exp;
-		this.strength = strength;
-	}
+		public CharacterData() {
+			
+		}
 
-	public Vector3 getPosition() {
-		return new Vector3(xPos, yPos, zPos);
+		public CharacterData(Character moveObj) {
+			SetPositionalData(moveObj.rb2D.transform.position);
+			SetStats(moveObj.GetMoney(), moveObj.GetHealth(), moveObj.GetExperience(), moveObj.GetStrength());
+		}
+
+		protected void SetPositionalData(Vector3 position) {
+			this.xPos = position.x;
+			this.yPos = position.y;
+			this.zPos = position.z;
+		}
+
+		protected void SetStats(int money, int health, int exp, int strength) {
+			this.money = money;
+			this.health = health;
+			this.exp = exp;
+			this.strength = strength;
+		}
+
+		public Vector3 getPosition() {
+			return new Vector3(xPos, yPos, zPos);
+		}
 	}
 }

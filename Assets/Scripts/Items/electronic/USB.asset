@@ -9,10 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4edaf52185c648f2be9a9c9a066363e, type: 3}
-  m_Name: Key
+  m_Name: USB
   m_EditorClassIdentifier: 
-  itemName: Key
+  itemName: USB
   quality: 100
-  sprite: {fileID: 21300000, guid: a99cb54ed2f0c4233893f301b9e9e3f0, type: 3}
+  sprite: {fileID: 21300000, guid: 9647b0dd40a774df0b7b83ff94ac1a42, type: 3}
   price: 150
-  chance: 1
+  chance: 10

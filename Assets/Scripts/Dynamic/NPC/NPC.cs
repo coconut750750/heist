@@ -47,10 +47,13 @@ public class NPC : Character {
 	public int startFloor = 1;
 
 	private string npcName = "Billy";
+
+	public bool hasQuest = false;
+	public bool questActive = false;
+
 	private int friendliness = 50;
 	private Inventory inventory;
 	private NPCInteractable interactable;
-	private Quest currentQuest;
 
 	private Nav2DAgent agent {
 		get {
@@ -125,12 +128,6 @@ public class NPC : Character {
 		agent.OnDestinationInvalid += DestinationInvalid;
 
 		agent.maxSpeed = moveSpeed;
-
-		// TODO: testing only!!
-		currentQuest = QuestManager.instance.GetRandomQuest(this);
-		if (currentQuest != null) {
-			interactable.InitQuestIcon();
-		}
 	}
 
 	void OnEnable() {
@@ -155,6 +152,15 @@ public class NPC : Character {
 	}
 
 	protected override void FixedUpdate() {
+		// TODO: testing only!!
+		if (!hasQuest) {
+			Quest newQuest = QuestManager.instance.GetRandomQuest(this);
+			if (newQuest != null) {
+				interactable.InitQuestIcon();
+				hasQuest = true;
+			}
+		}
+
 		if (fighting) {
 			FollowOpponentUpdate();
 		} else if (!isMoving && canSearchForDest) {
@@ -180,27 +186,28 @@ public class NPC : Character {
 	}
 
 	public Quest GetQuest() {
-		return currentQuest;
+		return QuestManager.instance.GetCurrentQuest(this);
 	}
 
 	public void AcceptedQuest() {
 		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
+		questActive = true;
 	}
 
 	public void CompletedQuestStage() {
 		interactable.InitQuestIcon();
 		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
+		questActive = false;
 	}
 
 	public void CompletedEntireQuest() {
-		currentQuest = null;
 		interactable.DestroyQuestIcon();
+		hasQuest = false;
 	}
 
 	public void RejectedQuest() {
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
-		currentQuest = null;
 		interactable.DestroyQuestIcon();
 	}
 
@@ -424,14 +431,6 @@ public class NPC : Character {
 		return friendliness;
 	}
 
-	public bool IsMoving() {
-		return isMoving;
-	}
-
-	public bool CanSearchForDest() {
-		return canSearchForDest;
-	}
-
 	public bool WasSpawned() {
 		return spawned;
 	}
@@ -450,6 +449,7 @@ public class NPC : Character {
 
    public override void Load()
     {
+		base.Load();
 		// dont need to check for independence because if npc is not independent,
 		// the game object won't exist when game starts
         LoadFromFile(base.filename);
@@ -463,54 +463,68 @@ public class NPC : Character {
 
 	public void LoadFromData(NPCData data)
 	{
-		if (data != null) {
-			base.LoadFromData(data);
-			
-			ItemStashData inventoryData = data.inventoryData;
-			inventory.LoadFromInventoryData(inventoryData);
+		if (data == null) {
+			return;
+		}
+		base.LoadFromData(data);
+		
+		ItemStashData inventoryData = data.inventoryData;
+		inventory.LoadFromInventoryData(inventoryData);
 
-			npcName = data.name;
-			friendliness = data.friendliness;
+		npcName = data.name;
+		hasQuest = data.hasQuest;
+		questActive = data.questActive;
+		if (hasQuest) {
+			QuestManager.instance.FinishLoadingQuestReporter(this);
+		}
+		if (hasQuest && !questActive) {
+			interactable.InitQuestIcon();
+		}
 
-			destination = new Vector3(data.destX, data.destY, data.destZ);
-			isMoving = data.isMoving;
-			canSearchForDest = data.canSearchForDest;
+		friendliness = data.friendliness;
 
-			UpdateSortingLayer();
+		destination = new Vector3(data.destX, data.destY, data.destZ);
+		isMoving = data.isMoving;
+		canSearchForDest = data.canSearchForDest;
 
-			if (isMoving) {
-				SetNewDestination(destination);
-			} else if (!canSearchForDest) {
-				StartCoroutine(ArriveDelay());
-			}
+		UpdateSortingLayer();
+
+		if (isMoving) {
+			SetNewDestination(destination);
+		} else if (!canSearchForDest) {
+			StartCoroutine(ArriveDelay());
 		}
 	}
-}
 
-[System.Serializable]
-public class NPCData : CharacterData {
+	[System.Serializable]
+	public class NPCData : Character.CharacterData {
 
-	public ItemStashData inventoryData;
-	public float destX;
-	public float destY;
-	public float destZ;
+		public ItemStashData inventoryData;
+		public float destX;
+		public float destY;
+		public float destZ;
 
-	public string name;
-	public int friendliness;
-	public bool isMoving;
-	public bool canSearchForDest;
-	public bool visible;
+		public string name;
+		public bool hasQuest;
+		public bool questActive;
+		public int friendliness;
+		public bool isMoving;
+		public bool canSearchForDest;
+		public bool visible;
 
-	public NPCData(NPC npc) : base(npc) {
-		inventoryData = new ItemStashData(npc.GetInventory());
-		destX = npc.GetDestination().x;
-		destY = npc.GetDestination().y;
-		destZ = npc.GetDestination().z;
+		public NPCData(NPC npc) : base(npc) {
+			inventoryData = new ItemStashData(npc.GetInventory());
+			destX = npc.GetDestination().x;
+			destY = npc.GetDestination().y;
+			destZ = npc.GetDestination().z;
 
-		this.name = npc.GetName();
-		this.friendliness = npc.GetFriendliness();
-		this.isMoving = npc.IsMoving();
-		this.canSearchForDest = npc.CanSearchForDest();
-		this.visible = npc.visibleByCamera;
+			this.name = npc.GetName();
+			this.hasQuest = npc.hasQuest;
+			this.questActive = npc.questActive;
+			this.friendliness = npc.GetFriendliness();
+			this.isMoving = npc.isMoving;
+			this.canSearchForDest = npc.canSearchForDest;
+			this.visible = npc.visibleByCamera;
+		}
 	}
 }

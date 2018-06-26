@@ -8,11 +8,7 @@ public class NPCQuest : MonoBehaviour {
 	public static NPCQuest instance = null;
 
 	[SerializeField]
-	private Text npcNameText;
-	[SerializeField]
-	private Text questText;
-	[SerializeField]
-	private Text rewardText;
+	private QuestDetail questDetail;
 
 	private NPC npc;
 	private Quest quest;
@@ -33,15 +29,13 @@ public class NPCQuest : MonoBehaviour {
 		gameObject.SetActive(true);
 
 		this.npc = npc;
-		this.npcNameText.text = npc.GetName();
 		this.quest = npc.GetQuest();
 		if (this.quest != null && !this.quest.IsActive()) {
-			questText.text = this.quest.GetCurrentDetails();
-			rewardText.text = this.quest.GetCurrentReward().ToString();
+			questDetail.DisplayQuest(this.quest);
+			
 			EnableButtons();
 		} else {
-			questText.text = "No quest at this time right now.";
-			rewardText.text = "--";
+			questDetail.DisplayEmptyQuest(this.npc);
 			DisableButtons();
 		}
 	}

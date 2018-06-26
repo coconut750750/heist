@@ -13,6 +13,7 @@ public abstract class Quest {
 	protected int currentStage;
 
 	public NPC reporter;
+	public string reporterNameFromLoad;
 	private bool active;
 
 	public Quest(NPC reporter, string questName) {
@@ -27,7 +28,7 @@ public abstract class Quest {
 
 	public void OnAccept() {
 		try {
-			QuestManager.instance.OnAcceptQuest(this);
+			QuestManager.instance.AddQuest(this);
 		} catch (QuestOverflowException e) {
 			throw e;
 		}
@@ -42,11 +43,11 @@ public abstract class Quest {
 		reporter.RejectedQuest();
 	}
 
-	public T GetCurrentStage<T>() where T : QuestStage {
+	public QuestStage GetCurrentStage() {
 		if (HasCompletedAll()) {
 			return null;
 		}
-		return stages[currentStage] as T;
+		return stages[currentStage];
 	}
 
 	public string GetCurrentDetails() {
@@ -62,7 +63,7 @@ public abstract class Quest {
 	}
 
 	public virtual void CompleteQuestStage() {
-		QuestCompletionMenu.instance.Display(stages[currentStage], reporter);
+		QuestCompletionMenu.instance.Display(this);
 
 		stages[currentStage].OnComplete(reporter);
 		QuestManager.instance.OnCompleteQuestStage(this);
@@ -76,18 +77,74 @@ public abstract class Quest {
 
 	public virtual void OnCompletedAll() {
 		reporter.CompletedEntireQuest();
-		QuestManager.instance.OnCompleteEntireQuest();
+		QuestManager.instance.OnCompleteEntireQuest(this);
 	}
 
-	public abstract void OnStealItem(NPC npc, Item item);
+	public virtual void OnStealItem(NPC npc, Item item) {
+		return;
+	}
 
-	public abstract void OnCraftItem(Item item);
+	public virtual void OnCraftItem(Item item) {
+		return;
+	}
 
-	public abstract void OnDefeatedNPC(NPC npc);
+	public virtual void OnDefeatedNPC(NPC npc) {
+		return;
+	}
 
-	public abstract void OnSellItem(NPC npc, Item item);
+	public virtual void OnSellItem(NPC npc, Item item) {
+		return;
+	}
 
 	public bool IsActive() {
 		return active;
+	}
+
+	public static Quest GetQuestFromData(QuestData data) {
+		if (data == null) {
+			return null;
+		}
+		string questName = data.name;
+		Quest returnQuest;
+		if (questName == Constants.SELLING_QUEST) {
+			returnQuest = new SellingQuest(null);
+		} else {
+			return null;
+		}
+
+		int numStages = data.stages.Length;
+		returnQuest.stages = new QuestStage[numStages];
+		for (int i = 0; i < numStages; i++) {
+			returnQuest.stages[i] = QuestStage.GetQuestStageFromData(data.stages[i]);
+		}
+
+		returnQuest.reporterNameFromLoad = data.reporterName;
+		returnQuest.currentStage = data.currentStage;
+		returnQuest.active = data.active;
+
+		return returnQuest;
+	}
+
+	[System.Serializable]
+	public class QuestData : GameData {
+		public string name;
+		public QuestStage.QuestStageData[] stages;
+		public string reporterName;
+		public int currentStage;
+
+		public bool active;
+
+		public QuestData(Quest quest) {
+			this.name = quest.name;
+			QuestStage[] questStages = quest.stages;
+			this.stages = new QuestStage.QuestStageData[questStages.Length];
+			for (int i = 0; i < questStages.Length; i++) {
+				this.stages[i] = new QuestStage.QuestStageData(questStages[i]);
+			}
+
+			this.reporterName = quest.reporter.GetName();
+			this.currentStage = quest.currentStage;
+			this.active = quest.active;
+		}
 	}
 }
