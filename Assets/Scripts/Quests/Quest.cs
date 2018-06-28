@@ -111,13 +111,14 @@ public abstract class Quest {
 			return null;
 		}
 		string questName = data.name;
+
 		Quest returnQuest;
 		if (questName == Constants.SELLING_QUEST) {
 			returnQuest = SellingQuest.GetQuestFromData(data);
 		} else {
-			return null;
+			throw new InvalidQuestNameException();
 		}
-
+		returnQuest.reporter = null;
 		return returnQuest;
 	}
 
@@ -141,5 +142,9 @@ public abstract class Quest {
 		public QuestStage[] GetQuestStages(Quest quest) {
 			return quest.stages;
 		}
+	}
+
+	public class InvalidQuestNameException : System.Exception {
+
 	}
 }

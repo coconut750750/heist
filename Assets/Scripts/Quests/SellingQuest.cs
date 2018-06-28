@@ -51,6 +51,8 @@ public class SellingQuest : Quest {
         SellingQuest returnQuest = new SellingQuest();
 
         int numStages = data.stages.Length;
+
+        returnQuest.name = Constants.SELLING_QUEST;
 		returnQuest.stages = new SellingQuestStage[numStages];
 		for (int i = 0; i < numStages; i++) {
 			returnQuest.stages[i] = SellingQuestStage.GetQuestStageFromData(data.stages[i] as SellingQuestStage.SellingQuestStageData);
