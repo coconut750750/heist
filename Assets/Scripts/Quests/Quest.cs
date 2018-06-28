@@ -14,7 +14,11 @@ public abstract class Quest {
 
 	public NPC reporter;
 	public string reporterNameFromLoad;
-	private bool active;
+	protected bool active;
+
+	public Quest() {
+
+	}
 
 	public Quest(NPC reporter, string questName) {
 		this.reporter = reporter;
@@ -43,11 +47,11 @@ public abstract class Quest {
 		reporter.RejectedQuest();
 	}
 
-	public QuestStage GetCurrentStage() {
+	public T GetCurrentStage<T>() where T : QuestStage {
 		if (HasCompletedAll()) {
 			return null;
 		}
-		return stages[currentStage];
+		return stages[currentStage] as T;
 	}
 
 	public string GetCurrentDetails() {
@@ -100,6 +104,8 @@ public abstract class Quest {
 		return active;
 	}
 
+	public abstract QuestData SaveIntoData();
+
 	public static Quest GetQuestFromData(QuestData data) {
 		if (data == null) {
 			return null;
@@ -107,26 +113,16 @@ public abstract class Quest {
 		string questName = data.name;
 		Quest returnQuest;
 		if (questName == Constants.SELLING_QUEST) {
-			returnQuest = new SellingQuest(null);
+			returnQuest = SellingQuest.GetQuestFromData(data);
 		} else {
 			return null;
 		}
-
-		int numStages = data.stages.Length;
-		returnQuest.stages = new QuestStage[numStages];
-		for (int i = 0; i < numStages; i++) {
-			returnQuest.stages[i] = QuestStage.GetQuestStageFromData(data.stages[i]);
-		}
-
-		returnQuest.reporterNameFromLoad = data.reporterName;
-		returnQuest.currentStage = data.currentStage;
-		returnQuest.active = data.active;
 
 		return returnQuest;
 	}
 
 	[System.Serializable]
-	public class QuestData : GameData {
+	public abstract class QuestData : GameData {
 		public string name;
 		public QuestStage.QuestStageData[] stages;
 		public string reporterName;
@@ -136,15 +132,14 @@ public abstract class Quest {
 
 		public QuestData(Quest quest) {
 			this.name = quest.name;
-			QuestStage[] questStages = quest.stages;
-			this.stages = new QuestStage.QuestStageData[questStages.Length];
-			for (int i = 0; i < questStages.Length; i++) {
-				this.stages[i] = new QuestStage.QuestStageData(questStages[i]);
-			}
-
+			this.stages = new QuestStage.QuestStageData[quest.stages.Length];
 			this.reporterName = quest.reporter.GetName();
 			this.currentStage = quest.currentStage;
 			this.active = quest.active;
+		}
+
+		public QuestStage[] GetQuestStages(Quest quest) {
+			return quest.stages;
 		}
 	}
 }
