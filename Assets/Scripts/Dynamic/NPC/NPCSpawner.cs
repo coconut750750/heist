@@ -242,6 +242,16 @@ public class NPCSpawner : MonoBehaviour {
 		return npcs.ToArray();
 	}
 
+	/// <summary> Gets an NPC object by name </summary>
+	public NPC GetNpcByName(string name) {
+		foreach (NPC npc in npcs) {
+			if (npc.GetName() == name) {
+				return npc;
+			}
+		}
+		return null;
+	}
+
 	/// <summary> Gets { count } random NPCs </summary>
 	public NPC[] GetRandomNpcs(int count) {
 		NPC[] shuffledNPCs =  new NPC[npcs.Count];

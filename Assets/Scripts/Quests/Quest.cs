@@ -13,7 +13,6 @@ public abstract class Quest {
 	protected int currentStage;
 
 	public NPC reporter;
-	public string reporterNameFromLoad;
 	protected bool active;
 
 	public Quest() {
@@ -32,12 +31,12 @@ public abstract class Quest {
 
 	public void OnAccept() {
 		try {
-			QuestManager.instance.AddQuest(this);
+			QuestManager.instance.AddActiveQuest(this);
 		} catch (QuestOverflowException e) {
 			throw e;
 		}
 
-		reporter.AcceptedQuest();
+		reporter.AcceptedQuestStage();
 		
 		active = true;
 	}
@@ -106,7 +105,7 @@ public abstract class Quest {
 
 	public abstract QuestData SaveIntoData();
 
-	public static Quest GetQuestFromData(QuestData data) {
+	public static Quest LoadQuestFromData(QuestData data) {
 		if (data == null) {
 			return null;
 		}
@@ -114,7 +113,7 @@ public abstract class Quest {
 
 		Quest returnQuest;
 		if (questName == Constants.SELLING_QUEST) {
-			returnQuest = SellingQuest.GetQuestFromData(data);
+			returnQuest = SellingQuest.LoadFromData(data);
 		} else {
 			throw new InvalidQuestNameException();
 		}

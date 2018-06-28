@@ -189,7 +189,7 @@ public class NPC : Character {
 		return QuestManager.instance.GetCurrentQuest(this);
 	}
 
-	public void AcceptedQuest() {
+	public void AcceptedQuestStage() {
 		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 		questActive = true;
@@ -474,9 +474,6 @@ public class NPC : Character {
 		npcName = data.name;
 		hasQuest = data.hasQuest;
 		questActive = data.questActive;
-		if (hasQuest) {
-			QuestManager.instance.FinishLoadingQuestReporter(this);
-		}
 		if (hasQuest && !questActive) {
 			interactable.InitQuestIcon();
 		}

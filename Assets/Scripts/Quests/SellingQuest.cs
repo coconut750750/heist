@@ -47,7 +47,7 @@ public class SellingQuest : Quest {
         return new SellingQuestData(this);
     }
 
-    public static new SellingQuest GetQuestFromData(QuestData data) {
+    public static SellingQuest LoadFromData(QuestData data) {
         SellingQuest returnQuest = new SellingQuest();
 
         int numStages = data.stages.Length;
@@ -55,10 +55,9 @@ public class SellingQuest : Quest {
         returnQuest.name = Constants.SELLING_QUEST;
 		returnQuest.stages = new SellingQuestStage[numStages];
 		for (int i = 0; i < numStages; i++) {
-			returnQuest.stages[i] = SellingQuestStage.GetQuestStageFromData(data.stages[i] as SellingQuestStage.SellingQuestStageData);
+			returnQuest.stages[i] = SellingQuestStage.LoadQuestStageFromData(data.stages[i] as SellingQuestStage.SellingQuestStageData);
 		}
 
-		returnQuest.reporterNameFromLoad = data.reporterName;
 		returnQuest.currentStage = data.currentStage;
 		returnQuest.active = data.active;
 

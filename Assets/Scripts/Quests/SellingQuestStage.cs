@@ -21,7 +21,7 @@ public class SellingQuestStage : QuestStage
         return item.itemName == itemRequirement;
     }
 
-    public static SellingQuestStage GetQuestStageFromData(SellingQuestStageData data) {
+    public static SellingQuestStage LoadQuestStageFromData(SellingQuestStageData data) {
         return new SellingQuestStage(data.itemRequirement, data.reward);
     }
 
