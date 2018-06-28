@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SellingQuest : Quest {
 
-    public const int NUM_STAGES = 2;
+    public const int NUM_STAGES = 3;
     private const string QUEST_DETAILS = "Sell me a ";
 
     public SellingQuest(NPC reporter) : base(reporter, Constants.SELLING_QUEST)
@@ -17,8 +17,15 @@ public class SellingQuest : Quest {
             return null;
         }
         QuestStage[] stages = new QuestStage[NUM_STAGES];
-        stages[0] = new QuestStage(QUEST_DETAILS + "Apple", 15, "Apple", base.reporter.GetName());
-        stages[1] = new QuestStage(QUEST_DETAILS + "Apple", 20, "Apple", base.reporter.GetName());
+
+        Item common = ItemManager.instance.GetRandomCommonItem();
+        stages[0] = new QuestStage(QUEST_DETAILS + common.itemName, 15, common.itemName, base.reporter.GetName());
+        
+        Item uncommon = ItemManager.instance.GetRandomUncommonItem();
+        stages[1] = new QuestStage(QUEST_DETAILS + uncommon.itemName, 20, uncommon.itemName, base.reporter.GetName());
+        
+        Item rare = ItemManager.instance.GetRandomRareItem();
+        stages[2] = new QuestStage(QUEST_DETAILS + rare.itemName, 25, rare.itemName, base.reporter.GetName());
 
         return stages;
     }
