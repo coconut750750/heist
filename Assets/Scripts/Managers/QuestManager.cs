@@ -108,7 +108,6 @@ public class QuestManager : MonoBehaviour {
 			}
 			if (outstanding.reporterNameFromLoad == npc.GetName()) {
 				outstanding.reporter = npc;
-				print(outstanding.IsActive());
 				if (outstanding.IsActive()) {
 					AddQuest(outstanding);
 				}
@@ -124,7 +123,7 @@ public class QuestManager : MonoBehaviour {
 			int numQuests = questManager.outstandingQuests.Count;
 			outstandingQuests = new Quest.QuestData[numQuests];
 			for (int i = 0; i < numQuests; i++) {
-				outstandingQuests[i] = new Quest.QuestData(questManager.outstandingQuests[i]);
+				outstandingQuests[i] = questManager.outstandingQuests[i].SaveIntoData();
 			}
 		}
 	}
