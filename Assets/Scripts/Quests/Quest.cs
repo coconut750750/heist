@@ -105,6 +105,8 @@ public abstract class Quest {
 
 	public abstract QuestData SaveIntoData();
 
+	public abstract void LoadFromData(QuestData data);
+
 	public static Quest LoadQuestFromData(QuestData data) {
 		if (data == null) {
 			return null;
@@ -113,7 +115,8 @@ public abstract class Quest {
 
 		Quest returnQuest;
 		if (questName == Constants.SELLING_QUEST) {
-			returnQuest = SellingQuest.LoadFromData(data);
+			returnQuest = new SellingQuest();
+			returnQuest.LoadFromData(data);
 		} else {
 			throw new InvalidQuestNameException();
 		}
