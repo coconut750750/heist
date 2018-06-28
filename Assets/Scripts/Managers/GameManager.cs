@@ -177,10 +177,10 @@ public class GameManager : MonoBehaviour {
 		}
 
 		// NPC spawners
-		NPCSpawner[] spawners = FindObjectsOfType<NPCSpawner>();
-		foreach (NPCSpawner spawner in spawners) {
-			spawner.Save();
-		}
+		NPCSpawner.instance.Save();
+
+		// Police spawner
+
 
 		// moving objects including player
 		Character[] characterObjs = FindObjectsOfType<Character>();
@@ -212,14 +212,13 @@ public class GameManager : MonoBehaviour {
 			itemStash.Load();
 		}
 
+		// NPC spawner
+		NPCSpawner.instance.Load();
+
+		// Police spawner
+
 		// quest manager
 		QuestManager.instance.Load();
-
-		// NPC spawners
-		NPCSpawner[] spawners = FindObjectsOfType<NPCSpawner>();
-		foreach (NPCSpawner spawner in spawners) {
-			spawner.Load();
-		}
 
 		// moving objects including player
 		Character[] characterObjs = FindObjectsOfType<Character>();

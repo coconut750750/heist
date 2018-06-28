@@ -59,7 +59,7 @@ public class QuestManager : MonoBehaviour {
 		return null;
 	}
 
-	public void AddQuest(Quest quest) {
+	public void AddActiveQuest(Quest quest) {
 		try {
 			eventHandler.AddQuest(quest);
 			ActiveQuestMenu.instance.AddActiveQuest(quest);
@@ -96,21 +96,12 @@ public class QuestManager : MonoBehaviour {
 			return;
 		}
 		foreach (Quest.QuestData questData in data.outstandingQuests) {
-			Quest quest = Quest.GetQuestFromData(questData);
+			Quest quest = Quest.LoadQuestFromData(questData);
+			quest.reporter = NPCSpawner.instance.GetNpcByName(questData.reporterName);
 			outstandingQuests.Add(quest);
-		}
-	}
 
-	public void FinishLoadingQuestReporter(NPC npc) {
-		foreach (Quest outstanding in outstandingQuests) {
-			if (outstanding.reporter != null) {
-				continue;
-			}
-			if (outstanding.reporterNameFromLoad == npc.GetName()) {
-				outstanding.reporter = npc;
-				if (outstanding.IsActive()) {
-					AddQuest(outstanding);
-				}
+			if (quest.IsActive()) {
+				AddActiveQuest(quest);
 			}
 		}
 	}

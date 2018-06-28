@@ -47,22 +47,17 @@ public class SellingQuest : Quest {
         return new SellingQuestData(this);
     }
 
-    public static new SellingQuest GetQuestFromData(QuestData data) {
-        SellingQuest returnQuest = new SellingQuest();
-
+    public override void LoadFromData(QuestData data) {
         int numStages = data.stages.Length;
 
-        returnQuest.name = Constants.SELLING_QUEST;
-		returnQuest.stages = new SellingQuestStage[numStages];
+        this.name = Constants.SELLING_QUEST;
+		this.stages = new SellingQuestStage[numStages];
 		for (int i = 0; i < numStages; i++) {
-			returnQuest.stages[i] = SellingQuestStage.GetQuestStageFromData(data.stages[i] as SellingQuestStage.SellingQuestStageData);
+			this.stages[i] = SellingQuestStage.LoadQuestStageFromData(data.stages[i] as SellingQuestStage.SellingQuestStageData);
 		}
 
-		returnQuest.reporterNameFromLoad = data.reporterName;
-		returnQuest.currentStage = data.currentStage;
-		returnQuest.active = data.active;
-
-        return returnQuest;
+		this.currentStage = data.currentStage;
+		this.active = data.active;
     }
 
     [System.Serializable]
