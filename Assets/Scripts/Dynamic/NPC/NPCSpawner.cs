@@ -22,6 +22,9 @@ using UnityEngine;
 ///					recalled immediately.
 /// </summary>  
 public class NPCSpawner : MonoBehaviour {
+
+	public static NPCSpawner instance = null;
+
 	public int PEAK_MAX = 1;
 	public int PEAK_MIN = 1;
 
@@ -54,6 +57,14 @@ public class NPCSpawner : MonoBehaviour {
 		canAlterNpcCount = false;
 		yield return new WaitForSeconds(alterDelay);
 		canAlterNpcCount = true;
+	}
+
+	void Awake() {
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy(gameObject);
+		}
 	}
 
 	void Start () {
@@ -231,14 +242,30 @@ public class NPCSpawner : MonoBehaviour {
 		return npcs.ToArray();
 	}
 
-	public void Save()
-    {
+	/// <summary> Gets { count } random NPCs </summary>
+	public NPC[] GetRandomNpcs(int count) {
+		NPC[] shuffledNPCs =  new NPC[npcs.Count];
+		for (int i = 0; i < npcs.Count; i++) {
+			int randIndex = Random.Range(0, npcs.Count);
+			shuffledNPCs[randIndex] = npcs[i];
+			shuffledNPCs[i] = npcs[randIndex];
+		}
+
+		NPC[] randomNpcs = new NPC[count];
+		for (int i = 0; i < count; i++) {
+			randomNpcs[i] = shuffledNPCs[i];
+		}
+
+		shuffledNPCs = null; // useless beyond this point
+		return randomNpcs;
+	}
+
+	public void Save() {
         NPCSpawnerData data = new NPCSpawnerData(this);
 		GameManager.Save(data, filename);
     }
 
-    public void Load()
-    {
+    public void Load() {
 		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
         NPCSpawnerData data = GameManager.Load<NPCSpawnerData>(filename);
 		
@@ -253,8 +280,6 @@ public class NPCSpawner : MonoBehaviour {
 					RecallUnconditionally(i);
 				}
 			}
-		} else {
-			//Destroy(this);
 		}
     }
 
