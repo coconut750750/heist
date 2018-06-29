@@ -224,6 +224,7 @@ public class NPC : Character {
 			if (OnDeath != null) {
 				OnDeath(this);
 			}
+			QuestEventHandler.instance.OnDefeatedNPC(this);
 			Destroy(gameObject);
 		}
 
