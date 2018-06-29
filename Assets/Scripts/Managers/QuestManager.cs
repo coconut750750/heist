@@ -32,20 +32,22 @@ public class QuestManager : MonoBehaviour {
 		outstandingQuests = new List<Quest>();
 	}
 
-	void RemoveQuestsWithoutReporter() {
-		// safety measure in case npc data gets corrupted
-		for (int i = outstandingQuests.Count - 1; i >= 0; i--) {
-			if (outstandingQuests[i].reporter == null) {
-				outstandingQuests.RemoveAt(i);
-			}
-		}
-	}
-
 	public Quest GetRandomQuest(NPC npc) {
 		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
 			return null;
 		}
-		Quest quest = new SellingQuest(npc);
+		Quest quest;
+		int i = Random.Range(0, 2);
+		if (i == 0) {
+			quest = new SellingQuest(npc);
+		} else {
+			if (NPCSpawner.instance.NumNpcs() > 4) {
+				quest = new BeatdownQuest(npc);
+			} else {
+				return null;
+			}
+		}
+
 		outstandingQuests.Add(quest);
 		return quest;
 	}
@@ -83,7 +85,6 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public void Save() {
-		RemoveQuestsWithoutReporter();
 		QuestManagerData data = new QuestManagerData(this);
 		GameManager.Save(data, saveFile);
 	}

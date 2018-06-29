@@ -221,10 +221,8 @@ public class NPC : Character {
 		// if health is 0 or less, die and call OnDeath function if there is one
 		// usually, OnDeath is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
-			if (OnDeath != null) {
-				OnDeath(this);
-			}
-			Destroy(gameObject);
+			Died();
+			return;
 		}
 
 		// ensure that npc is moving when it gets attacked
@@ -305,6 +303,15 @@ public class NPC : Character {
 
 	public bool IsFighting() {
 		return fighting;
+	}
+
+	protected void Died() {
+		if (OnDeath != null) {
+			OnDeath(this);
+		}
+		QuestEventHandler.instance.OnDefeatedNPC(this);
+		interactable.DestroyAllPopUps();
+		Destroy(gameObject);
 	}
 
 	/// NAVIGATION ///

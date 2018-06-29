@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class QuestStage {
  
-	private string details;
+	protected string details;
 	
-	private int reward;
+	protected int reward;
 	
 	public QuestStage(string details, int reward) {
 		this.details = details;

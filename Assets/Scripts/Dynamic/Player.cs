@@ -173,11 +173,8 @@ public class Player : Character {
 		
         if (data != null) {
 			base.LoadFromData(data);
-		} else {
-			base.LoadFromData(new PlayerData());
+			UpdateUIInfo();
 		}
-
-		UpdateUIInfo();
     }
 
 	[System.Serializable]
