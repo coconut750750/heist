@@ -37,8 +37,7 @@ public class QuestManager : MonoBehaviour {
 			return null;
 		}
 		Quest quest;
-		//int i = Random.Range(0, 2);
-		int i = 1;
+		int i = Random.Range(0, 2);
 		if (i == 0) {
 			quest = new SellingQuest(npc);
 		} else {

@@ -30,7 +30,7 @@ public class BeatdownQuestStage : QuestStage {
 		for (int i = 0; i < npcNames.Length; i++) {
 			details += npcNames[i];
 			if (i + 1 < npcNames.Length) {
-				details += " ,";
+				details += ", ";
 			}
 		}
 	}
