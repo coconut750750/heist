@@ -254,6 +254,10 @@ public class NPCSpawner : MonoBehaviour {
 
 	/// <summary> Gets { count } random NPCs </summary>
 	public NPC[] GetRandomNpcs(int count) {
+		if (count >= npcs.Count) {
+			return null;
+		}
+		
 		NPC[] shuffledNPCs =  new NPC[npcs.Count];
 		for (int i = 0; i < npcs.Count; i++) {
 			int randIndex = Random.Range(0, npcs.Count);

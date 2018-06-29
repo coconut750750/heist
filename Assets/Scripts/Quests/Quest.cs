@@ -16,7 +16,7 @@ public abstract class Quest {
 	protected bool active;
 
 	public Quest() {
-
+		this.reporter = null;
 	}
 
 	public Quest(NPC reporter, string questName) {
@@ -116,11 +116,13 @@ public abstract class Quest {
 		Quest returnQuest;
 		if (questName == Constants.SELLING_QUEST) {
 			returnQuest = new SellingQuest();
-			returnQuest.LoadFromData(data);
+		} else if (questName == Constants.BEATDOWN_QUEST) {
+			returnQuest = new BeatdownQuest();
 		} else {
 			throw new InvalidQuestNameException();
 		}
-		returnQuest.reporter = null;
+		
+		returnQuest.LoadFromData(data);
 		return returnQuest;
 	}
 
