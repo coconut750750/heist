@@ -5,6 +5,8 @@ using UnityEngine;
 public class BeatdownQuest : Quest {
 
     public const int NUM_STAGES = 2;
+    public const int TARGETS_PER_STAGE = 4;
+    public static List<NPC> takenNpcs = new List<NPC>();
 
     public BeatdownQuest() {
 
@@ -18,14 +20,23 @@ public class BeatdownQuest : Quest {
         if (base.reporter == null) {
             return null;
         }
-
         QuestStage[] stages = new QuestStage[NUM_STAGES];
 
-        NPC[] targetNpcs = NPCSpawner.instance.GetRandomNpcs(1);
-        stages[0] = new BeatdownQuestStage(targetNpcs, 15);
-        
-        targetNpcs = NPCSpawner.instance.GetRandomNpcs(3);
-        stages[1] = new BeatdownQuestStage(targetNpcs, 25);
+        List<NPC> exclude = new List<NPC>() {base.reporter};
+        exclude.AddRange(takenNpcs);
+
+        NPC[] targetNpcs1 = NPCSpawner.instance.GetRandomNpcs(1, exclude);
+        stages[0] = new BeatdownQuestStage(targetNpcs1, 15);
+        exclude.AddRange(targetNpcs1);
+
+        NPC[] targetNpcs2 = NPCSpawner.instance.GetRandomNpcs(3, exclude);
+        stages[1] = new BeatdownQuestStage(targetNpcs2, 25);
+
+        takenNpcs.AddRange(targetNpcs1);
+        takenNpcs.AddRange(targetNpcs2);
+
+        targetNpcs1 = null;
+        targetNpcs2 = null;
 
         return stages;
     }
