@@ -66,18 +66,28 @@ public class ItemManager : MonoBehaviour {
         return Object.Instantiate(items[Mathf.Max(0, i - 1)]);
 	}
 
-	public Item GetRandomCommonItem() {
-		int randIndex = Random.Range(0, commonItems.Count);
-		return Object.Instantiate(commonItems[randIndex]);
+	public Item GetRandomCommonItem(Item[] exclude) {
+		Item[] excluded = GetFilteredItems(commonItems, exclude);
+		int randIndex = Random.Range(0, excluded.Length);
+		return Object.Instantiate(excluded[randIndex]);
 	}
 
-	public Item GetRandomUncommonItem() {
-		int randIndex = Random.Range(0, uncommonItems.Count);
-		return Object.Instantiate(uncommonItems[randIndex]);
+	public Item GetRandomUncommonItem(Item[] exclude) {
+		Item[] excluded = GetFilteredItems(uncommonItems, exclude);
+		int randIndex = Random.Range(0, excluded.Length);
+		return Object.Instantiate(excluded[randIndex]);
 	}
 
-	public Item GetRandomRareItem() {
-		int randIndex = Random.Range(0, rareItems.Count);
-		return Object.Instantiate(rareItems[randIndex]);		
+	public Item GetRandomRareItem(Item[] exclude) {
+		Item[] excluded = GetFilteredItems(rareItems, exclude);
+		int randIndex = Random.Range(0, excluded.Length);
+		return Object.Instantiate(excluded[randIndex]);		
+	}
+
+	private Item[] GetFilteredItems(List<Item> originalList, Item[] exclude) {
+		exclude = exclude.Where(item => item != null).ToArray();
+		string[] excludeNames = exclude.Select(item => item.itemName).ToArray();
+		Item[] excluded = originalList.Where(item => !excludeNames.Contains(item.itemName)).ToArray();
+		return excluded;
 	}
 }
