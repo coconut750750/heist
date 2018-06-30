@@ -1,9 +1,7 @@
-Assets/Sprites/
 Library/*
 Builds/*
 Temp/*
-Library/*
-*.csproj
-Assets/Animations/
-Assets/Resources/
+
+Assets/*
 *.sln
+*.csproj
