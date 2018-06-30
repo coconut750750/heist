@@ -265,9 +265,6 @@ public class NPCSpawner : MonoBehaviour {
 		NPC[] afterExclude = shuffledNpcs.Where(npc => !excludeNames.Contains(npc.GetName())).ToArray();
 		shuffledNpcs = null; // useless beyond this point
 
-		foreach (NPC npc in afterExclude) {
-			print(npc.GetName());
-		}
 		NPC[] randomNpcs = new NPC[count];
 		for (int i = 0; i < count; i++) {
 			randomNpcs[i] = afterExclude[i];

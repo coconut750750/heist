@@ -33,6 +33,12 @@ public class QuestEventHandler {
 		activeQuests.Add(quest);
 	}
 
+	public void DeleteQuest(Quest quest) {
+		if (activeQuests.Contains(quest)) {
+			activeQuests.Remove(quest);
+		}
+	}
+
 	public void CompleteQuestStage(Quest quest) {
 		iterationHadCompletedQuestStage = true;
 		activeQuests.Remove(quest);

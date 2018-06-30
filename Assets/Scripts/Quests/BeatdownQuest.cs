@@ -42,6 +42,14 @@ public class BeatdownQuest : Quest {
         return stages;
     }
 
+    public override void Delete() {
+        base.Delete();
+        Debug.Log("yop");
+        foreach (BeatdownQuestStage stage in base.stages) {
+            stage.RemoveAllRequirements();
+        }
+    }
+
     public override void OnDefeatedNPC(NPC npc) {
         if (GetCurrentStage<BeatdownQuestStage>().FulfillsRequirement(npc)) {
             CompleteQuestStage();

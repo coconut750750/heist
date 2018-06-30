@@ -31,12 +31,17 @@ public class BeatdownQuestStage : QuestStage {
 
 	public bool FulfillsRequirement(NPC npc) {
 		if (npcRequirements.Contains(npc.GetName())) {
+			// TODO: also remove from taken npcs in beatdown quest
 			npcRequirements.Remove(npc.GetName());
 		}
 		if (npcRequirements.Count <= 0) {
 			return true;
 		}
 		return false;
+	}
+
+	public void RemoveAllRequirements() {
+		BeatdownQuest.takenNpcNames.RemoveAll(npc => npcRequirements.Contains(npc));
 	}
 
 	public static BeatdownQuestStage LoadQuestStageFromData(BeatdownQuestStageData data) {
