@@ -1,7 +1,7 @@
 Library/*
 Builds/*
 Temp/*
-
-Assets/*
+*.swp
 *.sln
+Assets/*
 *.csproj
