@@ -67,20 +67,26 @@ public class ItemManager : MonoBehaviour {
 	}
 
 	public Item GetRandomCommonItem(Item[] exclude) {
-		Item[] excluded = commonItems.Where(item => !exclude.Contains(item)).ToArray();
+		Item[] excluded = GetFilteredItems(commonItems, exclude);
 		int randIndex = Random.Range(0, excluded.Length);
 		return Object.Instantiate(excluded[randIndex]);
 	}
 
 	public Item GetRandomUncommonItem(Item[] exclude) {
-		Item[] excluded = uncommonItems.Where(item => !exclude.Contains(item)).ToArray();
+		Item[] excluded = GetFilteredItems(uncommonItems, exclude);
 		int randIndex = Random.Range(0, excluded.Length);
 		return Object.Instantiate(excluded[randIndex]);
 	}
 
 	public Item GetRandomRareItem(Item[] exclude) {
-		Item[] excluded = rareItems.Where(item => !exclude.Contains(item)).ToArray();
+		Item[] excluded = GetFilteredItems(rareItems, exclude);
 		int randIndex = Random.Range(0, excluded.Length);
 		return Object.Instantiate(excluded[randIndex]);		
+	}
+
+	private Item[] GetFilteredItems(List<Item> originalList, Item[] exclude) {
+		string[] excludeNames = exclude.Select(item => item.itemName).ToArray();
+		Item[] excluded = originalList.Where(item => !excludeNames.Contains(item.itemName)).ToArray();
+		return excluded;
 	}
 }
