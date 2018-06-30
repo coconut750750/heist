@@ -21,13 +21,13 @@ public class SellingQuest : Quest {
         }
         QuestStage[] stages = new QuestStage[NUM_STAGES];
 
-        Item common = ItemManager.instance.GetRandomCommonItem();
+        Item common = ItemManager.instance.GetRandomCommonItem(base.reporter.GetInventory().items);
         stages[0] = new SellingQuestStage(common, 15);
         
-        Item uncommon = ItemManager.instance.GetRandomUncommonItem();
+        Item uncommon = ItemManager.instance.GetRandomUncommonItem(base.reporter.GetInventory().items);
         stages[1] = new SellingQuestStage(uncommon, 20);
         
-        Item rare = ItemManager.instance.GetRandomRareItem();
+        Item rare = ItemManager.instance.GetRandomRareItem(base.reporter.GetInventory().items);
         stages[2] = new SellingQuestStage(rare, 25);
 
         return stages;
