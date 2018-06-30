@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>  
 ///		This is the NPCSpawner class.
@@ -252,25 +253,28 @@ public class NPCSpawner : MonoBehaviour {
 		return null;
 	}
 
-	/// <summary> Gets { count } random NPCs </summary>
-	public NPC[] GetRandomNpcs(int count) {
-		if (count >= npcs.Count) {
+	/// <summary> Gets { count } random NPCs excluing { exclude }</summary>
+	public NPC[] GetRandomNpcs(int count, IEnumerable<NPC> exclude) {
+		if (count > npcs.Count - exclude.Count()) {
 			return null;
 		}
 		
-		NPC[] shuffledNPCs =  new NPC[npcs.Count];
+		NPC[] shuffledNPCs = new NPC[npcs.Count];
 		for (int i = 0; i < npcs.Count; i++) {
 			int randIndex = Random.Range(0, npcs.Count);
 			shuffledNPCs[randIndex] = npcs[i];
 			shuffledNPCs[i] = npcs[randIndex];
 		}
 
+		NPC[] afterExclude = shuffledNPCs.Where(npc => !exclude.Contains(npc)).ToArray();
+		shuffledNPCs = null; // useless beyond this point
+
 		NPC[] randomNpcs = new NPC[count];
 		for (int i = 0; i < count; i++) {
-			randomNpcs[i] = shuffledNPCs[i];
+			randomNpcs[i] = afterExclude[i];
 		}
 
-		shuffledNPCs = null; // useless beyond this point
+		afterExclude = null; // useless beyond this point
 		return randomNpcs;
 	}
 
