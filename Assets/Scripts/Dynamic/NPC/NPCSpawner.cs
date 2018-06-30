@@ -260,21 +260,18 @@ public class NPCSpawner : MonoBehaviour {
 			return null;
 		}
 		
-		NPC[] shuffledNPCs = new NPC[npcs.Count];
-		for (int i = 0; i < npcs.Count; i++) {
-			int randIndex = Random.Range(0, npcs.Count);
-			shuffledNPCs[randIndex] = npcs[i];
-			shuffledNPCs[i] = npcs[randIndex];
+		System.Random rnd = new System.Random();
+		NPC[] shuffledNpcs = npcs.OrderBy(x => rnd.Next()).ToArray();    
+		NPC[] afterExclude = shuffledNpcs.Where(npc => !excludeNames.Contains(npc.GetName())).ToArray();
+		shuffledNpcs = null; // useless beyond this point
+
+		foreach (NPC npc in afterExclude) {
+			print(npc.GetName());
 		}
-
-		NPC[] afterExclude = shuffledNPCs.Where(npc => !excludeNames.Contains(npc.GetName())).ToArray();
-		shuffledNPCs = null; // useless beyond this point
-
 		NPC[] randomNpcs = new NPC[count];
 		for (int i = 0; i < count; i++) {
 			randomNpcs[i] = afterExclude[i];
 		}
-
 		afterExclude = null; // useless beyond this point
 		return randomNpcs;
 	}
