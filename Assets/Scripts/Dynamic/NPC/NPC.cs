@@ -310,6 +310,7 @@ public class NPC : Character {
 			OnDeath(this);
 		}
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
+		GetQuest().Delete();
 		interactable.DestroyAllPopUps();
 		Destroy(gameObject);
 	}

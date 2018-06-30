@@ -32,7 +32,7 @@ public class SellingQuest : Quest {
 
         return stages;
     }
-
+    
     public override void OnSellItem(NPC npc, Item item)
     {
         if (npc != reporter) {

@@ -72,8 +72,10 @@ public class QuestManager : MonoBehaviour {
 		}
 	}
 
-	public void OnRejectQuest(Quest quest) {
+	public void DeleteQuest(Quest quest) {
 		outstandingQuests.Remove(quest);
+		eventHandler.DeleteQuest(quest);
+		ActiveQuestMenu.instance.RemoveActiveQuest(quest);
 	}
 
 	public void OnCompleteQuestStage(Quest quest) {

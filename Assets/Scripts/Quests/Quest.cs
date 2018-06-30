@@ -41,9 +41,13 @@ public abstract class Quest {
 		active = true;
 	}
 
-	public void OnReject() {
-		QuestManager.instance.OnRejectQuest(this);
+	public virtual void OnReject() {
+		Delete();
 		reporter.RejectedQuest();
+	}
+
+	public virtual void Delete() {
+		QuestManager.instance.DeleteQuest(this);
 	}
 
 	public T GetCurrentStage<T>() where T : QuestStage {
