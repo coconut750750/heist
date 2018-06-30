@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BeatdownQuest : Quest {
 
     public const int NUM_STAGES = 2;
+    public const int TARGETS_PER_STAGE = 4;
+    public static List<string> takenNpcNames = new List<string>();
 
     public BeatdownQuest() {
 
@@ -18,14 +21,23 @@ public class BeatdownQuest : Quest {
         if (base.reporter == null) {
             return null;
         }
-
         QuestStage[] stages = new QuestStage[NUM_STAGES];
 
-        NPC[] targetNpcs = NPCSpawner.instance.GetRandomNpcs(1);
-        stages[0] = new BeatdownQuestStage(targetNpcs, 15);
-        
-        targetNpcs = NPCSpawner.instance.GetRandomNpcs(3);
-        stages[1] = new BeatdownQuestStage(targetNpcs, 25);
+        List<string> exclude = new List<string>() {base.reporter.GetName()};
+        exclude.AddRange(takenNpcNames);
+
+        NPC[] targetNpcs1 = NPCSpawner.instance.GetRandomNpcs(1, exclude);
+        stages[0] = new BeatdownQuestStage(targetNpcs1, 15);
+        exclude.AddRange(targetNpcs1.Select(npc => npc.GetName()));
+
+        NPC[] targetNpcs2 = NPCSpawner.instance.GetRandomNpcs(3, exclude);
+        stages[1] = new BeatdownQuestStage(targetNpcs2, 25);
+
+        takenNpcNames.AddRange(targetNpcs1.Select(npc => npc.GetName()));
+        takenNpcNames.AddRange(targetNpcs2.Select(npc => npc.GetName()));
+
+        targetNpcs1 = null;
+        targetNpcs2 = null;
 
         return stages;
     }
@@ -43,7 +55,6 @@ public class BeatdownQuest : Quest {
     public override void LoadFromData(QuestData data) {
         int numStages = data.stages.Length;
 
-        this.name = Constants.SELLING_QUEST;
 		this.stages = new BeatdownQuestStage[numStages];
 		for (int i = 0; i < numStages; i++) {
 			this.stages[i] = BeatdownQuestStage.LoadQuestStageFromData(data.stages[i] as BeatdownQuestStage.BeatdownQuestStageData);

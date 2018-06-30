@@ -37,11 +37,12 @@ public class QuestManager : MonoBehaviour {
 			return null;
 		}
 		Quest quest;
-		int i = 0;//Random.Range(0, 2);
+		int i = 1;//Random.Range(0, 2);
 		if (i == 0) {
 			quest = new SellingQuest(npc);
 		} else {
-			if (NPCSpawner.instance.NumNpcs() > 4) {
+			if (NPCSpawner.instance.NumNpcs() > 
+				BeatdownQuest.TARGETS_PER_STAGE + BeatdownQuest.takenNpcNames.Count) {
 				quest = new BeatdownQuest(npc);
 			} else {
 				return null;

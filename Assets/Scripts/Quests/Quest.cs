@@ -123,6 +123,7 @@ public abstract class Quest {
 		}
 		
 		returnQuest.LoadFromData(data);
+		returnQuest.name = questName;
 		return returnQuest;
 	}
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>  
 ///		This is the NPCSpawner class.
@@ -242,6 +243,7 @@ public class NPCSpawner : MonoBehaviour {
 		return npcs.ToArray();
 	}
 
+	// TODO: move next two methods into npc manager
 	/// <summary> Gets an NPC object by name </summary>
 	public NPC GetNpcByName(string name) {
 		foreach (NPC npc in npcs) {
@@ -252,25 +254,25 @@ public class NPCSpawner : MonoBehaviour {
 		return null;
 	}
 
-	/// <summary> Gets { count } random NPCs </summary>
-	public NPC[] GetRandomNpcs(int count) {
-		if (count >= npcs.Count) {
+	/// <summary> Gets { count } random NPCs excluing { exclude }</summary>
+	public NPC[] GetRandomNpcs(int count, IEnumerable<string> excludeNames) {
+		if (count > npcs.Count - excludeNames.Count()) {
 			return null;
 		}
 		
-		NPC[] shuffledNPCs =  new NPC[npcs.Count];
-		for (int i = 0; i < npcs.Count; i++) {
-			int randIndex = Random.Range(0, npcs.Count);
-			shuffledNPCs[randIndex] = npcs[i];
-			shuffledNPCs[i] = npcs[randIndex];
-		}
+		System.Random rnd = new System.Random();
+		NPC[] shuffledNpcs = npcs.OrderBy(x => rnd.Next()).ToArray();    
+		NPC[] afterExclude = shuffledNpcs.Where(npc => !excludeNames.Contains(npc.GetName())).ToArray();
+		shuffledNpcs = null; // useless beyond this point
 
+		foreach (NPC npc in afterExclude) {
+			print(npc.GetName());
+		}
 		NPC[] randomNpcs = new NPC[count];
 		for (int i = 0; i < count; i++) {
-			randomNpcs[i] = shuffledNPCs[i];
+			randomNpcs[i] = afterExclude[i];
 		}
-
-		shuffledNPCs = null; // useless beyond this point
+		afterExclude = null; // useless beyond this point
 		return randomNpcs;
 	}
 

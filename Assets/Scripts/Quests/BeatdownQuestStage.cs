@@ -1,29 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BeatdownQuestStage : QuestStage {
 
     private const string QUEST_DETAILS = "Beat up ";
-	private List<string> npcRequirements = new List<string>();
+	private List<string> npcRequirements;
 
 	public BeatdownQuestStage(string[] npcRequirements, int reward) :
-                             base(QUEST_DETAILS, reward) {
+                              base(QUEST_DETAILS, reward) {
+		this.npcRequirements = npcRequirements.ToList();
 		InitDetails(npcRequirements);
-		foreach (string name in npcRequirements) {
-			this.npcRequirements.Add(name);
-		}
     }
  
     public BeatdownQuestStage(NPC[] requirements, int reward) : 
-                             base(QUEST_DETAILS, reward) {
-		string[] npcNames = new string[requirements.Length];
-		for (int i = 0; i < requirements.Length; i++) {
-			string name = requirements[i].GetName();
-			npcNames[i] = name;
-			this.npcRequirements.Add(name);
-		}
-        InitDetails(npcNames);
+                              base(QUEST_DETAILS, reward) {
+		this.npcRequirements = requirements.Select(npc => npc.GetName()).ToList();
+        InitDetails(npcRequirements.ToArray());
     }
 
 	private void InitDetails(string[] npcNames) {
@@ -46,6 +40,7 @@ public class BeatdownQuestStage : QuestStage {
 	}
 
 	public static BeatdownQuestStage LoadQuestStageFromData(BeatdownQuestStageData data) {
+		BeatdownQuest.takenNpcNames.AddRange(data.npcRequirements);
         return new BeatdownQuestStage(data.npcRequirements, data.reward);
     }
 
