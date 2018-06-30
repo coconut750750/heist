@@ -243,6 +243,7 @@ public class NPCSpawner : MonoBehaviour {
 		return npcs.ToArray();
 	}
 
+	// TODO: move next two methods into npc manager
 	/// <summary> Gets an NPC object by name </summary>
 	public NPC GetNpcByName(string name) {
 		foreach (NPC npc in npcs) {
@@ -254,8 +255,8 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	/// <summary> Gets { count } random NPCs excluing { exclude }</summary>
-	public NPC[] GetRandomNpcs(int count, IEnumerable<NPC> exclude) {
-		if (count > npcs.Count - exclude.Count()) {
+	public NPC[] GetRandomNpcs(int count, IEnumerable<string> excludeNames) {
+		if (count > npcs.Count - excludeNames.Count()) {
 			return null;
 		}
 		
@@ -266,7 +267,7 @@ public class NPCSpawner : MonoBehaviour {
 			shuffledNPCs[i] = npcs[randIndex];
 		}
 
-		NPC[] afterExclude = shuffledNPCs.Where(npc => !exclude.Contains(npc)).ToArray();
+		NPC[] afterExclude = shuffledNPCs.Where(npc => !excludeNames.Contains(npc.GetName())).ToArray();
 		shuffledNPCs = null; // useless beyond this point
 
 		NPC[] randomNpcs = new NPC[count];

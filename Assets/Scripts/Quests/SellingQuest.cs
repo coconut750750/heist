@@ -50,7 +50,6 @@ public class SellingQuest : Quest {
     public override void LoadFromData(QuestData data) {
         int numStages = data.stages.Length;
 
-        this.name = Constants.SELLING_QUEST;
 		this.stages = new SellingQuestStage[numStages];
 		for (int i = 0; i < numStages; i++) {
 			this.stages[i] = SellingQuestStage.LoadQuestStageFromData(data.stages[i] as SellingQuestStage.SellingQuestStageData);

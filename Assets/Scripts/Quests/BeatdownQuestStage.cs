@@ -40,6 +40,7 @@ public class BeatdownQuestStage : QuestStage {
 	}
 
 	public static BeatdownQuestStage LoadQuestStageFromData(BeatdownQuestStageData data) {
+		BeatdownQuest.takenNpcNames.AddRange(data.npcRequirements);
         return new BeatdownQuestStage(data.npcRequirements, data.reward);
     }
 
