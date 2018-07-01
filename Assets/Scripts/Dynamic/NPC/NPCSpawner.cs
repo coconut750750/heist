@@ -114,9 +114,9 @@ public class NPCSpawner : MonoBehaviour {
 	private NPC InstantiateNPC(int index, Vector2 pos) {	
 		NPC instance = NPCManager.instance.InstantiateNPC(index, pos);	
 
-		instance.InstantiateBySpawner(polyNav, transform, npcs.Count);
+		instance.InstantiateBySpawner(polyNav, transform);
 
-		instance.OnDeath += Remove;
+		instance.OnDeath += RecallUnconditionally;
 
 		npcs.Add(instance);
 		npcIndicies.Add(index);
@@ -164,18 +164,13 @@ public class NPCSpawner : MonoBehaviour {
 	// recalls npc no matter where it is
 	private void RecallUnconditionally(int npcIndex) {
 		npcs[npcIndex].Recall();
-		npcs[npcIndex].gameObject.SetActive(false);
 		npcAwake[npcIndex] = false;
 		numAwakeNpcs--;
 	}
 
-	// removes npc from npc list (perhaps they died)
-	void Remove(NPC npc) {
+	private void RecallUnconditionally(NPC npc) {
 		int index = npcs.IndexOf(npc);
-		npcs.RemoveAt(index);
-		npcAwake.RemoveAt(index);
-		npcIndicies.RemoveAt(index);
-		numAwakeNpcs--;
+		RecallUnconditionally(index);
 	}
 
 	// returns a vector 2 position out of range 

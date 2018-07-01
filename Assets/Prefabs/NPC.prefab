@@ -128,7 +128,8 @@ MonoBehaviour:
     type: 2}
   exclaimIcon: {fileID: 114934442302829794, guid: 6bd21cc640d6848ec993d318ca84abc0,
     type: 2}
-  quest: {fileID: 114610480887037348, guid: b762bfa085a7146d9885aae66e02ce62, type: 2}
+  questIcon: {fileID: 114610480887037348, guid: b762bfa085a7146d9885aae66e02ce62,
+    type: 2}
 --- !u!114 &114431858986268764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,6 +148,8 @@ MonoBehaviour:
   closestDestinationSquared: 1
   destinationRange: 15
   startFloor: 1
+  hasQuest: 0
+  questActive: 0
   visibleByCamera: 1
 --- !u!114 &114654633985807300
 MonoBehaviour:
