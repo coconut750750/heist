@@ -396,7 +396,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1381393703672370, guid: 3e8119b2a4b0548bc976ed3ef03b4ace, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e8119b2a4b0548bc976ed3ef03b4ace, type: 2}
@@ -85463,10 +85463,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 685348d8ac2974a1c9d22dbb846aa1fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PEAK_MAX: 15
-  PEAK_MIN: 15
-  BASE_MAX: 15
-  BASE_MIN: 15
+  PEAK_MAX: 5
+  PEAK_MIN: 5
+  BASE_MAX: 5
+  BASE_MIN: 5
   polyNav: {fileID: 821503825}
   npcSize: 1
   spawnRange: 20
@@ -91564,7 +91564,7 @@ Prefab:
     - target: {fileID: 114539945788449762, guid: bd6370969bbe74144b231f94f05f5ce2,
         type: 2}
       propertyPath: debug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bd6370969bbe74144b231f94f05f5ce2, type: 2}

@@ -32,6 +32,7 @@ public class BeatdownQuestStage : QuestStage {
 	public bool FulfillsRequirement(NPC npc) {
 		if (npcRequirements.Contains(npc.GetName())) {
 			npcRequirements.Remove(npc.GetName());
+			BeatdownQuest.takenNpcNames.Remove(npc.GetName());
 		}
 		if (npcRequirements.Count <= 0) {
 			return true;

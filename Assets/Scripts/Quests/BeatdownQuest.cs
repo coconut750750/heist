@@ -52,7 +52,6 @@ public class BeatdownQuest : Quest {
     public override void OnDefeatedNPC(NPC npc) {
         BeatdownQuestStage stage = GetCurrentStage<BeatdownQuestStage>();
         if (stage.FulfillsRequirement(npc)) {
-            stage.RemoveAllRequirements();
             CompleteQuestStage();
         }
 	}
