@@ -33,11 +33,8 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public Quest GetRandomQuest(NPC npc) {
-		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
-			return null;
-		}
 		Quest quest;
-		int i = 1;//Random.Range(0, 2);
+		int i = Random.Range(0, 2);
 		if (i == 0) {
 			quest = new SellingQuest(npc);
 		} else {
@@ -51,6 +48,19 @@ public class QuestManager : MonoBehaviour {
 
 		outstandingQuests.Add(quest);
 		return quest;
+	}
+
+	void Update() {
+		if (outstandingQuests.Count < MAX_OUTSTANDING_QUESTS &&
+			NPCSpawner.instance.NumNpcs() > 0) {
+			NPC npc = NPCSpawner.instance.GetRandomNpcs(1, new string[]{})[0];
+			if (!npc.hasQuest) {
+				Quest newQuest = GetRandomQuest(npc);
+				if (newQuest != null) {
+					npc.ReceiveQuest();
+				}
+			}
+		}
 	}
 
 	public Quest GetCurrentQuest(NPC npc) {
