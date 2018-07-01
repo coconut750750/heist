@@ -26,7 +26,7 @@ public class NPCInteractable : Interactable {
     public Alert exclaimIcon;
     private Alert exclaimInstance = null;
 
-    public Alert quest;
+    public Alert questIcon;
     private Alert questInstance = null;
 
 	private NPC npc;
@@ -111,15 +111,14 @@ public class NPCInteractable : Interactable {
         DestroyExclaimIcon();
     }
 
-    public void InitQuestIcon() {
-        questInstance = Instantiate(quest);
-        questInstance.Display(gameObject);
+    public void ShowQuestIcon() {
+        InitQuestIcon();
         if (exclaimInstance != null) {
             exclaimInstance.Disable();
         }
     }
 
-    public void DestroyQuestIcon() {
+    public void HideQuestIcon() {
         if (questInstance != null) {
             questInstance.Destroy();
             questInstance = null;
@@ -174,14 +173,34 @@ public class NPCInteractable : Interactable {
     }
 
     private void InitExclaimIcon() {
-        exclaimInstance = Instantiate(exclaimIcon);
-        exclaimInstance.Display(gameObject);
+        if (exclaimInstance != null) {
+            exclaimInstance.Enable();
+        } else {
+            exclaimInstance = Instantiate(exclaimIcon);
+            exclaimInstance.Display(gameObject);
+        }
     }
 
     private void DestroyExclaimIcon() {
         if (exclaimInstance != null) {
             exclaimInstance.Destroy();
             exclaimInstance = null;
+        }
+    }
+
+    private void InitQuestIcon() {
+        if (questInstance != null) {
+            questInstance.Enable();
+        } else {
+            questInstance = Instantiate(questIcon);
+            questInstance.Display(gameObject);
+        }
+    }
+
+    private void DestroyQuestIcon() {
+        if (questInstance != null) {
+            questInstance.Destroy();
+            questInstance = null;
         }
     }
 
