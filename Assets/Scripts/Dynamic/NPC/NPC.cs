@@ -152,15 +152,6 @@ public class NPC : Character {
 	}
 
 	protected override void FixedUpdate() {
-		// TODO: testing only!!
-		if (!hasQuest) {
-			Quest newQuest = QuestManager.instance.GetRandomQuest(this);
-			if (newQuest != null) {
-				interactable.InitQuestIcon();
-				hasQuest = true;
-			}
-		}
-
 		if (fighting) {
 			FollowOpponentUpdate();
 		} else if (!isMoving && canSearchForDest) {
@@ -183,6 +174,11 @@ public class NPC : Character {
 	public string Greet() {
 		// TODO: change greetings randomly and depending on npc's opinion of player
 		return "Hello there!";
+	}
+
+	public void ReceiveQuest() {
+		interactable.InitQuestIcon();
+		hasQuest = true;
 	}
 
 	public Quest GetQuest() {
