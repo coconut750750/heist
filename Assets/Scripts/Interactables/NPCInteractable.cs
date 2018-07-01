@@ -114,12 +114,18 @@ public class NPCInteractable : Interactable {
     public void InitQuestIcon() {
         questInstance = Instantiate(quest);
         questInstance.Display(gameObject);
+        if (exclaimInstance != null) {
+            exclaimInstance.Disable();
+        }
     }
 
     public void DestroyQuestIcon() {
         if (questInstance != null) {
             questInstance.Destroy();
             questInstance = null;
+        }
+        if (exclaimInstance != null) {
+            exclaimInstance.Enable();
         }
     }
 

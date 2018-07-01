@@ -97,10 +97,6 @@ public class Player : Character {
 
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
-
-		// TODO: remove
-		money += 10;
-		UpdateUIInfo(); 
 	}
 
 	protected override void OnTriggerExit2D(Collider2D other) {
@@ -177,11 +173,8 @@ public class Player : Character {
 		
         if (data != null) {
 			base.LoadFromData(data);
-		} else {
-			base.LoadFromData(new PlayerData());
+			UpdateUIInfo();
 		}
-
-		UpdateUIInfo();
     }
 
 	[System.Serializable]

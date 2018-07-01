@@ -152,15 +152,6 @@ public class NPC : Character {
 	}
 
 	protected override void FixedUpdate() {
-		// TODO: testing only!!
-		if (!hasQuest) {
-			Quest newQuest = QuestManager.instance.GetRandomQuest(this);
-			if (newQuest != null) {
-				interactable.InitQuestIcon();
-				hasQuest = true;
-			}
-		}
-
 		if (fighting) {
 			FollowOpponentUpdate();
 		} else if (!isMoving && canSearchForDest) {
@@ -185,11 +176,16 @@ public class NPC : Character {
 		return "Hello there!";
 	}
 
+	public void ReceiveQuest() {
+		interactable.InitQuestIcon();
+		hasQuest = true;
+	}
+
 	public Quest GetQuest() {
 		return QuestManager.instance.GetCurrentQuest(this);
 	}
 
-	public void AcceptedQuest() {
+	public void AcceptedQuestStage() {
 		interactable.DestroyQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 		questActive = true;
@@ -221,10 +217,8 @@ public class NPC : Character {
 		// if health is 0 or less, die and call OnDeath function if there is one
 		// usually, OnDeath is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
-			if (OnDeath != null) {
-				OnDeath(this);
-			}
-			Destroy(gameObject);
+			Died();
+			return;
 		}
 
 		// ensure that npc is moving when it gets attacked
@@ -305,6 +299,18 @@ public class NPC : Character {
 
 	public bool IsFighting() {
 		return fighting;
+	}
+
+	protected void Died() {
+		if (OnDeath != null) {
+			OnDeath(this);
+		}
+		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
+		if (hasQuest) {
+			GetQuest().Delete();
+		}
+		interactable.DestroyAllPopUps();
+		Destroy(gameObject);
 	}
 
 	/// NAVIGATION ///
@@ -474,9 +480,6 @@ public class NPC : Character {
 		npcName = data.name;
 		hasQuest = data.hasQuest;
 		questActive = data.questActive;
-		if (hasQuest) {
-			QuestManager.instance.FinishLoadingQuestReporter(this);
-		}
 		if (hasQuest && !questActive) {
 			interactable.InitQuestIcon();
 		}

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>  
 ///		This is the NPCSpawner class.
@@ -22,6 +23,9 @@ using UnityEngine;
 ///					recalled immediately.
 /// </summary>  
 public class NPCSpawner : MonoBehaviour {
+
+	public static NPCSpawner instance = null;
+
 	public int PEAK_MAX = 1;
 	public int PEAK_MIN = 1;
 
@@ -54,6 +58,14 @@ public class NPCSpawner : MonoBehaviour {
 		canAlterNpcCount = false;
 		yield return new WaitForSeconds(alterDelay);
 		canAlterNpcCount = true;
+	}
+
+	void Awake() {
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy(gameObject);
+		}
 	}
 
 	void Start () {
@@ -231,14 +243,42 @@ public class NPCSpawner : MonoBehaviour {
 		return npcs.ToArray();
 	}
 
-	public void Save()
-    {
+	// TODO: move next two methods into npc manager
+	/// <summary> Gets an NPC object by name </summary>
+	public NPC GetNpcByName(string name) {
+		foreach (NPC npc in npcs) {
+			if (npc.GetName() == name) {
+				return npc;
+			}
+		}
+		return null;
+	}
+
+	/// <summary> Gets { count } random NPCs excluing { exclude }</summary>
+	public NPC[] GetRandomNpcs(int count, IEnumerable<string> excludeNames) {
+		if (count > npcs.Count - excludeNames.Count()) {
+			return null;
+		}
+		
+		System.Random rnd = new System.Random();
+		NPC[] shuffledNpcs = npcs.OrderBy(x => rnd.Next()).ToArray();    
+		NPC[] afterExclude = shuffledNpcs.Where(npc => !excludeNames.Contains(npc.GetName())).ToArray();
+		shuffledNpcs = null; // useless beyond this point
+
+		NPC[] randomNpcs = new NPC[count];
+		for (int i = 0; i < count; i++) {
+			randomNpcs[i] = afterExclude[i];
+		}
+		afterExclude = null; // useless beyond this point
+		return randomNpcs;
+	}
+
+	public void Save() {
         NPCSpawnerData data = new NPCSpawnerData(this);
 		GameManager.Save(data, filename);
     }
 
-    public void Load()
-    {
+    public void Load() {
 		filename = Application.persistentDataPath + "/" + gameObject.name + ".dat";
         NPCSpawnerData data = GameManager.Load<NPCSpawnerData>(filename);
 		
@@ -253,8 +293,6 @@ public class NPCSpawner : MonoBehaviour {
 					RecallUnconditionally(i);
 				}
 			}
-		} else {
-			//Destroy(this);
 		}
     }
 

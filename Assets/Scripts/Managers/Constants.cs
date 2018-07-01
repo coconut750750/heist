@@ -30,4 +30,5 @@ public abstract class Constants {
 
 	/// QUESTS
 	public const string SELLING_QUEST = "selling_quest";
+	public const string BEATDOWN_QUEST = "beatdown_quest";
 }

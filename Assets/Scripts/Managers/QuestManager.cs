@@ -31,14 +31,36 @@ public class QuestManager : MonoBehaviour {
 		questOverflowAlert.SetActive(false);
 		outstandingQuests = new List<Quest>();
 	}
+
 	public Quest GetRandomQuest(NPC npc) {
-		if (outstandingQuests.Count >= MAX_OUTSTANDING_QUESTS) {
-			return null;
+		Quest quest;
+		int i = Random.Range(0, 2);
+		if (i == 0) {
+			quest = new SellingQuest(npc);
+		} else {
+			if (NPCSpawner.instance.NumNpcs() > 
+				BeatdownQuest.TARGETS_PER_STAGE + BeatdownQuest.takenNpcNames.Count) {
+				quest = new BeatdownQuest(npc);
+			} else {
+				return null;
+			}
 		}
-		Quest quest = new SellingQuest(npc);
-		Debug.Log("added quest");
+
 		outstandingQuests.Add(quest);
 		return quest;
+	}
+
+	void Update() {
+		if (outstandingQuests.Count < MAX_OUTSTANDING_QUESTS &&
+			NPCSpawner.instance.NumNpcs() > 0) {
+			NPC npc = NPCSpawner.instance.GetRandomNpcs(1, new string[]{})[0];
+			if (!npc.hasQuest) {
+				Quest newQuest = GetRandomQuest(npc);
+				if (newQuest != null) {
+					npc.ReceiveQuest();
+				}
+			}
+		}
 	}
 
 	public Quest GetCurrentQuest(NPC npc) {
@@ -50,7 +72,7 @@ public class QuestManager : MonoBehaviour {
 		return null;
 	}
 
-	public void AddQuest(Quest quest) {
+	public void AddActiveQuest(Quest quest) {
 		try {
 			eventHandler.AddQuest(quest);
 			ActiveQuestMenu.instance.AddActiveQuest(quest);
@@ -60,8 +82,10 @@ public class QuestManager : MonoBehaviour {
 		}
 	}
 
-	public void OnRejectQuest(Quest quest) {
+	public void DeleteQuest(Quest quest) {
 		outstandingQuests.Remove(quest);
+		eventHandler.DeleteQuest(quest);
+		ActiveQuestMenu.instance.RemoveActiveQuest(quest);
 	}
 
 	public void OnCompleteQuestStage(Quest quest) {
@@ -71,21 +95,6 @@ public class QuestManager : MonoBehaviour {
 
 	public void OnCompleteEntireQuest(Quest quest) {
 		outstandingQuests.Remove(quest);
-	}
-
-	public void FinishLoadingQuestReporter(NPC npc) {
-		foreach (Quest outstanding in outstandingQuests) {
-			if (outstanding.reporter != null) {
-				continue;
-			}
-			if (outstanding.reporterNameFromLoad == npc.GetName()) {
-				outstanding.reporter = npc;
-				print(outstanding.IsActive());
-				if (outstanding.IsActive()) {
-					AddQuest(outstanding);
-				}
-			}
-		}
 	}
 
 	public void Save() {
@@ -101,8 +110,13 @@ public class QuestManager : MonoBehaviour {
 			return;
 		}
 		foreach (Quest.QuestData questData in data.outstandingQuests) {
-			Quest quest = Quest.GetQuestFromData(questData);
+			Quest quest = Quest.LoadQuestFromData(questData);
+			quest.reporter = NPCSpawner.instance.GetNpcByName(questData.reporterName);
 			outstandingQuests.Add(quest);
+
+			if (quest.IsActive()) {
+				AddActiveQuest(quest);
+			}
 		}
 	}
 
@@ -114,7 +128,7 @@ public class QuestManager : MonoBehaviour {
 			int numQuests = questManager.outstandingQuests.Count;
 			outstandingQuests = new Quest.QuestData[numQuests];
 			for (int i = 0; i < numQuests; i++) {
-				outstandingQuests[i] = new Quest.QuestData(questManager.outstandingQuests[i]);
+				outstandingQuests[i] = questManager.outstandingQuests[i].SaveIntoData();
 			}
 		}
 	}

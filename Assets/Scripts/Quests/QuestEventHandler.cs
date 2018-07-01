@@ -33,49 +33,59 @@ public class QuestEventHandler {
 		activeQuests.Add(quest);
 	}
 
+	public void DeleteQuest(Quest quest) {
+		if (activeQuests.Contains(quest)) {
+			activeQuests.Remove(quest);
+		}
+	}
+
 	public void CompleteQuestStage(Quest quest) {
 		iterationHadCompletedQuestStage = true;
 		activeQuests.Remove(quest);
 	}
 	
-	public void OnStealItem(NPC npc, Item item) {
+	public bool OnStealItemQuestSuccessful(NPC npc, Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnStealItem(npc, item);
 			if (iterationHadCompletedQuestStage) {
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void OnCraftItem(Item item) {
+	public bool OnCraftItemQuestSuccessful(Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnCraftItem(item);
 			if (iterationHadCompletedQuestStage) {
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void OnDefeatedNPC(NPC npc) {
+	public bool OnDefeatNPCQuestSuccessful(NPC npc) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnDefeatedNPC(npc);
 			if (iterationHadCompletedQuestStage) {
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void OnSellItem(NPC npc, Item item) {
+	public bool OnSellQuestSuccessful(NPC npc, Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnSellItem(npc, item);
 			if (iterationHadCompletedQuestStage) {
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public Quest[] GetActiveQuests() {

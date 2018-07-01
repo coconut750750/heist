@@ -19,6 +19,9 @@ public class Alert : PopUp {
     }
 
 	void LateUpdate() {
+        if (baseObject == null) {
+            Destroy(gameObject);
+        }
     	UpdatePosition(baseObject.transform.position);
     }
 

@@ -51,7 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Dynamic\MovingObject.cs" />
+     <Compile Include="Assets\Scripts\Dynamic\Character.cs" />
      <Compile Include="Assets\Scripts\Dynamic\NPC\NPC.cs" />
      <Compile Include="Assets\Scripts\Dynamic\NPC\NPCSpawner.cs" />
      <Compile Include="Assets\Scripts\Dynamic\Player.cs" />
@@ -59,38 +59,49 @@
      <Compile Include="Assets\Scripts\Interactables\Door.cs" />
      <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
      <Compile Include="Assets\Scripts\Interactables\NPCInteractable.cs" />
+     <Compile Include="Assets\Scripts\Inventory\Controllers\BuyController.cs" />
+     <Compile Include="Assets\Scripts\Inventory\Controllers\SellController.cs" />
+     <Compile Include="Assets\Scripts\Inventory\Controllers\TradeController.cs" />
      <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
      <Compile Include="Assets\Scripts\Inventory\ItemDragger.cs" />
      <Compile Include="Assets\Scripts\Inventory\ItemSlot.cs" />
      <Compile Include="Assets\Scripts\Inventory\ItemStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\Pocket.cs" />
-     <Compile Include="Assets\Scripts\Inventory\PocketEditor.cs" />
      <Compile Include="Assets\Scripts\Inventory\SellingStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\SingletonStash.cs" />
      <Compile Include="Assets\Scripts\Inventory\StashDisplayer.cs" />
      <Compile Include="Assets\Scripts\Inventory\TradingStash.cs" />
      <Compile Include="Assets\Scripts\Items\Item.cs" />
      <Compile Include="Assets\Scripts\Managers\CameraController.cs" />
+     <Compile Include="Assets\Scripts\Managers\CharAnimationManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\Constants.cs" />
      <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
      <Compile Include="Assets\Scripts\Managers\ItemManager.cs" />
      <Compile Include="Assets\Scripts\Managers\LightingController.cs" />
      <Compile Include="Assets\Scripts\Managers\NPCManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\QuestManager.cs" />
      <Compile Include="Assets\Scripts\Navigation\AStar.cs" />
      <Compile Include="Assets\Scripts\Navigation\Heap.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2D.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DAgent.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DCompObstacle.cs" />
-     <Compile Include="Assets\Scripts\Navigation\Nav2DInspector.cs" />
      <Compile Include="Assets\Scripts\Navigation\Nav2DObstacle.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Nav2DStairs.cs" />
+     <Compile Include="Assets\Scripts\Quests\BeatdownQuest.cs" />
+     <Compile Include="Assets\Scripts\Quests\BeatdownQuestStage.cs" />
+     <Compile Include="Assets\Scripts\Quests\Quest.cs" />
+     <Compile Include="Assets\Scripts\Quests\QuestEventHandler.cs" />
+     <Compile Include="Assets\Scripts\Quests\QuestStage.cs" />
+     <Compile Include="Assets\Scripts\Quests\SellingQuest.cs" />
+     <Compile Include="Assets\Scripts\Quests\SellingQuestStage.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RandomGroundTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\RoadMarkerTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\ShadowTile.cs" />
      <Compile Include="Assets\Scripts\TileScripts\WallTile.cs" />
-     <Compile Include="Assets\Scripts\UI\Buttons\ButtonA.cs" />
-     <Compile Include="Assets\Scripts\UI\NPCMenu\BuyController.cs" />
-     <Compile Include="Assets\Scripts\UI\NPCMenu\NPCUI.cs" />
-     <Compile Include="Assets\Scripts\UI\NPCMenu\SellController.cs" />
-     <Compile Include="Assets\Scripts\UI\NPCMenu\TradeController.cs" />
+     <Compile Include="Assets\Scripts\UI\Buttons\ActionButton.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\NPCInfo.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\NPCQuest.cs" />
+     <Compile Include="Assets\Scripts\UI\NPCMenu\NPCTrade.cs" />
      <Compile Include="Assets\Scripts\UI\PauseMenu\CraftingStash.cs" />
      <Compile Include="Assets\Scripts\UI\PauseMenu\DismantleStash.cs" />
      <Compile Include="Assets\Scripts\UI\PauseMenu\OverviewContent.cs" />
@@ -98,7 +109,17 @@
      <Compile Include="Assets\Scripts\UI\PauseMenu\PauseStash.cs" />
      <Compile Include="Assets\Scripts\UI\PauseMenu\SavingContent.cs" />
      <Compile Include="Assets\Scripts\UI\PauseMenu\SliderControl.cs" />
+     <Compile Include="Assets\Scripts\UI\PopUps\Alert.cs" />
+     <Compile Include="Assets\Scripts\UI\PopUps\Exclaim.cs" />
+     <Compile Include="Assets\Scripts\UI\PopUps\HoverName.cs" />
+     <Compile Include="Assets\Scripts\UI\PopUps\NPCOptions.cs" />
+     <Compile Include="Assets\Scripts\UI\PopUps\PopUp.cs" />
+     <Compile Include="Assets\Scripts\UI\PopUps\SpeechBubble.cs" />
+     <Compile Include="Assets\Scripts\UI\QuestMenu\ActiveQuestMenu.cs" />
+     <Compile Include="Assets\Scripts\UI\QuestMenu\QuestCompletionMenu.cs" />
+     <Compile Include="Assets\Scripts\UI\QuestMenu\QuestDetail.cs" />
      <Compile Include="Assets\Scripts\UI\StartMenu\StartMenu.cs" />
+     <None Include="Assets\Resources\npc_names.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
