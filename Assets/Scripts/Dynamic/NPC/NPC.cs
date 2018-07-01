@@ -19,6 +19,7 @@ using System;
 ///			by one.
 /// </summary>  
 public class NPC : Character {
+	// trading constants
 	public const float BOTTOM_END_TRADING_PERC = 0.85f;
 	public const float LOWER_BOUND_TRADING_PERC = 1.15f;
 	public const float UPPER_BOUND_TRADING_PERC = 1.30f;
@@ -31,6 +32,11 @@ public class NPC : Character {
 	public const int ACCEPT_QUEST_FRIENDLY_DELTA = 3;
 	public const int ATTACK_FRIENDLY_DELTA = -35;
 	public const int REJECT_QUEST_FRIENDLY_DELTA = -10;
+
+	// fighting constants
+	public const float GET_ATTACK_DELAY = 0.2f;
+	public const float AFTER_ATTACK_DELAY = 0.5f;
+	public const float SQUARED_STOP_RETALIATE_DIST = 100;
 
 	public bool debugNav = false;
 	public bool saveData = true;
@@ -78,11 +84,6 @@ public class NPC : Character {
 	}
 
 	// fighting member variables
-
-	public const float GET_ATTACK_DELAY = 0.2f;
-	public const float AFTER_ATTACK_DELAY = 0.5f;
-	public const float SQUARED_STOP_RETALIATE_DIST = 36;
-
 	private bool fighting = false;
 	private Character opponent = null;
 
@@ -134,21 +135,25 @@ public class NPC : Character {
 		canSearchForDest = true;
 	}
 
-	public void InstantiateBySpawner(Nav2D polyNav, Transform parentTransform, int index) {
+	public void InstantiateBySpawner(Nav2D polyNav, Transform parentTransform) {
 		SetAgentNav(polyNav);
 		transform.SetParent(parentTransform);
 
-		name = Constants.NPC_NAME + index;
+		name = Constants.NPC_NAME + npcName;
 		SetSpawned(true);
 	}
 
 	public void Spawn() {
 		RefreshInventory();
 		gameObject.SetActive(true);
+		if (hasQuest) {
+			interactable.ShowQuestIcon();
+		}
 	}
 
 	public void Recall() {
 		interactable.DestroyAllPopUps();
+		gameObject.SetActive(false);
 	}
 
 	protected override void FixedUpdate() {
@@ -177,7 +182,7 @@ public class NPC : Character {
 	}
 
 	public void ReceiveQuest() {
-		interactable.InitQuestIcon();
+		interactable.ShowQuestIcon();
 		hasQuest = true;
 	}
 
@@ -186,25 +191,25 @@ public class NPC : Character {
 	}
 
 	public void AcceptedQuestStage() {
-		interactable.DestroyQuestIcon();
+		interactable.HideQuestIcon();
 		AdjustFriendliness(ACCEPT_QUEST_FRIENDLY_DELTA);
 		questActive = true;
 	}
 
 	public void CompletedQuestStage() {
-		interactable.InitQuestIcon();
+		interactable.ShowQuestIcon();
 		AdjustFriendliness(COMPLETE_QUEST_STAGE_FRIENDLY_DELTA);
 		questActive = false;
 	}
 
 	public void CompletedEntireQuest() {
-		interactable.DestroyQuestIcon();
+		interactable.HideQuestIcon();
 		hasQuest = false;
 	}
 
 	public void RejectedQuest() {
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
-		interactable.DestroyQuestIcon();
+		interactable.HideQuestIcon();
 	}
 
 	public void BoughtOrTraded() {
@@ -249,7 +254,6 @@ public class NPC : Character {
 		float floorDiff = displacement.z;
 		displacement.z = 0;
 		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
-			// opponent is too far, so give up fighting
 			StartCoroutine(EndFight());
 		}
 
@@ -308,9 +312,10 @@ public class NPC : Character {
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
 		if (hasQuest) {
 			GetQuest().Delete();
+			hasQuest = false;
 		}
 		interactable.DestroyAllPopUps();
-		Destroy(gameObject);
+		//Destroy(gameObject);
 	}
 
 	/// NAVIGATION ///
@@ -478,10 +483,12 @@ public class NPC : Character {
 		inventory.LoadFromInventoryData(inventoryData);
 
 		npcName = data.name;
+		name = Constants.NPC_NAME + npcName;
+
 		hasQuest = data.hasQuest;
 		questActive = data.questActive;
 		if (hasQuest && !questActive) {
-			interactable.InitQuestIcon();
+			interactable.ShowQuestIcon();
 		}
 
 		friendliness = data.friendliness;

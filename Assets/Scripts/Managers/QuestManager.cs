@@ -45,8 +45,6 @@ public class QuestManager : MonoBehaviour {
 				return null;
 			}
 		}
-
-		outstandingQuests.Add(quest);
 		return quest;
 	}
 
@@ -58,6 +56,7 @@ public class QuestManager : MonoBehaviour {
 				Quest newQuest = GetRandomQuest(npc);
 				if (newQuest != null) {
 					npc.ReceiveQuest();
+					outstandingQuests.Add(newQuest);
 				}
 			}
 		}
