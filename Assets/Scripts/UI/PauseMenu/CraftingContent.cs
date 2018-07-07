@@ -17,8 +17,8 @@ public class CraftingContent : MonoBehaviour {
 	}
 
 	void OnDisable() {
-		craftingStash.Hide();
 		undoSafety = null;
+		craftingStash.Hide();
 	}
 
 	public CraftingStash GetStash() {
@@ -29,7 +29,7 @@ public class CraftingContent : MonoBehaviour {
 		Item[] inputs = craftingStash.items.Where(item => item != null).ToArray();
 		undoSafety = inputs;
 
-		Item result = CraftingManager.instance.TryCraft(inputs);
+		Item result = CraftingManager.instance.Craft(inputs);
 
 		if (result != null) {			
 			craftingStash.RemoveAll();
@@ -38,7 +38,7 @@ public class CraftingContent : MonoBehaviour {
 	}
 
 	public void Undo() {
-		if (undoSafety != null) {
+		if (undoSafety != null && craftingStash.GetOutput() != null) {
 			craftingStash.RemoveAll();
 			foreach (Item item in undoSafety) {
 				craftingStash.AddItem(item);
