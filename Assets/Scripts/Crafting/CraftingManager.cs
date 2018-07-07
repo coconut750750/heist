@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class CraftingManager : MonoBehaviour {
 
 	public static CraftingManager instance = null;
 
 	public RecipeManager recipeManager = null;
-
-	public Item[] inputs;
 
 	void Awake() {
 		if (instance == null) {
@@ -17,13 +16,17 @@ public class CraftingManager : MonoBehaviour {
 		} else {
 			Destroy(gameObject);
 		}
-		print(recipeManager.ValidRecipe(inputs));
 	}
 
 	public Item TryCraft(Item[] items) {
+		Recipe recipe = recipeManager.GetRecipe(items);
 
+		if (recipe == null) {
+			return null;
+		}
 
+		Item res = ItemManager.instance.GetItem(recipe.result);
 
-		return null;
+		return res;
 	}
 }

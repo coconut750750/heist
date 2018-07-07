@@ -14,13 +14,14 @@ public class RecipeManager {
 		recipes.Add(recipe);
 	}
 
-	public bool ValidRecipe(Item[] requirements) {
+	public Recipe GetRecipe(Item[] inputs) {
+		string[] strInputs = inputs.Select(item => item.itemName).ToArray();
 		foreach (Recipe recipe in recipes) {
-			if (recipe.IsValidRequirements(requirements.Select(item => item.itemName).ToArray())) {
-				return true;
+			if (recipe.IsValidRequirements(strInputs)) {
+				return recipe;
 			}
 		}
 
-		return false;
+		return null;
 	}
 }

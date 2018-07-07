@@ -17,7 +17,7 @@ public class Recipe {
 		if (requirements.Length != inputs.Length) {
 			return false;
 		}
-		//inputs.GroupBy(input => inputs).OrderByDescending(group => group.Count()).Select(group => group.Key);
+
 		string[] ordered = inputs.OrderByDescending(input => input).ToArray();
 
 		for (int i = 0; i < requirements.Length; i++) {
