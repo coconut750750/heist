@@ -116,7 +116,7 @@ public class NPCSpawner : MonoBehaviour {
 
 		instance.InstantiateBySpawner(polyNav, transform);
 
-		instance.OnDeath += RecallUnconditionally;
+		instance.OnKnockout += RecallUnconditionally;
 
 		npcs.Add(instance);
 		npcIndicies.Add(index);

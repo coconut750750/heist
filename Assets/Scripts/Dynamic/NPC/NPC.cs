@@ -73,7 +73,7 @@ public class NPC : Character {
 
 	private bool spawned = false;
 
-	public event Action<NPC> OnDeath;
+	public event Action<NPC> OnKnockout;
 
 	public bool visibleByCamera = true;
 	
@@ -144,9 +144,11 @@ public class NPC : Character {
 	}
 
 	public void Spawn() {
+		// reset health when respawn
+		base.health = 100;
 		RefreshInventory();
 		gameObject.SetActive(true);
-		if (hasQuest) {
+		if (hasQuest && !questActive) {
 			interactable.ShowQuestIcon();
 		}
 	}
@@ -208,6 +210,7 @@ public class NPC : Character {
 	}
 
 	public void RejectedQuest() {
+		hasQuest = false;
 		AdjustFriendliness(REJECT_QUEST_FRIENDLY_DELTA);
 		interactable.HideQuestIcon();
 	}
@@ -222,7 +225,7 @@ public class NPC : Character {
 		// if health is 0 or less, die and call OnDeath function if there is one
 		// usually, OnDeath is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
-			Died();
+			Knockout();
 			return;
 		}
 
@@ -305,17 +308,12 @@ public class NPC : Character {
 		return fighting;
 	}
 
-	protected void Died() {
-		if (OnDeath != null) {
-			OnDeath(this);
+	protected void Knockout() {
+		if (OnKnockout != null) {
+			OnKnockout(this);
 		}
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
-		if (hasQuest) {
-			GetQuest().Delete();
-			hasQuest = false;
-		}
 		interactable.DestroyAllPopUps();
-		//Destroy(gameObject);
 	}
 
 	/// NAVIGATION ///
