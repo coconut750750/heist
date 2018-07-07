@@ -17,4 +17,8 @@ public class CraftingStash : PauseStash {
 		base.SetItemSlots();
         itemSlots[outputIndex].SetInputAllowed(false);
 	}
+
+    public void SetOutput(Item item) {
+        AddItemAtIndex(item, outputIndex);
+    }
 }

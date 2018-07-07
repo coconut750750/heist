@@ -33,7 +33,7 @@ public class CraftingContent : MonoBehaviour {
 
 		if (result != null) {			
 			craftingStash.RemoveAll();
-			craftingStash.AddItemAtIndex(result, 3);
+			craftingStash.SetOutput(result);
 		}
 	}
 
