@@ -24,8 +24,6 @@ public class NPCQuest : MonoBehaviour {
 	}
 
 	public void Display(NPC npc) {
-		GameManager.instance.PauseGame();
-
 		gameObject.SetActive(true);
 
 		this.npc = npc;
@@ -54,8 +52,6 @@ public class NPCQuest : MonoBehaviour {
 
 	public void Hide() {
 		gameObject.SetActive(false);
-		
-		GameManager.instance.UnpauseGame();
 	}
 
 	public void AcceptedQuest() {

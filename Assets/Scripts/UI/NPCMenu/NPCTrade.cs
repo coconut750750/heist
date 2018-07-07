@@ -47,8 +47,6 @@ public class NPCTrade : MonoBehaviour {
 	}
 	
 	public void Display(NPC npc) {
-		GameManager.instance.PauseGame();
-
 		gameObject.SetActive(true);
 
 		this.npc = npc;
@@ -74,8 +72,6 @@ public class NPCTrade : MonoBehaviour {
 
 		gameObject.SetActive(false);
 		ResetAllControllers();
-		
-		GameManager.instance.UnpauseGame();
 	}
 
 	private void ResetAllControllers() {
