@@ -21,12 +21,11 @@ public abstract class PauseStash : SingletonStash {
     }
 
     public void Hide() {
+        SetDisplaying(false);
         foreach (Item item in items) {
             GameManager.instance.mainPlayer.AddItem(item);
             RemoveItem(item);
         }
-
-        SetDisplaying(false);
     }
 
     public override bool IsDisplaying() 

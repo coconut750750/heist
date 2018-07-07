@@ -41,6 +41,7 @@ public class CraftingManager : MonoBehaviour {
 	}
 
 	public Item Craft(Item[] inputs) {
+		inputs = inputs.Where(item => item != null).ToArray();
 		Recipe recipe = GetRecipeByInput(inputs);
 
 		if (recipe == null) {
