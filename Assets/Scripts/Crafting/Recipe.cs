@@ -8,6 +8,7 @@ public class Recipe : ScriptableObject {
 
 	public Item[] requirements;
 	public Item result;
+	public bool canDismantle;
 
 	private string[] strReqs {
 		get {
