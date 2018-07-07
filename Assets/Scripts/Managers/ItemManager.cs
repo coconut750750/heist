@@ -40,6 +40,9 @@ public class ItemManager : MonoBehaviour {
 	}
 
 	private void AddItemToRarityList(Item item) {
+		if (item.chance < 1) {
+			return;
+		}
 		if (item.chance <= RARE_CHANCE) {
 			rareItems.Add(item);
 		} else if (item.chance <= UNCOMMON_CHANCE) {

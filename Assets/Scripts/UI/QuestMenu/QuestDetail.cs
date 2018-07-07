@@ -21,9 +21,13 @@ public class QuestDetail : MonoBehaviour {
 
 	public void DisplayQuest(Quest quest) {
 		InitDisplay(quest);
-		npcNameText.text = quest.reporter.GetName();
-		questDetailsText.text = quest.GetCurrentDetails();
-		rewardText.text = quest.GetCurrentReward().ToString();
+		UpdateDisplayingQuest();
+	}
+
+	public void UpdateDisplayingQuest() {
+		npcNameText.text = displayingQuest.reporter.GetName();
+		questDetailsText.text = displayingQuest.GetCurrentDetails();
+		rewardText.text = displayingQuest.GetCurrentReward().ToString();
 	}
 
 	public void DisplayEmptyQuest(NPC npc) {

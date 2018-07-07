@@ -23,6 +23,13 @@ public class ActiveQuestMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
+	public void Display() {
+		gameObject.SetActive(true);
+		foreach (QuestDetail detail in questDetailInstances) {
+			detail.UpdateDisplayingQuest();
+		}
+	}
+
 	public void AddActiveQuest(Quest newQuest) {
 		GameObject questDetailInstance = Instantiate(questDetailPrefab);
 		questDetailInstance.transform.SetParent(scrollViewContent.transform);
