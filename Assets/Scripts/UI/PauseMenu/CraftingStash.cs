@@ -21,4 +21,8 @@ public class CraftingStash : PauseStash {
     public void SetOutput(Item item) {
         AddItemAtIndex(item, outputIndex);
     }
+
+    public Item GetOutput() {
+        return GetItem(outputIndex);
+    }
 }

@@ -38,7 +38,7 @@ public class CraftingContent : MonoBehaviour {
 	}
 
 	public void Undo() {
-		if (undoSafety != null) {
+		if (undoSafety != null && craftingStash.GetOutput() != null) {
 			craftingStash.RemoveAll();
 			foreach (Item item in undoSafety) {
 				craftingStash.AddItem(item);
