@@ -29,7 +29,7 @@ public class CraftingContent : MonoBehaviour {
 		Item[] inputs = craftingStash.items.Where(item => item != null).ToArray();
 		undoSafety = inputs;
 
-		Item result = CraftingManager.instance.TryCraft(inputs);
+		Item result = CraftingManager.instance.Craft(inputs);
 
 		if (result != null) {			
 			craftingStash.RemoveAll();

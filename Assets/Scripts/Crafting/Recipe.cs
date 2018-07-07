@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Recipe {
+[CreateAssetMenu]
+public class Recipe : ScriptableObject {
 
-	public string[] requirements;
-	public string result;
+	public Item[] requirements;
+	public Item result;
 
-	public Recipe(string[] requirements, string result) {
-		this.requirements = requirements.OrderByDescending(req => req).ToArray();
-		this.result = result;
+	private string[] strReqs {
+		get {
+			return requirements.Select(item => item.itemName).ToArray();
+		}
 	}
 
 	public bool IsValidRequirements(string[] inputs) {
@@ -21,7 +23,7 @@ public class Recipe {
 		string[] ordered = inputs.OrderByDescending(input => input).ToArray();
 
 		for (int i = 0; i < requirements.Length; i++) {
-			if (requirements[i] != ordered[i]) {
+			if (strReqs[i] != ordered[i]) {
 				return false;
 			}
 		}
