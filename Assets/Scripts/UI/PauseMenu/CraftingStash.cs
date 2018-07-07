@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class CraftingStash : PauseStash {
 
@@ -17,6 +18,10 @@ public class CraftingStash : PauseStash {
 		base.SetItemSlots();
         itemSlots[outputIndex].SetInputAllowed(false);
 	}
+
+    public Item[] GetInputs() {
+        return items.Where(item => item != null).ToArray();
+    }
 
     public void SetOutput(Item item) {
         AddItemAtIndex(item, outputIndex);

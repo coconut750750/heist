@@ -1973,7 +1973,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -61575,7 +61575,6 @@ MonoBehaviour:
   - {fileID: 1523096697}
   craftingIndex: 1
   dismantleIndex: 2
-  dismantleStash: {fileID: 2076786667}
 --- !u!1001 &419421811
 Prefab:
   m_ObjectHideFlags: 0
@@ -63932,7 +63931,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -64121,7 +64120,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -65345,7 +65344,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -65360,7 +65359,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -65370,7 +65369,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -65490,17 +65489,17 @@ Prefab:
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -60.227272
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -68518,7 +68517,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -70308,7 +70307,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -160
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -70323,7 +70322,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -70333,7 +70332,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -70428,17 +70427,17 @@ Prefab:
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -60.227272
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -72450,7 +72449,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -82693,7 +82692,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -86863,7 +86862,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1702632886}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2076786668}
+        m_MethodName: TryDismantle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1702632886
@@ -89721,7 +89731,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1913141181}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2076786668}
+        m_MethodName: Undo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1913141181
@@ -90139,7 +90160,7 @@ Prefab:
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224935260831985736, guid: ddc2c10feb75840bcb83b403d9dbe63f,
         type: 2}
@@ -91884,6 +91905,7 @@ GameObject:
   - component: {fileID: 2076786665}
   - component: {fileID: 2076786664}
   - component: {fileID: 2076786667}
+  - component: {fileID: 2076786668}
   m_Layer: 5
   m_Name: DismantleContent
   m_TagString: Untagged
@@ -91990,6 +92012,17 @@ MonoBehaviour:
   - {fileID: 1574444001}
   - {fileID: 1977804306}
   outputIndices: 010000000200000003000000
+--- !u!114 &2076786668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2076786662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5c62d0da7e704ee482bbd04bd64dadf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2081367890
 GameObject:
   m_ObjectHideFlags: 0

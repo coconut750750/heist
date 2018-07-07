@@ -26,7 +26,7 @@ public class CraftingContent : MonoBehaviour {
 	}
 
 	public void TryCrafting() {
-		Item[] inputs = craftingStash.items.Where(item => item != null).ToArray();
+		Item[] inputs = craftingStash.GetInputs();
 		undoSafety = inputs;
 
 		Item result = CraftingManager.instance.Craft(inputs);
