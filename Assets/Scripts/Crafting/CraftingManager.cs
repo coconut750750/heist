@@ -18,8 +18,8 @@ public class CraftingManager : MonoBehaviour {
 		}
 	}
 
-	public Item TryCraft(Item[] items) {
-		Recipe recipe = recipeManager.GetRecipe(items);
+	public Item Craft(Item[] inputs) {
+		Recipe recipe = recipeManager.GetRecipe(inputs);
 
 		if (recipe == null) {
 			return null;
@@ -27,6 +27,14 @@ public class CraftingManager : MonoBehaviour {
 
 		Item res = ItemManager.instance.GetItem(recipe.result);
 
+		float totalQuality = 0;
+		foreach (Item item in inputs) {
+			totalQuality += item.quality;
+		}
+
+		int averageQuality = Mathf.RoundToInt(totalQuality / (float)(inputs.Length));
+
+		res.quality = averageQuality;
 		return res;
 	}
 }

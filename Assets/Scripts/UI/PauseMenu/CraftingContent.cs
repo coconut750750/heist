@@ -17,8 +17,8 @@ public class CraftingContent : MonoBehaviour {
 	}
 
 	void OnDisable() {
-		craftingStash.Hide();
 		undoSafety = null;
+		craftingStash.Hide();
 	}
 
 	public CraftingStash GetStash() {
