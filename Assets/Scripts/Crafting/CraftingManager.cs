@@ -5,6 +5,7 @@ using System.Linq;
 
 public class CraftingManager : MonoBehaviour {
 	public const float DISMANTLE_PERCENT = 0.75f;
+	public const int UNUSED_ITEM_DECREASE = 25;
 
 	public static CraftingManager instance = null;
 
@@ -41,24 +42,43 @@ public class CraftingManager : MonoBehaviour {
 	}
 
 	public Item Craft(Item[] inputs) {
+		Item[] withUnused = CraftWithUnused(inputs);
+		if (withUnused == null) {
+			return null;
+		}
+		return withUnused.Last();
+	}
+
+	public Item[] CraftWithUnused(Item[] inputs) {
 		inputs = inputs.Where(item => item != null).ToArray();
+		inputs = inputs.OrderByDescending(item => item.itemName).ToArray();
 		Recipe recipe = GetRecipeByInput(inputs);
 
 		if (recipe == null) {
 			return null;
 		}
 
-		Item res = ItemManager.instance.GetItem(recipe.result.itemName);
+		Item resultItem = ItemManager.instance.GetItem(recipe.result.itemName);
 
 		float totalQuality = 0;
 		foreach (Item item in inputs) {
 			totalQuality += item.quality;
 		}
-
 		int averageQuality = Mathf.RoundToInt(totalQuality / (float)(inputs.Length));
+		resultItem.quality = averageQuality;
 
-		res.quality = averageQuality;
-		return res;
+		Item[] resultItems = new Item[recipe.NumUnused() + 1];
+		for (int i = 0; i < recipe.NumUnused(); i++) {
+			Item unused = inputs[recipe.unusedIndicies[i]];
+			unused.quality -= UNUSED_ITEM_DECREASE;
+			if (unused.quality <= 0) {
+				unused = null;
+			}
+			resultItems[i] = unused;
+		}
+		resultItems[recipe.NumUnused()] = resultItem;
+		
+		return resultItems;
 	}
 
 	public Item[] Dismantle(Item input) {

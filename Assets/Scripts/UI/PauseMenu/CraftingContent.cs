@@ -29,11 +29,14 @@ public class CraftingContent : MonoBehaviour {
 		Item[] inputs = craftingStash.GetInputs();
 		undoSafety = inputs;
 
-		Item result = CraftingManager.instance.Craft(inputs);
+		Item[] results = CraftingManager.instance.CraftWithUnused(inputs);
 
-		if (result != null) {			
+		if (results != null) {
 			craftingStash.RemoveAll();
-			craftingStash.SetOutput(result);
+			for (int i = 0; i < results.Length - 1; i++) {
+				craftingStash.AddItem(results[i]);
+			}
+			craftingStash.SetOutput(results.Last());
 		}
 	}
 
