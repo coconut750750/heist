@@ -8,17 +8,20 @@ public class SellingQuestStage : QuestStage
     private string itemRequirement;
 
     public SellingQuestStage(string itemRequirement, int reward) :
-                             base(QUEST_DETAILS + itemRequirement, reward) {
+                             base(reward) {
         this.itemRequirement = itemRequirement;
     }
  
     public SellingQuestStage(Item requirement, int reward) : 
-                             base(QUEST_DETAILS + requirement.itemName, reward) {
-        this.itemRequirement = requirement.itemName;
+                             this(requirement.itemName, reward) {
     }
  
     public bool FulfillsRequirement(Item item) {
         return item.itemName == itemRequirement;
+    }
+
+    public override string GetDetails() {
+        return QUEST_DETAILS + itemRequirement;
     }
 
     public static SellingQuestStage LoadQuestStageFromData(SellingQuestStageData data) {

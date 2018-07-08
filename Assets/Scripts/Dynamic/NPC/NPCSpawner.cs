@@ -85,15 +85,15 @@ public class NPCSpawner : MonoBehaviour {
 		int hour = GameManager.instance.GetHour();
 
 		if (END_BASE_HOUR <= hour && hour < END_PEAK_HOUR) {
-			if (numAwakeNpcs <= PEAK_MIN) {
+			if (numAwakeNpcs < PEAK_MIN) {
 				Spawn();
-			} else if (numAwakeNpcs >= PEAK_MAX) {
+			} else if (numAwakeNpcs > PEAK_MAX) {
 				Recall();
 			}
 		} else if (hour < END_BASE_HOUR || END_PEAK_HOUR <= hour) {
-			if (numAwakeNpcs <= BASE_MIN) {
+			if (numAwakeNpcs < BASE_MIN) {
 				Spawn();
-			} else if (numAwakeNpcs >= BASE_MAX) {
+			} else if (numAwakeNpcs > BASE_MAX) {
 				Recall();
 			}
 		} 
@@ -112,11 +112,10 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	private NPC InstantiateNPC(int index, Vector2 pos) {	
-		NPC instance = NPCManager.instance.InstantiateNPC(index, pos);	
-
+		NPC instance = NPCManager.instance.InstantiateNPC(index, pos);
 		instance.InstantiateBySpawner(polyNav, transform);
 
-		instance.OnDeath += RecallUnconditionally;
+		instance.OnKnockout += RecallUnconditionally;
 
 		npcs.Add(instance);
 		npcIndicies.Add(index);
@@ -136,7 +135,7 @@ public class NPCSpawner : MonoBehaviour {
 			return;
 		}
 		
-		if (npcs.Count <= PEAK_MAX) {
+		if (npcs.Count < PEAK_MAX) {
 			InstantiateNPC(Random.Range(0, NPCManager.instance.npcTypes), (Vector2)pos);
 			StartCoroutine(AlterDelay());
 		} else {
@@ -154,7 +153,7 @@ public class NPCSpawner : MonoBehaviour {
 			return;
 		}
 
-		int npcIndex = Random.Range(0, npcAwake.Count);
+		int npcIndex = Random.Range(0, npcs.Count);
 		if (CanRecallNPC(npcIndex)) {
 			RecallUnconditionally(npcIndex);
 			StartCoroutine(AlterDelay());

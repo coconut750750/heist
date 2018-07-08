@@ -17,14 +17,10 @@ public class PauseMenu : MonoBehaviour {
 	[SerializeField]
 	private int craftingIndex;
 	[SerializeField]
-	private CraftingStash craftingStash;
-	[SerializeField]
 	private int dismantleIndex;
-	[SerializeField]
-	private DismantleStash dismantleStash;
 
 	private Color defaultColor;
-	private Color SELECTED = new Color(1,0.3960784314f,0);
+	private Color SELECTED = new Color(1, 0.3960784314f, 0);
 
 	void Awake () {
 		if (instance == null) {
@@ -63,9 +59,18 @@ public class PauseMenu : MonoBehaviour {
 	public void Unpause(){
 		GameManager.instance.UnpauseGame();
 
-		HidePauseStashes();
 		gameObject.SetActive(false);
 	}
+
+	#if UNITY_EDITOR || UNITY_STANDALONE
+	protected void OnApplicationQuit() {
+		gameObject.SetActive(false);
+	}
+	#elif UNITY_ANDROID || UNITY_IOS
+	protected void OnApplicationPause() {
+		gameObject.SetActive(false);
+	}
+	#endif
 
 	public void OpenContent(int index) {
 		// set button color
@@ -76,32 +81,13 @@ public class PauseMenu : MonoBehaviour {
 		menuContents[openedMenu].SetActive(false);
 		menuContents[index].SetActive(true);
 		openedMenu = index;
-		HidePauseStashes();
-		if (index == craftingIndex) {
-			DisplayCraftingStash();
-		} else if (index == dismantleIndex) {
-			DisplayDismantleStash();
-		}
-	}
-
-	public void DisplayCraftingStash() {
-		craftingStash.Display();
-	}
-
-	public void HidePauseStashes() {
-		craftingStash.Hide();
-		dismantleStash.Hide();
-	}
-
-	public void DisplayDismantleStash() {
-		dismantleStash.Display();
 	}
 
 	public ItemStash GetActiveStash() {
 		if (openedMenu == craftingIndex) {
-			return craftingStash;
+			return menuContents[openedMenu].GetComponent<CraftingContent>().GetStash();
 		} else if (openedMenu == dismantleIndex) {
-			return dismantleStash;
+			return menuContents[openedMenu].GetComponent<DismantleContent>().GetStash();
 		} else {
 			return null;
 		}

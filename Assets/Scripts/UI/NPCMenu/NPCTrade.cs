@@ -47,8 +47,6 @@ public class NPCTrade : MonoBehaviour {
 	}
 	
 	public void Display(NPC npc) {
-		GameManager.instance.PauseGame();
-
 		gameObject.SetActive(true);
 
 		this.npc = npc;
@@ -69,13 +67,25 @@ public class NPCTrade : MonoBehaviour {
 		npcInventory = null;
 		npc = null;
 
-		tradeController.HideTradingStash();
-		sellController.HideSellingStash();
+		HideStashes();
 
 		gameObject.SetActive(false);
 		ResetAllControllers();
-		
-		GameManager.instance.UnpauseGame();
+	}
+
+	#if UNITY_EDITOR || UNITY_STANDALONE
+	protected void OnApplicationQuit() {
+		HideStashes();
+	}
+	#elif UNITY_ANDROID || UNITY_IOS
+	protected void OnApplicationPause() {
+		HideStashes();
+	}
+	#endif
+
+	private void HideStashes() {
+		tradeController.HideTradingStash();
+		sellController.HideSellingStash();
 	}
 
 	private void ResetAllControllers() {

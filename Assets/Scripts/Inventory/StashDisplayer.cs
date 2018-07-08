@@ -71,15 +71,11 @@ public class StashDisplayer : MonoBehaviour {
     }
 
     public void DisplayInventory(Inventory stash) {
-        GameManager.instance.PauseGame();
-
 		gameObject.SetActive(true);
 		StashDisplayer.SetInventory(stash);
 	}
 
 	public void HideInventory() {
-        GameManager.instance.UnpauseGame();
-
 		gameObject.SetActive(false);
 		StashDisplayer.ClearInventory();
 	}

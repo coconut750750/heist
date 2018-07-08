@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class QuestStage {
- 
-	protected string details;
-	
+ 	
 	protected int reward;
 	
-	public QuestStage(string details, int reward) {
-		this.details = details;
+	public QuestStage(int reward) {
 		this.reward = reward;
 	}
 	
@@ -18,9 +15,7 @@ public abstract class QuestStage {
 		GameManager.instance.mainPlayer.SetMoney(GameManager.instance.mainPlayer.GetMoney() + reward);
 	}
 	
-	public string GetDetails() {
-		return details;
-	}
+	public abstract string GetDetails();
 	
 	public int GetReward() {
 		return reward;

@@ -37,8 +37,6 @@ public class NPCInfo : MonoBehaviour {
 	}
 	
 	public void Display(NPC npc) {
-		GameManager.instance.PauseGame();
-
 		gameObject.SetActive(true);
 
 		this.npc = npc;
@@ -54,8 +52,6 @@ public class NPCInfo : MonoBehaviour {
 
 	public void Hide() {
 		gameObject.SetActive(false);
-		
-		GameManager.instance.UnpauseGame();
 	}
 
 	private void SetFriendlinessSlider(int friendliness) {

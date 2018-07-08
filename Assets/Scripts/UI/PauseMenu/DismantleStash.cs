@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DismantleStash : PauseStash {
 
@@ -18,4 +19,40 @@ public class DismantleStash : PauseStash {
 			itemSlots[i].SetInputAllowed(false);
 		}
 	}
+
+	public void SetOutputRemovedCallBack(Action OnOutputRemoved) {
+		foreach (int index in outputIndices) {
+	        itemSlots[index].OnRemoved += OnOutputRemoved;			
+		}
+    }
+
+	public Item GetInput() {
+		return GetItem(0);
+	}
+
+	public void SetOutput(Item[] item) {
+		if (item.Length > outputIndices.Length) {
+			return;
+		}
+		for (int i = 0; i < item.Length; i++) {
+			AddItemAtIndex(item[i], outputIndices[i]);
+		}
+    }
+
+    public Item[] GetOutput() {
+		List<Item> output = new List<Item>();
+		foreach (int i in outputIndices) {
+			output.Add(GetItem(i));
+		}
+        return output.ToArray();
+    }
+
+	public bool ReadyForDismantle() {
+		foreach (Item item in GetOutput()) {
+			if (item != null) {
+				return false;
+			}
+		}
+        return true;
+    }
 }

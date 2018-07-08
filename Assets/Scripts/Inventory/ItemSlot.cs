@@ -32,7 +32,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string INVENTORY_ITEM_TEXT = "SelectedInventoryItemText";
 	private const string INVENTORY_ITEM_QUALITY = "SelectedInventoryItemQuality";
 
-	// called when an item is selected
 	public event Action<Item, int> OnSelected;
 
 	public event Action OnDeselected;
