@@ -7,13 +7,19 @@ using System.Linq;
 public class Recipe : ScriptableObject {
 
 	public Item[] requirements;
+	public int[] unusedIndicies;
 	public Item result;
 	public bool canDismantle;
 
 	private string[] strReqs {
 		get {
-			return requirements.Select(item => item.itemName).ToArray();
+			string[] reqs = requirements.Select(item => item.itemName).ToArray();
+			return reqs.OrderByDescending(req => req).ToArray();
 		}
+	}
+
+	public int NumUnused() {
+		return unusedIndicies.Length;
 	}
 
 	public bool IsValidRequirements(string[] inputs) {

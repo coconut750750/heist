@@ -15,5 +15,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dc862f9b052be48a592d99daf0e59f53, type: 2}
   - {fileID: 11400000, guid: dc862f9b052be48a592d99daf0e59f53, type: 2}
   - {fileID: 11400000, guid: 32927cce75be04fac9b46dd3f9ea02c2, type: 2}
+  unusedIndicies: 02000000
   result: {fileID: 11400000, guid: adb83db62147d4779bbfb3726c91eb39, type: 2}
   canDismantle: 1
