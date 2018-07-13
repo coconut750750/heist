@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using System;
+using UnityEngine.Events;
 
 public class CraftingStash : PauseStash {
 
@@ -18,7 +18,7 @@ public class CraftingStash : PauseStash {
         itemSlots[outputIndex].SetInputAllowed(false);
 	}
 
-    public void SetOutputRemovedCallBack(Action OnOutputRemoved) {
+    public void SetOutputRemovedCallBack(UnityAction OnOutputRemoved) {
         itemSlots[outputIndex].OnRemoved += OnOutputRemoved;
     }
 
