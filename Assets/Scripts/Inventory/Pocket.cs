@@ -15,7 +15,7 @@ public class Pocket : SingletonStash {
 
 	public const int NUM_ITEMS = 7;
 
-	private UnityAction<Item> selectedConsume;
+	private UnityAction<Item, int> selectedConsume;
 	private UnityAction deselected;
 
 	public Pocket() : base(NUM_ITEMS) {
@@ -37,15 +37,14 @@ public class Pocket : SingletonStash {
 		return true;
 	}
 
-	public void SetSelectedConsumeCallback(UnityAction<Item> selectedConsume) {
+	public void SetSelectedConsumeCallback(UnityAction<Item, int> selectedConsume) {
 		this.selectedConsume = selectedConsume;
 	}
 
 	private void OnSelectedItem(Item item, int index) {
 		if (item.consumable && selectedConsume != null) {
-			selectedConsume(item);
+			selectedConsume(item, index);
 		}
-		print("selected " + item.itemName);
 	}
 
 	public void SetDeselectedCallback(UnityAction onDeselected) {

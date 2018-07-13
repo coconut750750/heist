@@ -102,15 +102,15 @@ public class Player : Character {
 		UpdateUIInfo();
 	}
 
-	private void OnSelectedConsumable(Item item) {
+	private void OnSelectedConsumable(Item item, int index) {
 		currentItemAction = delegate { 
-			Consume(item);
+			Consume(item, index);
 		};
 		Interactable.buttonA.AddAction(currentItemAction);
 	}
 
-	public void Consume(Item item) {
-		print("he ate some " + item.itemName);
+	public void Consume(Item item, int index) {
+		RemoveItemAtIndex(index);
 		Interactable.buttonA.RemoveAction(currentItemAction);
 	}
 
