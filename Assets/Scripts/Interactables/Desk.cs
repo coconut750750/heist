@@ -14,8 +14,6 @@ public class Desk : Interactable {
 	}
 	
     public override void Interact(Player player) {
-        Debug.Log(Interactable.player.GetName() + " interacted with " + gameObject.name + " " + Interactable.buttonA.GetListeners());
-
         StashDisplayer.instance.DisplayInventory(items);
     }
 

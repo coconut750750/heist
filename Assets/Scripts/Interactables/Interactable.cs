@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
-    private static List<Interactable> currentInteractables = new List<Interactable>();
+    private static List<UnityAction> currentActions = new List<UnityAction>();
     protected static ActionButton buttonA;
     protected static Player player;
 
@@ -21,59 +21,30 @@ public abstract class Interactable : MonoBehaviour {
         if (player == null) {
             player = GameObject.Find(Constants.PLAYER_TAG).GetComponent<Player>();
         }
+
+        call = delegate {
+            Interact(player);
+        };
 	}
 
-    protected void OnTriggerEnter2D(Collider2D other)
-    {
+    protected void OnTriggerEnter2D(Collider2D other) {
         if (!enabled) {
             return;
         }
-        if (other.gameObject.CompareTag(Constants.PLAYER_TAG))
-        {
-            if (!buttonA.IsInteractable()) {
-                buttonA.Enable();
-            }
-            EnablePlayerInteract(player);
+        if (other.gameObject.CompareTag(Constants.PLAYER_TAG)) {
+            Interactable.buttonA.AddAction(call);
             EnterRange(player);
         }
     }
 
-    protected void OnTriggerExit2D(Collider2D other)
-    {
+    protected void OnTriggerExit2D(Collider2D other) {
         if (!enabled) {
             return;
         }
-        if (other.gameObject.CompareTag(Constants.PLAYER_TAG))
-        {
-            DisablePlayerInteract(player);
+        if (other.gameObject.CompareTag(Constants.PLAYER_TAG)) {
+            Interactable.buttonA.RemoveAction(call);
             ExitRange(player);
-            
-            if (buttonA.IsInteractable() && buttonA.GetListeners() == 0) {
-                buttonA.Disable();
-            }
         }
-    }
-
-    private void EnablePlayerInteract(Player player) {
-        call = delegate {
-            Interact(player);
-        };
-
-        Interactable.buttonA.RemoveAllListeners();
-        Interactable.buttonA.AddListener(call);
-
-        currentInteractables.Add(this);
-    }
-
-    private void DisablePlayerInteract(Player player) {
-        currentInteractables.Remove(this);
-        Interactable.buttonA.RemoveAllListeners();
-        if (currentInteractables.Count > 0) {
-            Interactable next = currentInteractables[currentInteractables.Count - 1];
-            Interactable.buttonA.AddListener(next.call);
-        }
-        
-        call = null;
     }
 
     public void SetEnabled(bool enabled) {
