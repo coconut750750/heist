@@ -41,7 +41,7 @@ public class Player : Character {
 
 		GameObject buttonObj = GameObject.Find(Constants.BUTTON_B_TAG);
 		buttonB = buttonObj.GetComponent<ActionButton>();
-		buttonB.AddListener(delegate {
+		buttonB.AddAction(delegate {
             Attack();
         });
 
