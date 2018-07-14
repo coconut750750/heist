@@ -49,32 +49,32 @@ public class NPC : Character {
 	// range where the next destinations will generate
 	public int destinationRange;
 
-	// the floor to start on. used for debugging
-	public int startFloor = 1;
+	protected string npcName = "Billy";
 
-	private string npcName = "Billy";
-
+	[HideInInspector]
 	public bool hasQuest = false;
+	[HideInInspector]
 	public bool questActive = false;
 
-	private int friendliness = 50;
-	private Inventory inventory;
-	private NPCInteractable interactable;
+	protected int friendliness = 50;
+	protected Inventory inventory;
+	protected NPCInteractable interactable;
 
-	private Nav2DAgent agent {
+	protected Nav2DAgent agent {
 		get {
 			return gameObject.GetComponent<Nav2DAgent>();
 		}
 	}
 
-	private Vector3 destination;
-	private bool isMoving;
-	private bool canSearchForDest;
+	protected Vector3 destination;
+	protected bool isMoving;
+	protected bool canSearchForDest;
 
-	private bool spawned = false;
+	protected bool spawned = false;
 
 	public event Action<NPC> OnKnockout;
 
+	[HideInInspector]
 	public bool visibleByCamera = true;
 	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
@@ -105,8 +105,6 @@ public class NPC : Character {
 		yield return new WaitForSeconds(AFTER_ATTACK_DELAY);
 		canSearchForDest = true;
 	}
-
-	/// END MEMBER VARIABLES
 
 	protected override void Awake() {
 		base.Awake();
@@ -162,7 +160,7 @@ public class NPC : Character {
 		if (fighting) {
 			FollowOpponentUpdate();
 		} else if (!isMoving && canSearchForDest) {
-			SetNewRandomDestination();
+			SetNextDestination();
 		}
 
 		UpdateVisibility();
@@ -238,17 +236,13 @@ public class NPC : Character {
 		}
 
 		StartRetaliateAnimator();
-
 		interactable.ShowFightAlert(other);
-
 		AdjustFriendliness(ATTACK_FRIENDLY_DELTA);
 	}
 
 	// TODO: fix this function
 	protected void FollowOpponentUpdate() {
-		// if fighting, constantly update the destination to the opponent
-		//   since player can be moving
-		// the set destination, however, is not exactly the opponent's position
+		// the target destination, however, is not exactly the opponent's position
 		// there is a slight offset (ATTACK_DISTANCE) so that the player can actually see
 		//   the npc attacking
 		// so, we calculate the closest point that is ATTACK_DISTANCE away from
@@ -318,7 +312,7 @@ public class NPC : Character {
 
 	/// NAVIGATION ///
 
-	protected void NavStarted() {
+	protected virtual void NavStarted() {
 		if (debugNav) {
 			Debug.Log("nav started");
 		}
@@ -326,7 +320,7 @@ public class NPC : Character {
 		canSearchForDest = false;
 	}
 
-	protected void NavArrived() {
+	protected virtual void NavArrived() {
 		if (debugNav) {
 			Debug.Log("nav arrived");
 		}
@@ -337,7 +331,6 @@ public class NPC : Character {
 			StartCoroutine(ArriveDelay());
 		}
 		isMoving = false;
-		// if npc lands on stairs, it will enter trigger
 	}
 
 	protected void DestinationInvalid() {
@@ -356,7 +349,7 @@ public class NPC : Character {
 		}
 	}
 
-	protected void SetNewRandomDestination() {
+	protected virtual void SetNextDestination() {
 		Vector3 randomDest = agent.GetRandomValidDestination();
 
 		// TODO: move this check() and this set() into agent
