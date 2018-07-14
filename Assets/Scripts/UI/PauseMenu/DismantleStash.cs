@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.Events;
 
 public class DismantleStash : PauseStash {
 
@@ -20,7 +20,7 @@ public class DismantleStash : PauseStash {
 		}
 	}
 
-	public void SetOutputRemovedCallBack(Action OnOutputRemoved) {
+	public void SetOutputRemovedCallBack(UnityAction OnOutputRemoved) {
 		foreach (int index in outputIndices) {
 	        itemSlots[index].OnRemoved += OnOutputRemoved;			
 		}

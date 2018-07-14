@@ -17,7 +17,8 @@ public class Player : Character {
 
 	public static Vector3 START_POS = new Vector3(0.5f, 0, 0);
 
-	private Pocket mainItems;
+	private Pocket pocket;
+	private UnityAction currentItemAction;
 
 	[SerializeField]
 	private Text moneyText;
@@ -37,7 +38,13 @@ public class Player : Character {
 
 	protected override void Start () {
 		base.Start();
-		mainItems = FindObjectOfType<Pocket>();
+		pocket = FindObjectOfType<Pocket>();
+		pocket.SetSelectedConsumeCallback(OnSelectedConsumable);
+		pocket.SetDeselectedCallback(delegate {
+			if (currentItemAction != null) {
+				Interactable.buttonA.RemoveAction(currentItemAction);
+			}
+		});
 
 		GameObject buttonObj = GameObject.Find(Constants.BUTTON_B_TAG);
 		buttonB = buttonObj.GetComponent<ActionButton>();
@@ -95,6 +102,18 @@ public class Player : Character {
 		UpdateUIInfo();
 	}
 
+	private void OnSelectedConsumable(Item item, int index) {
+		currentItemAction = delegate { 
+			Consume(item, index);
+		};
+		Interactable.buttonA.AddAction(currentItemAction);
+	}
+
+	public void Consume(Item item, int index) {
+		RemoveItemAtIndex(index);
+		Interactable.buttonA.RemoveAction(currentItemAction);
+	}
+
 	protected override void OnTriggerEnter2D(Collider2D other) {
 		base.OnTriggerEnter2D (other);
 	}
@@ -120,32 +139,32 @@ public class Player : Character {
 	}
 
 	public Pocket GetPocket() {
-		return mainItems;
+		return pocket;
 	}
 	
 	public void AddItem(Item item) {
-		mainItems.AddItem(item);
+		pocket.AddItem(item);
 	}
 
 	public Item RemoveItemAtIndex(int index) {
-		if (index >= 0 || index < mainItems.GetNumItems()) {
-			Item itemToRemove = mainItems.GetItem(index);
-			mainItems.RemoveItem(itemToRemove);
+		if (index >= 0 || index < pocket.GetNumItems()) {
+			Item itemToRemove = pocket.GetItem(index);
+			pocket.RemoveItem(itemToRemove);
 			return itemToRemove;
 		}
 		return null;
 	}
 
 	public void RemoveItem(Item item) {
-		mainItems.RemoveItem(item);
+		pocket.RemoveItem(item);
 	}
 
 	public int NumItems() {
-		return mainItems.GetNumItems();
+		return pocket.GetNumItems();
 	}
 
 	public bool CanAddItem() {
-		return !mainItems.IsFull();
+		return !pocket.IsFull();
 	}
 
 	public void UpdateUIInfo() {

@@ -5,8 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
-    private static List<UnityAction> currentActions = new List<UnityAction>();
-    protected static ActionButton buttonA;
+    public static ActionButton buttonA;
     protected static Player player;
 
     private UnityAction call = null;

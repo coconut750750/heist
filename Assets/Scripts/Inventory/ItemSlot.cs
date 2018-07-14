@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.Events;
 
 /// <summary>  
 ///		This is the Item Slot class.
@@ -32,13 +33,13 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string INVENTORY_ITEM_TEXT = "SelectedInventoryItemText";
 	private const string INVENTORY_ITEM_QUALITY = "SelectedInventoryItemQuality";
 
-	public event Action<Item, int> OnSelected;
+	public UnityAction<Item, int> OnSelected;
 
-	public event Action OnDeselected;
+	public UnityAction OnDeselected;
 
-	public event Action<Item> OnDropped;
+	public UnityAction<Item> OnDropped;
 
-	public event Action OnRemoved;
+	public UnityAction OnRemoved;
 
 	void Awake() {
 		if (nameText == null) {

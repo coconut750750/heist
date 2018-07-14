@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 /// <summary>  
 ///		This is the Pocket class.
@@ -14,8 +15,18 @@ public class Pocket : SingletonStash {
 
 	public const int NUM_ITEMS = 7;
 
-	public Pocket() : base(NUM_ITEMS) {
+	private UnityAction<Item, int> selectedConsume;
+	private UnityAction deselected;
 
+	public Pocket() : base(NUM_ITEMS) {
+	}
+
+	protected override void Start() {
+		base.Start();
+		foreach (ItemSlot slot in itemSlots) {
+			slot.OnSelected += OnSelectedItem;
+			slot.OnDeselected += OnDeselectedItem;
+		}
 	}
 	
 	public override void SetDisplaying(bool isDisplaying) {
@@ -26,9 +37,27 @@ public class Pocket : SingletonStash {
 		return true;
 	}
 
+	public void SetSelectedConsumeCallback(UnityAction<Item, int> selectedConsume) {
+		this.selectedConsume = selectedConsume;
+	}
+
+	private void OnSelectedItem(Item item, int index) {
+		if (item.consumable && selectedConsume != null) {
+			selectedConsume(item, index);
+		}
+	}
+
+	public void SetDeselectedCallback(UnityAction onDeselected) {
+		this.deselected = onDeselected;
+	}
+
+	private void OnDeselectedItem() {
+		this.deselected();
+	}
+
 	public override void Save() {
-	ItemStashData data = new ItemStashData(this);
-	GameManager.Save(data, base.filename);
+		ItemStashData data = new ItemStashData(this);
+		GameManager.Save(data, base.filename);
 	}
 
 	public override void Load() {

@@ -15,6 +15,9 @@ public class Item : ScriptableObject {
 	public Sprite sprite;
 	public int price; // constant for all items
 	public int chance; // out of 100, the chance of an npc getting this item;
+	
+	public bool consumable;
+	public int consumeEnergy;
 
 	public float GetValue() {
 		return (float)(price * quality) / 100f;
@@ -23,7 +26,6 @@ public class Item : ScriptableObject {
 	public void ChangedHands() {
 		quality = Mathf.RoundToInt(quality * CHANGE_HANDS_DECAY);
 	}
-
 }
 
 [Serializable]
