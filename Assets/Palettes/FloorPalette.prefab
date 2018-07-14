@@ -173,7 +173,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 21300008, guid: f5c505238f0f848e09c5534f862712e3, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 21300006, guid: f5c505238f0f848e09c5534f862712e3, type: 3}
+    m_Data: {fileID: 21300002, guid: f5c505238f0f848e09c5534f862712e3, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 2
     m_Data:

@@ -10,7 +10,7 @@ public class Nav2D : MonoBehaviour {
 	public bool debug = false;
 
 	[SerializeField]
-	private List<GameObject> floors;
+	private GameObject gameMap;
 
 	public bool drawNodes;
 	public bool drawNodesAndEdges;
@@ -59,11 +59,9 @@ public class Nav2D : MonoBehaviour {
 
 	//some initializing
 	void Awake() {
-		foreach (GameObject floor in floors) {
-			navObstacles.AddRange(floor.GetComponentsInChildren<Nav2DObstacle>().ToList());
-			navCompObstacles.AddRange(floor.GetComponentsInChildren<Nav2DCompObstacle>().ToList());
-			navStairs.AddRange(floor.GetComponentsInChildren<Nav2DStairs>().ToList());
-		}
+		navObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DObstacle>().ToList());
+		navCompObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DCompObstacle>().ToList());
+		navStairs.AddRange(gameMap.GetComponentsInChildren<Nav2DStairs>().ToList());
 
 		masterCollider = GetComponent<Collider2D>();
 		masterBounds = masterCollider.bounds;

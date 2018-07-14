@@ -18,8 +18,9 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	public Canvas canvas;
 
-	private GameObject groundFloor;
-	private GameObject floor2;
+	private GameObject map;
+
+	private Building[] buildings;	
 
 	// in game clock
 	private int day = 1;
@@ -43,9 +44,10 @@ public class GameManager : MonoBehaviour {
 
 		Debug.Log("Game Started");
 
-		groundFloor = GameObject.Find("GroundFloor");
-		floor2 = GameObject.Find("SecondFloor");
-		timeText.text = "" + GetTimeString();	
+		map = GameObject.Find("Map");
+		buildings = GameObject.FindObjectsOfType<Building>();
+
+		timeText.text = GetTimeString();	
 	}
 
 	void Start() {
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour {
 					// new day here!
 				}
 			}
-			timeText.text = "" + GetTimeString();
+			timeText.text = GetTimeString();
 			lastChange = Time.time;
     	}
 	}
@@ -121,30 +123,27 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowFloor2() {
-		SetSecondFloorActive(true);
 		SetGroundFloorActive(false);
+
+		foreach (Building b in buildings) {
+			b.ShowFloor2();
+		}
 	}
 
 	public void HideFloor2() {
-		SetSecondFloorActive(false);
 		SetGroundFloorActive(true);
+
+		foreach (Building b in buildings) {
+			b.HideFloor2();
+		}
 	}
 
 	public void SetGroundFloorActive (bool active) {
-    	foreach (Collider2D c in groundFloor.GetComponentsInChildren<Collider2D>()) {
+    	foreach (Collider2D c in map.GetComponentsInChildren<Collider2D>()) {
 			if (!c.CompareTag(Constants.STAIRS_TAG)) {
 				c.enabled = active;
 			}
     	}
-	}
-
-	public void SetSecondFloorActive (bool active) {
-		foreach (Collider2D c in floor2.GetComponentsInChildren<Collider2D>()) {
-			if (!c.CompareTag(Constants.STAIRS_TAG)) {
-				c.enabled = active;
-			}
-    	}
-		floor2.SetActive(active);
 	}
 
 	public int GetVisibleFloor() {
