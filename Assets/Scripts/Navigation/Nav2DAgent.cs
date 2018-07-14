@@ -68,7 +68,7 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 	
 	///The current goal of the agent
-	private Vector3 primeGoal        = Vector3.zero;
+	private Vector3 primeGoal = Vector3.zero;
 
 	private static List<Nav2DAgent> allAgents = new List<Nav2DAgent>();
 
