@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PoliceNPC : NPC {
 
-	public Nav2DCompObstacle patrolBuilding;
+	public Building patrolBuilding;
 
 	private List<Vector3> patrolPath;
 	private int patrolIndex = 0;
@@ -12,15 +12,16 @@ public class PoliceNPC : NPC {
 	protected override void Start() {
 		base.Start();
 
-		// print(patrolBuilding.polygonPoints.Length);
-		// print(patrolBuilding.polygonPoints.Length);
-		// print(patrolBuilding.polygonPoints.Length);
-		
+		Vector3[] groundBounding = patrolBuilding.groundBoundingBox;
 		patrolPath = new List<Vector3>();
-		patrolPath.Add(new Vector3(-15, -3, 0));
-		patrolPath.Add(new Vector3(-15, 17, 0));
-		patrolPath.Add(new Vector3(16, 17, 0));
-		patrolPath.Add(new Vector3(16, -3, 0));
+		patrolPath.AddRange(groundBounding);
+
+		float shortest = float.MaxValue;
+		for (int i = 0; i < patrolPath.Count; i++) {
+			if ((transform.position - patrolPath[i]).magnitude < shortest) {
+				patrolIndex = i;
+			}
+		}
 	}
 
 	protected override void SetNextDestination() {
