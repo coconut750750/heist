@@ -5,22 +5,27 @@ using UnityEngine;
 public class PoliceNPC : NPC {
 
 	public Building patrolBuilding;
+	
+	enum PatrolType {
+		Outer, Inner
+	}
 
-	private List<Vector3> patrolPath;
+	[SerializeField]
+	private PatrolType patrolType;
+
+	private Vector3[] patrolPath;
 	private int patrolIndex = 0;
 
 	protected override void Start() {
 		base.Start();
-
-		Vector3[] groundBounding = patrolBuilding.groundBoundingBox;
-		patrolPath = new List<Vector3>();
-		patrolPath.AddRange(groundBounding);
-
-		float shortest = float.MaxValue;
-		for (int i = 0; i < patrolPath.Count; i++) {
-			if ((transform.position - patrolPath[i]).magnitude < shortest) {
-				patrolIndex = i;
-			}
+		
+		switch (patrolType) {
+			case PatrolType.Inner:
+				patrolPath = patrolBuilding.GetInnerPatrol(transform.position);
+				break;
+			default:
+				patrolPath = patrolBuilding.GetOuterPatrol(transform.position);
+				break;
 		}
 	}
 
@@ -35,6 +40,6 @@ public class PoliceNPC : NPC {
 
 	protected override void NavArrived() {
 		base.NavArrived();
-		patrolIndex = (patrolIndex + 1) % patrolPath.Count;
+		patrolIndex = (patrolIndex + 1) % patrolPath.Length;
 	}
 }
