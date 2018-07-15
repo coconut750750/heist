@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class PoliceNPC : NPC {
 
+	public Nav2DCompObstacle patrolBuilding;
+
 	private List<Vector3> patrolPath;
 	private int patrolIndex = 0;
 
 	protected override void Start() {
 		base.Start();
+
+		// print(patrolBuilding.polygonPoints.Length);
+		// print(patrolBuilding.polygonPoints.Length);
+		// print(patrolBuilding.polygonPoints.Length);
 		
 		patrolPath = new List<Vector3>();
 		patrolPath.Add(new Vector3(-15, -3, 0));
