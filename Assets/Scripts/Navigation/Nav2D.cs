@@ -53,11 +53,6 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	//some initializing
-	void Reset() {
-		gameObject.AddComponent<BoxCollider2D>();
-	}
-
-	//some initializing
 	void Awake() {
 		navObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DObstacle>().ToList());
 		navCompObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DCompObstacle>().ToList());
@@ -669,9 +664,6 @@ public class Nav2D : MonoBehaviour {
         }
     }
 
-    ////////////////////////////////////////
-    ///////////GUI AND EDITOR STUFF/////////
-    ////////////////////////////////////////
 #if UNITY_EDITOR
 
     void OnDrawGizmos () {
