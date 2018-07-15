@@ -18,9 +18,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	public Canvas canvas;
 
-	private GameObject map;
-
-	private Building[] buildings;	
+	[SerializeField]
+	private Map map;
 
 	// in game clock
 	private int day = 1;
@@ -42,11 +41,7 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		Debug.Log("Game Started");
-
-		map = GameObject.Find("Map");
-		buildings = GameObject.FindObjectsOfType<Building>();
-
+		print("Game Started");
 		timeText.text = GetTimeString();	
 	}
 
@@ -123,27 +118,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowFloor2() {
-		SetGroundFloorActive(false);
-
-		foreach (Building b in buildings) {
-			b.ShowFloor2();
-		}
+		map.SetGroundFloorActive(false);
+		map.SetSecondFloorActive(true);
 	}
 
 	public void HideFloor2() {
-		SetGroundFloorActive(true);
-
-		foreach (Building b in buildings) {
-			b.HideFloor2();
-		}
-	}
-
-	public void SetGroundFloorActive (bool active) {
-    	foreach (Collider2D c in map.GetComponentsInChildren<Collider2D>()) {
-			if (!c.CompareTag(Constants.STAIRS_TAG)) {
-				c.enabled = active;
-			}
-    	}
+		map.SetGroundFloorActive(true);
+		map.SetSecondFloorActive(false);
 	}
 
 	public int GetVisibleFloor() {

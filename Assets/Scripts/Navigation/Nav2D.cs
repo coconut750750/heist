@@ -733,7 +733,6 @@ public class Nav2D : MonoBehaviour {
 		}
 	}
 
-	//helper debug function
 	void DebugDrawPolygon(Vector3[] points, Color color) {
 		for (int i = 0; i < points.Length; i++) {
 			Debug.DrawLine(points[i], points[(i + 1) % points.Length], color);
