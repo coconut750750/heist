@@ -94,12 +94,16 @@ public abstract class Character : MonoBehaviour {
 	}
 
 	protected void Move(Vector2 movement) {
-		if (!paused && !GameManager.instance.IsPaused()) {
+		if (CanMove()) {
 			rb2D.velocity = movement * moveSpeed;
 			UpdateAnimator(movement);
 		} else {
 			rb2D.velocity = new Vector3(0, 0, 0);
 		}
+	}
+
+	private bool CanMove() {
+		return !paused && !GameManager.instance.IsPaused() && health > 0;
 	}
 
 	private void Face(AnimationDirection direction, int currentAnimStateHash) {
@@ -164,10 +168,6 @@ public abstract class Character : MonoBehaviour {
 				dirToFace = AnimationDirection.Right;		
 			}
 		}
-
-		if (dirToFace == AnimationDirection.None) {
-			return;
-		}
 		
 		if (prevDir == dirToFace) {
 			Face(dirToFace);
@@ -219,7 +219,7 @@ public abstract class Character : MonoBehaviour {
 		}
 	}
 
-	public virtual void GetAttackedBy(Character other) {
+	public virtual void GetAttackedBy(Character other) {		
 		health -= other.strength;
 		if (!isEffectedByAttack) {
 			StartCoroutine(Blink());

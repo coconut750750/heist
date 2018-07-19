@@ -23,6 +23,13 @@ public class NPCInfo : MonoBehaviour {
 	private Text moneyText;
 	[SerializeField]
 	private Slider friendlinessSlider;
+	[SerializeField]
+	private Image background;
+
+	[SerializeField]
+	private Color npcBackColor;
+	[SerializeField]
+	private Color policeNpcBackColor;
 
 	private NPC npc;
 
@@ -40,6 +47,11 @@ public class NPCInfo : MonoBehaviour {
 		gameObject.SetActive(true);
 
 		this.npc = npc;
+		if (npc is PoliceNPC) {
+			background.color = policeNpcBackColor;
+		} else {
+			background.color = npcBackColor;
+		}
 
 		nameText.text = npc.GetName();
 

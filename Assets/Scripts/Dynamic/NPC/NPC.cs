@@ -36,7 +36,6 @@ public class NPC : Character {
 	// fighting constants
 	public const float GET_ATTACK_DELAY = 0.2f;
 	public const float AFTER_ATTACK_DELAY = 0.5f;
-	public const float SQUARED_STOP_RETALIATE_DIST = 100;
 
 	public bool debugNav = false;
 	public bool saveData = true;
@@ -84,15 +83,16 @@ public class NPC : Character {
 	}
 
 	// fighting member variables
-	private bool fighting = false;
-	private Character opponent = null;
+	protected float squaredStopRetaliateDist = 100;
+	protected bool fighting = false;
+	protected Character opponent = null;
 
 	IEnumerator ChaseAfter() {
 		yield return new WaitForSeconds(GET_ATTACK_DELAY);
 		fighting = true;
 	}
 
-	IEnumerator EndFight() {
+	protected virtual IEnumerator EndFight() {
 		// don't let npc search for dest because we want npc to remain still for a bit
 		// need to explicitly set to false because it may have turned true
 		// (which is does after maxDestinationDelay on arrival)
@@ -144,6 +144,7 @@ public class NPC : Character {
 	public void Spawn() {
 		// reset health when respawn
 		base.health = 100;
+		animator.enabled = true;
 		RefreshInventory();
 		gameObject.SetActive(true);
 		if (hasQuest && !questActive) {
@@ -220,8 +221,8 @@ public class NPC : Character {
 	public override void GetAttackedBy(Character other) {
 		base.GetAttackedBy(other);
 
-		// if health is 0 or less, die and call OnDeath function if there is one
-		// usually, OnDeath is set by NPC spawner that just removes this object from the array
+		// if health is 0 or less, die and call Knockout function if there is one
+		// usually, Knockout is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
 			Knockout();
 			return;
@@ -250,7 +251,7 @@ public class NPC : Character {
 		Vector3 displacement = opponent.transform.position - transform.position;
 		float floorDiff = displacement.z;
 		displacement.z = 0;
-		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
+		if (displacement.sqrMagnitude > squaredStopRetaliateDist) {
 			StartCoroutine(EndFight());
 		}
 
@@ -266,8 +267,7 @@ public class NPC : Character {
 		SetNewDestination(opponent.transform.position - offset);
 	}
 
-	// TODO: use Character.Attack() instead?
-	protected void Retaliate() {
+	protected virtual void Retaliate() {
 		// need to face the correct direction otherwise attack will be missed
 		if (visibleByCamera) {
 			Vector3 displacement = opponent.transform.position - transform.position;
@@ -302,12 +302,13 @@ public class NPC : Character {
 		return fighting;
 	}
 
-	protected void Knockout() {
+	protected virtual void Knockout() {
 		if (OnKnockout != null) {
 			OnKnockout(this);
 		}
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
 		interactable.DestroyAllPopUps();
+		animator.enabled = false;
 	}
 
 	/// NAVIGATION ///
@@ -397,10 +398,10 @@ public class NPC : Character {
 		
 		if (GetFloor() > GameManager.instance.GetVisibleFloor()) {
 			GetComponent<SpriteRenderer>().enabled = false;
-			GetComponent<Animator>().enabled = false;
+			animator.enabled = false;
 		} else {
 			GetComponent<SpriteRenderer>().enabled = true;
-			GetComponent<Animator>().enabled = true;
+			animator.enabled = true;
 		}
 	}
 
