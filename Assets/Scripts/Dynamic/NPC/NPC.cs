@@ -249,8 +249,8 @@ public class NPC : Character {
 		// so, we calculate the closest point that is ATTACK_DISTANCE away from
 		//   the opponent's position (that is perpendicular to the player)
 		Vector3 displacement = opponent.transform.position - transform.position;
-		float floorDiff = displacement.z;
 		displacement.z = 0;
+
 		if (displacement.sqrMagnitude > squaredStopRetaliateDist) {
 			StartCoroutine(EndFight());
 		}
@@ -263,7 +263,6 @@ public class NPC : Character {
 		}
 		// mag == x + y since either one is a non-zero and the other is 0
 		Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
-
 		SetNewDestination(opponent.transform.position - offset);
 	}
 

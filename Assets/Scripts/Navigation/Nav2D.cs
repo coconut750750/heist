@@ -458,7 +458,6 @@ public class Nav2D : MonoBehaviour {
 		} else {
 			return (inside & 1) == 0 && inside != 0;
 		}
-		
 	}
 
 	///Kind of scales a polygon based on it's vertices average normal.
@@ -539,7 +538,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Finds the closer edge point to the navigation valid area
-	public Vector2 GetCloserEdgePoint ( Vector3 point ) {
+	public Vector3 GetCloserEdgePoint (Vector3 point) {
 
 		List<Vector3> possiblePoints = new List<Vector3>();
 		Vector3 closerVertex = Vector3.zero;
@@ -574,8 +573,6 @@ public class Nav2D : MonoBehaviour {
 		}
 
 		possiblePoints.Add(closerVertex);
-		//possiblePoints = possiblePoints.OrderBy(vector => (point - vector).sqrMagnitude).ToArray(); //Not supported in iOS?
-		//return possiblePoints[0];
 
 		float closerDist = Mathf.Infinity;
 		int index = 0;
@@ -586,8 +583,9 @@ public class Nav2D : MonoBehaviour {
 				index = i;
 			}
 		}
-		Debug.DrawLine(point, possiblePoints[index]);
-		return possiblePoints[index];
+		Vector3 closest = possiblePoints[index];
+		closest.z = point.z;
+		return closest;
 	}
 
 	//defines a polygon

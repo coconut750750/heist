@@ -161,8 +161,9 @@ public class Nav2DAgent : MonoBehaviour{
 		}
 
 		//goal is almost the same as the last goal. Nothing happens for performace in case it's called frequently
-		if ((goal - primeGoal).sqrMagnitude < Mathf.Epsilon && primeGoal.z == position.z)
+		if ((goal - primeGoal).sqrMagnitude < Mathf.Epsilon && primeGoal.z == goal.z) {
 			return true;
+		}
 
 		reachedCallback = callback;
 		primeGoal = goal;
@@ -177,8 +178,7 @@ public class Nav2DAgent : MonoBehaviour{
 		//check if goal is valid
 		if (!polyNav.PointIsValid(goal)) {
 			// Go to closer point if requested destination is invalid
-			SetDestination(polyNav.GetCloserEdgePoint(goal), callback);
-			return true;
+			return SetDestination(polyNav.GetCloserEdgePoint(goal), callback);
 		}
 
 		//if a path is pending dont calculate new path
