@@ -15,19 +15,19 @@ public class NPCInteractable : Interactable {
     private static NPCInteractable activeInstance = null;
 
     public HoverName hoverNameText;
-    private HoverName hoverTextInstance = null;
+    protected HoverName hoverTextInstance = null;
 
     public SpeechBubble speechBubble;
-    private SpeechBubble speechBubbleInstance = null;
+    protected SpeechBubble speechBubbleInstance = null;
 
     public NPCOptions npcOptions;
-    private NPCOptions npcOptionsInstance = null;
+    protected NPCOptions npcOptionsInstance = null;
 
     public Alert exclaimIcon;
-    private Alert exclaimInstance = null;
+    protected Alert exclaimInstance = null;
 
     public Alert questIcon;
-    private Alert questInstance = null;
+    protected Alert questInstance = null;
 
 	private NPC npc;
     private bool interacted = false;
@@ -36,6 +36,10 @@ public class NPCInteractable : Interactable {
     void Start () {
 		npc = gameObject.GetComponent<NPC>();
 	}
+
+    public virtual void OnKnockout() {
+        DestroyAllPopUps();
+    }
 
 	public override void Interact(Player player) {
         // ensures that if another npc comes when player is interacting, the first one
@@ -128,19 +132,19 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void InitHoverText() {
+    protected void InitHoverText() {
         hoverTextInstance = Instantiate(hoverNameText);
         hoverTextInstance.Display(npc.GetName(), gameObject);
     }
 
-    private void DestroyHoverText() {
+    protected void DestroyHoverText() {
         if (hoverTextInstance != null) {
             hoverTextInstance.Destroy();
             hoverTextInstance = null;
         }
     }
 
-    private void InitSpeechBubble() {
+    protected void InitSpeechBubble() {
         if (speechBubbleInstance == null) {
             speechBubbleInstance = Instantiate(speechBubble);
             speechBubbleInstance.Display();
@@ -149,14 +153,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void DestroySpeechBubble() {
+    protected void DestroySpeechBubble() {
         if (speechBubbleInstance != null) {
             speechBubbleInstance.Destroy();
             speechBubbleInstance = null;
         }
     }
 
-    private void InitNPCOptions() {
+    protected virtual void InitNPCOptions() {
         if (npcOptionsInstance == null) {
             npcOptionsInstance = Instantiate(npcOptions);
             npcOptionsInstance.Display();
@@ -165,14 +169,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void DestroyNPCOptions() {
+    protected void DestroyNPCOptions() {
         if (npcOptionsInstance != null) {
             npcOptionsInstance.Destroy();
             npcOptionsInstance = null;
         }
     }
 
-    private void InitExclaimIcon() {
+    protected void InitExclaimIcon() {
         if (exclaimInstance != null) {
             exclaimInstance.Enable();
         } else {
@@ -181,14 +185,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void DestroyExclaimIcon() {
+    protected void DestroyExclaimIcon() {
         if (exclaimInstance != null) {
             exclaimInstance.Destroy();
             exclaimInstance = null;
         }
     }
 
-    private void InitQuestIcon() {
+    protected void InitQuestIcon() {
         if (questInstance != null) {
             questInstance.Enable();
         } else {
@@ -197,14 +201,14 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    private void DestroyQuestIcon() {
+    protected void DestroyQuestIcon() {
         if (questInstance != null) {
             questInstance.Destroy();
             questInstance = null;
         }
     }
 
-    private void DestroyInteractPopups() {
+    protected void DestroyInteractPopups() {
         DestroySpeechBubble();
         DestroyNPCOptions();
     }

@@ -305,8 +305,9 @@ public class NPC : Character {
 		if (OnKnockout != null) {
 			OnKnockout(this);
 		}
+		fighting = false;
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
-		interactable.DestroyAllPopUps();
+		interactable.OnKnockout();
 		animator.enabled = false;
 	}
 

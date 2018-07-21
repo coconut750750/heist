@@ -31,6 +31,7 @@ public class PoliceNPC : NPC {
 
 	protected override void Start() {
 		base.Start();
+		base.SetStrength(1);
 
 		squaredStopRetaliateDist = 1000;
 		
