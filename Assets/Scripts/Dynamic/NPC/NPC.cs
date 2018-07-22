@@ -307,7 +307,6 @@ public class NPC : Character {
 		fighting = false;
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
 		interactable.OnKnockout();
-		// animator.enabled = false;
 	}
 
 	/// NAVIGATION ///

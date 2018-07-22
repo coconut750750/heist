@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour {
 
 	public Rect GetCurrentPlayerRange(int range) {
 		Rect rect = new Rect();
-		rect.position = mainPlayer.transform.position - new Vector3(range / 2, range / 2);
+		rect.position = mainPlayer.transform.position - new Vector3((float)range / 2f, (float)range / 2f);
 		rect.width = range;
 		rect.height = range;
 

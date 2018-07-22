@@ -60,6 +60,14 @@ public class NPCSpawner : MonoBehaviour {
 		canAlterNpcCount = true;
 	}
 
+	IEnumerator WaitForRecall(NPC npc) {
+		while (NpcIsInRange(npc)) {
+			yield return null;
+		}
+
+		RecallUnconditionally(npc);
+	}
+
 	void Awake() {
 		if (instance == null) {
 			instance = this;
@@ -115,7 +123,7 @@ public class NPCSpawner : MonoBehaviour {
 		NPC instance = NPCManager.instance.InstantiateNPC(index, pos);
 		instance.InstantiateBySpawner(polyNav, transform);
 
-		instance.OnKnockout += RecallUnconditionally;
+		instance.OnKnockout += OnNPCKnockOut;
 
 		npcs.Add(instance);
 		npcIndicies.Add(index);
@@ -170,6 +178,10 @@ public class NPCSpawner : MonoBehaviour {
 	private void RecallUnconditionally(NPC npc) {
 		int index = npcs.IndexOf(npc);
 		RecallUnconditionally(index);
+	}
+
+	private void OnNPCKnockOut(NPC npc) {
+		StartCoroutine(WaitForRecall(npc));
 	}
 
 	// returns a vector 2 position out of range 
