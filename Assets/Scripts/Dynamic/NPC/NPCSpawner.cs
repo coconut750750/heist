@@ -295,7 +295,7 @@ public class NPCSpawner : MonoBehaviour {
 				NPC instance = InstantiateNPC(data.npcIndicies[i], Vector2.zero);
 				instance.LoadFromData(data.npcDatas[i]);
 
-				if (!data.npcAwake[i]) {
+				if (!data.npcAwake[i] || instance.IsKnockedOut()) {
 					RecallUnconditionally(i);
 				}
 			}

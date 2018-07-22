@@ -35,7 +35,7 @@ public class StashDisplayer : MonoBehaviour {
     }
 
     // injects an inventory into the item slots
-    public void SetInventory(Inventory displayInventory) {
+    private void SetInventory(Inventory displayInventory) {
         capacity = displayInventory.GetCapacity();
         itemSlots = new ItemSlot[capacity];
         for (int i = 0; i < capacity; i++) {
@@ -52,7 +52,7 @@ public class StashDisplayer : MonoBehaviour {
     }
 
     // removes the inventory data from item slots
-    public void ClearInventory() {
+    private void ClearInventory() {
         capacity = 0;
         itemSlots = null;
         foreach (Transform child in parentInventory) {

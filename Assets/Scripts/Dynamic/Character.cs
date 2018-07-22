@@ -282,6 +282,8 @@ public abstract class Character : MonoBehaviour {
 
 	public int GetHealth() { return health; }
 
+	public bool IsKnockedOut() { return health <= 0; }
+
 	public void SetHealth(int health) { this.health = health; }
 
 	public int GetExperience() { return exp; }
