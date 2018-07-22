@@ -222,11 +222,7 @@ public class NPC : Character {
 
 	public override void GetAttackedBy(Character other) {
 		base.GetAttackedBy(other);
-
-		// if health is 0 or less, die and call Knockout function if there is one
-		// usually, Knockout is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
-			Knockout();
 			return;
 		}
 
@@ -303,14 +299,15 @@ public class NPC : Character {
 		return fighting;
 	}
 
-	protected virtual void Knockout() {
+	public override void Knockout() {
+		base.Knockout();
 		if (OnKnockout != null) {
 			OnKnockout(this);
 		}
 		fighting = false;
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
 		interactable.OnKnockout();
-		animator.enabled = false;
+		// animator.enabled = false;
 	}
 
 	/// NAVIGATION ///

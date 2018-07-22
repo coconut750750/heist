@@ -35,6 +35,7 @@ public abstract class Character : MonoBehaviour {
 	protected int leftHash = Animator.StringToHash("Left");
 	protected int rightHash = Animator.StringToHash("Right");
 	protected int attackHash = Animator.StringToHash("Attack");
+	protected int knockedoutHash = Animator.StringToHash("KnockedOut");
 
 	protected Animator animator;
 
@@ -221,11 +222,21 @@ public abstract class Character : MonoBehaviour {
 
 	public virtual void GetAttackedBy(Character other) {		
 		health -= other.strength;
+		
+		if (health <= 0) {
+			Knockout();
+			return;
+		}
+
 		if (!isEffectedByAttack) {
 			StartCoroutine(Blink());
 			StartCoroutine(GetAttackSpeedUp());
 			isEffectedByAttack = true;
 		}
+	}
+
+	public virtual void Knockout() {
+		animator.SetTrigger(knockedoutHash);
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D other) {

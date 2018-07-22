@@ -51,7 +51,7 @@ public class PoliceNPC : NPC {
 		}
 	}
 
-	protected override void Knockout() {
+	public override void Knockout() {
 		base.Knockout();
 	}
 
