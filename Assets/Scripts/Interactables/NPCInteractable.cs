@@ -82,7 +82,9 @@ public class NPCInteractable : Interactable {
         npc.Pause();
         player.Pause();
 
-        InitSpeechBubble();
+        if (!npc.IsKnockedOut()) {
+            InitSpeechBubble();
+        }
         InitNPCOptions();
         DestroyHoverText(); // avoid overlap with speech bubble
     }
@@ -242,7 +244,11 @@ public class NPCInteractable : Interactable {
     }
 
     public virtual void ShowInventory() {
-        NPCTrade.instance.Display(npc);
+        if (npc.IsKnockedOut()) {
+            StashDisplayer.instance.DisplayInventory(npc.GetInventory());
+        } else {
+            NPCTrade.instance.Display(npc);
+        }
     }
 
     public virtual void ShowQuest() {
