@@ -29,7 +29,7 @@ public class NPCInteractable : Interactable {
     public Alert questIcon;
     protected Alert questInstance = null;
 
-	private NPC npc;
+	protected NPC npc;
     private bool interacted = false;
 
     // Use this for initialization
@@ -241,15 +241,15 @@ public class NPCInteractable : Interactable {
         }
     }
 
-    public void ShowInventory() {
+    public virtual void ShowInventory() {
         NPCTrade.instance.Display(npc);
     }
 
-    public void ShowQuest() {
+    public virtual void ShowQuest() {
         NPCQuest.instance.Display(npc);
     }
 
-    public void ShowInfo() {
+    public virtual void ShowInfo() {
         NPCInfo.instance.Display(npc);
     }
 }

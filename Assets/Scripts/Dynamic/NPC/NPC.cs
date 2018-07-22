@@ -127,6 +127,8 @@ public class NPC : Character {
 		agent.OnDestinationInvalid += DestinationInvalid;
 
 		agent.maxSpeed = moveSpeed;
+
+		SetName(npcName);
 	}
 
 	void OnEnable() {
@@ -419,6 +421,7 @@ public class NPC : Character {
 
 	public void SetName(string newName) {
 		npcName = newName;
+		inventory.SetName(newName + "'s Inventory");
 	}
 
 	private void AdjustFriendliness(int delta) {

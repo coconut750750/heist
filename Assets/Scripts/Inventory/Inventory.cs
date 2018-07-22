@@ -33,6 +33,10 @@ public class Inventory : ItemStash {
         return inventoryName;
     }
 
+    public void SetName(string name) {
+        this.inventoryName = name;
+    }
+
     public bool IsIndependent() {
         return independent;
     }

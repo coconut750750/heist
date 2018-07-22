@@ -16,10 +16,13 @@ public class PoliceNPCInteractable : NPCInteractable {
 	}
 
 	protected override void InitNPCOptions() {
-		print("here");
 		base.InitNPCOptions();
         if (knockedOut) {
 			((PoliceNPCOptions)base.npcOptionsInstance).ShowLootButton();
         }
+    }
+
+	public override void ShowInventory() {
+		StashDisplayer.instance.DisplayInventory(base.npc.GetInventory());
     }
 }
