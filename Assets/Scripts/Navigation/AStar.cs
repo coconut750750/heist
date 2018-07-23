@@ -1,6 +1,4 @@
-﻿//#define DEBUG
-
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +7,9 @@ using System.Diagnostics;
 using PathNode = Nav2D.PathNode;
 using StairNode = Nav2D.StairNode;
 
-static class AStar {
-
+public static class AStar {
 	// calculates path between start and end assuming they are on same floor
 	private static bool CalculateFlatPath(PathNode startNode, PathNode endNode, PathNode[] allNodes) {
-		#if DEBUG
-		Stopwatch sw = new Stopwatch();
-		sw.Start();
-		#endif
-
 		var openList = new Heap<PathNode>(allNodes.Length);
 		var closedList = new HashSet<PathNode>();
 		var success = false;
@@ -25,16 +17,10 @@ static class AStar {
 		openList.Add(startNode);
 
 		while (openList.Count > 0){
-
 			var currentNode = openList.RemoveFirst();
 			closedList.Add(currentNode);
 
 			if (currentNode == endNode){
-				#if DEBUG
-				sw.Stop();
-				//UnityEngine.Debug.Log("Path Found: " + sw.ElapsedMilliseconds + " ms.");
-				#endif
-
 				success = true;
 				break;
 			}
@@ -108,7 +94,6 @@ static class AStar {
 		PathNode retraceEndNode = reverse ? startNode : endNode;
 		
 		while (currentNode != retraceEndNode){
-			// UnityEngine.Debug.Log("path node: " +currentNode.pos);
 			path.Add(currentNode.pos);
 			
 			currentNode = currentNode.parent;
