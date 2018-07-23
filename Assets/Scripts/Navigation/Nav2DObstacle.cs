@@ -22,29 +22,38 @@ public class Nav2DObstacle : MonoBehaviour {
 	private Transform _transform;
 
 	///The polygon points of the obstacle
+	private Vector3[] _points = null;
 	public Vector3[] points{
 		get {
-			if (collider == null) {
-				return new Vector3[0];
+			if (_points != null) {
+				return _points;
 			}
+
+			if (collider == null) {
+				_points = new Vector3[0];
+				return _points;
+			}
+
 			if (collider is BoxCollider2D){
 				BoxCollider2D box = (BoxCollider2D) collider;
 				Vector3 tl = new Vector3(-box.size.x / 2, box.size.y / 2);
 				Vector3 tr = new Vector3(box.size.x  / 2, box.size.y / 2);
 				Vector3 br = new Vector3(box.size.x  / 2, -box.size.y / 2);
 				Vector3 bl = new Vector3(-box.size.x  / 2, -box.size.y / 2);
-				return new Vector3[]{tl, tr, br, bl};
+
+				_points = new Vector3[] {tl, tr, br, bl};
+				return _points;
 			}
 
 			if (collider is PolygonCollider2D){
 				Vector2[] tempPoints = (collider as PolygonCollider2D).points;				
 				if (invertPolygon)
 					System.Array.Reverse(tempPoints);
-				Vector3[] finalPoints = new Vector3[tempPoints.Length];
+				_points = new Vector3[tempPoints.Length];
 				for (int i = 0; i < tempPoints.Length; i++) {
-					finalPoints[i] = new Vector3(tempPoints[i].x, tempPoints[i].y, 0);
+					_points[i] = new Vector3(tempPoints[i].x, tempPoints[i].y, 0);
 				}
-				return finalPoints;			
+				return _points;			
 			}
 
 			return null;

@@ -28,14 +28,17 @@ public class NPCQuest : MonoBehaviour {
 
 		this.npc = npc;
 		this.quest = npc.GetQuest();
-		if (this.quest != null && !this.quest.IsActive()) {
+		if (CanDisplayQuest(npc)) {
 			questDetail.DisplayQuest(this.quest);
-			
 			EnableButtons();
 		} else {
-			questDetail.DisplayEmptyQuest(this.npc);
+			questDetail.DisplayEmptyQuest(npc);
 			DisableButtons();
 		}
+	}
+
+	private bool CanDisplayQuest(NPC npc) {
+		return npc.GetQuest() != null && !npc.GetQuest().IsActive() && !npc.IsKnockedOut();
 	}
 
 	private void EnableButtons() {
@@ -62,7 +65,6 @@ public class NPCQuest : MonoBehaviour {
 		}
 		
 		DisableButtons();
-
 		Hide();
 	}
 

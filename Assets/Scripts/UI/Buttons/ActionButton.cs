@@ -6,25 +6,35 @@ using UnityEngine.Events;
 
 public class ActionButton : Button {
 
-	private int listeners = 0;
+	private List<UnityAction> currentActions = new List<UnityAction>();
 
-	public void AddListener(UnityAction call) {
-		base.onClick.AddListener(call);
-		listeners++;
-	}
+	public void AddAction(UnityAction call) {
+        if (!IsInteractable()) {
+            Enable();
+        }
+        RemoveAllListeners();
 
-	public void RemoveListener(UnityAction call) {
-		base.onClick.RemoveListener(call);
-		listeners--;
-	}
+        base.onClick.AddListener(call);
+        currentActions.Add(call);
+    }
 
-	public void RemoveAllListeners() {
+    public void RemoveAction(UnityAction call) {
+        currentActions.Remove(call);
+        RemoveAllListeners();
+        if (GetNumActions() > 0) {
+            UnityAction next = currentActions[currentActions.Count - 1];
+            base.onClick.AddListener(next);
+        } else if (IsInteractable()) {
+            Disable();
+        }
+    }
+
+	private void RemoveAllListeners() {
 		base.onClick.RemoveAllListeners();
-		listeners = 0;
 	}
 
-	public int GetListeners() {
-		return listeners;
+	public int GetNumActions() {
+		return currentActions.Count;
 	}
 
 	public void Enable() {

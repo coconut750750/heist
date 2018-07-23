@@ -10,7 +10,7 @@ public class Nav2D : MonoBehaviour {
 	public bool debug = false;
 
 	[SerializeField]
-	private List<GameObject> floors;
+	private GameObject gameMap;
 
 	public bool drawNodes;
 	public bool drawNodesAndEdges;
@@ -53,17 +53,10 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	//some initializing
-	void Reset() {
-		gameObject.AddComponent<BoxCollider2D>();
-	}
-
-	//some initializing
 	void Awake() {
-		foreach (GameObject floor in floors) {
-			navObstacles.AddRange(floor.GetComponentsInChildren<Nav2DObstacle>().ToList());
-			navCompObstacles.AddRange(floor.GetComponentsInChildren<Nav2DCompObstacle>().ToList());
-			navStairs.AddRange(floor.GetComponentsInChildren<Nav2DStairs>().ToList());
-		}
+		navObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DObstacle>().ToList());
+		navCompObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DCompObstacle>().ToList());
+		navStairs.AddRange(gameMap.GetComponentsInChildren<Nav2DStairs>().ToList());
 
 		masterCollider = GetComponent<Collider2D>();
 		masterBounds = masterCollider.bounds;
@@ -465,7 +458,6 @@ public class Nav2D : MonoBehaviour {
 		} else {
 			return (inside & 1) == 0 && inside != 0;
 		}
-		
 	}
 
 	///Kind of scales a polygon based on it's vertices average normal.
@@ -546,7 +538,7 @@ public class Nav2D : MonoBehaviour {
 	}
 
 	///Finds the closer edge point to the navigation valid area
-	public Vector2 GetCloserEdgePoint ( Vector3 point ) {
+	public Vector3 GetCloserEdgePoint (Vector3 point) {
 
 		List<Vector3> possiblePoints = new List<Vector3>();
 		Vector3 closerVertex = Vector3.zero;
@@ -581,8 +573,6 @@ public class Nav2D : MonoBehaviour {
 		}
 
 		possiblePoints.Add(closerVertex);
-		//possiblePoints = possiblePoints.OrderBy(vector => (point - vector).sqrMagnitude).ToArray(); //Not supported in iOS?
-		//return possiblePoints[0];
 
 		float closerDist = Mathf.Infinity;
 		int index = 0;
@@ -593,8 +583,9 @@ public class Nav2D : MonoBehaviour {
 				index = i;
 			}
 		}
-		Debug.DrawLine(point, possiblePoints[index]);
-		return possiblePoints[index];
+		Vector3 closest = possiblePoints[index];
+		closest.z = point.z;
+		return closest;
 	}
 
 	//defines a polygon
@@ -671,9 +662,6 @@ public class Nav2D : MonoBehaviour {
         }
     }
 
-    ////////////////////////////////////////
-    ///////////GUI AND EDITOR STUFF/////////
-    ////////////////////////////////////////
 #if UNITY_EDITOR
 
     void OnDrawGizmos () {
@@ -743,7 +731,6 @@ public class Nav2D : MonoBehaviour {
 		}
 	}
 
-	//helper debug function
 	void DebugDrawPolygon(Vector3[] points, Color color) {
 		for (int i = 0; i < points.Length; i++) {
 			Debug.DrawLine(points[i], points[(i + 1) % points.Length], color);

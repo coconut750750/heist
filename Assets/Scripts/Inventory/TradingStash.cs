@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.Events;
 
 public class TradingStash : PauseStash {
 
 	public const int NUM_ITEMS = 1;
 
-    public event Action<Item> OnAdded;
-    public event Action OnRemoved;
+    public UnityAction<Item> OnAdded;
+    public UnityAction OnRemoved;
 
     public TradingStash() : base(NUM_ITEMS) {
 

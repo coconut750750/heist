@@ -23,8 +23,12 @@ public class Nav2DCompObstacle : MonoBehaviour {
 	private Transform _transform;
 
 	///The polygon points of the obstacle
+	private Vector3[][] _polygonPoints = null;
 	public Vector3[][] polygonPoints {
 		get {
+			if (_polygonPoints != null) {
+				return _polygonPoints;
+			}
 			var obstaclePolys = new List<Vector3[]>();
 
 			var points = new List<Vector3>();
@@ -42,7 +46,8 @@ public class Nav2DCompObstacle : MonoBehaviour {
 				points.Clear();
 			}
 
-			return obstaclePolys.ToArray();
+			_polygonPoints = obstaclePolys.ToArray();
+			return _polygonPoints;
 		}
 	}
 

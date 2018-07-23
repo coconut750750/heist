@@ -36,7 +36,6 @@ public class NPC : Character {
 	// fighting constants
 	public const float GET_ATTACK_DELAY = 0.2f;
 	public const float AFTER_ATTACK_DELAY = 0.5f;
-	public const float SQUARED_STOP_RETALIATE_DIST = 100;
 
 	public bool debugNav = false;
 	public bool saveData = true;
@@ -49,32 +48,32 @@ public class NPC : Character {
 	// range where the next destinations will generate
 	public int destinationRange;
 
-	// the floor to start on. used for debugging
-	public int startFloor = 1;
+	protected string npcName = "Billy";
 
-	private string npcName = "Billy";
-
+	[HideInInspector]
 	public bool hasQuest = false;
+	[HideInInspector]
 	public bool questActive = false;
 
-	private int friendliness = 50;
-	private Inventory inventory;
-	private NPCInteractable interactable;
+	protected int friendliness = 50;
+	protected Inventory inventory;
+	protected NPCInteractable interactable;
 
-	private Nav2DAgent agent {
+	protected Nav2DAgent agent {
 		get {
 			return gameObject.GetComponent<Nav2DAgent>();
 		}
 	}
 
-	private Vector3 destination;
-	private bool isMoving;
-	private bool canSearchForDest;
+	protected Vector3 destination;
+	protected bool isMoving;
+	protected bool canSearchForDest;
 
-	private bool spawned = false;
+	protected bool spawned = false;
 
 	public event Action<NPC> OnKnockout;
 
+	[HideInInspector]
 	public bool visibleByCamera = true;
 	
 	// called when NPC arrives at destination. toggles the canSearchForDest boolean
@@ -84,15 +83,16 @@ public class NPC : Character {
 	}
 
 	// fighting member variables
-	private bool fighting = false;
-	private Character opponent = null;
+	protected float squaredStopRetaliateDist = 100;
+	protected bool fighting = false;
+	protected Character opponent = null;
 
 	IEnumerator ChaseAfter() {
 		yield return new WaitForSeconds(GET_ATTACK_DELAY);
 		fighting = true;
 	}
 
-	IEnumerator EndFight() {
+	protected virtual IEnumerator EndFight() {
 		// don't let npc search for dest because we want npc to remain still for a bit
 		// need to explicitly set to false because it may have turned true
 		// (which is does after maxDestinationDelay on arrival)
@@ -105,8 +105,6 @@ public class NPC : Character {
 		yield return new WaitForSeconds(AFTER_ATTACK_DELAY);
 		canSearchForDest = true;
 	}
-
-	/// END MEMBER VARIABLES
 
 	protected override void Awake() {
 		base.Awake();
@@ -129,6 +127,8 @@ public class NPC : Character {
 		agent.OnDestinationInvalid += DestinationInvalid;
 
 		agent.maxSpeed = moveSpeed;
+
+		SetName(npcName);
 	}
 
 	void OnEnable() {
@@ -146,6 +146,7 @@ public class NPC : Character {
 	public void Spawn() {
 		// reset health when respawn
 		base.health = 100;
+		animator.enabled = true;
 		RefreshInventory();
 		gameObject.SetActive(true);
 		if (hasQuest && !questActive) {
@@ -162,7 +163,7 @@ public class NPC : Character {
 		if (fighting) {
 			FollowOpponentUpdate();
 		} else if (!isMoving && canSearchForDest) {
-			SetNewRandomDestination();
+			SetNextDestination();
 		}
 
 		UpdateVisibility();
@@ -221,11 +222,7 @@ public class NPC : Character {
 
 	public override void GetAttackedBy(Character other) {
 		base.GetAttackedBy(other);
-
-		// if health is 0 or less, die and call OnDeath function if there is one
-		// usually, OnDeath is set by NPC spawner that just removes this object from the array
 		if (health <= 0) {
-			Knockout();
 			return;
 		}
 
@@ -238,25 +235,21 @@ public class NPC : Character {
 		}
 
 		StartRetaliateAnimator();
-
 		interactable.ShowFightAlert(other);
-
 		AdjustFriendliness(ATTACK_FRIENDLY_DELTA);
 	}
 
 	// TODO: fix this function
 	protected void FollowOpponentUpdate() {
-		// if fighting, constantly update the destination to the opponent
-		//   since player can be moving
-		// the set destination, however, is not exactly the opponent's position
+		// the target destination, however, is not exactly the opponent's position
 		// there is a slight offset (ATTACK_DISTANCE) so that the player can actually see
 		//   the npc attacking
 		// so, we calculate the closest point that is ATTACK_DISTANCE away from
 		//   the opponent's position (that is perpendicular to the player)
 		Vector3 displacement = opponent.transform.position - transform.position;
-		float floorDiff = displacement.z;
 		displacement.z = 0;
-		if (displacement.sqrMagnitude > SQUARED_STOP_RETALIATE_DIST) {
+
+		if (displacement.sqrMagnitude > squaredStopRetaliateDist) {
 			StartCoroutine(EndFight());
 		}
 
@@ -268,12 +261,10 @@ public class NPC : Character {
 		}
 		// mag == x + y since either one is a non-zero and the other is 0
 		Vector3 offset = displacement / Mathf.Abs(displacement.x + displacement.y) * ATTACK_DISTANCE;
-
 		SetNewDestination(opponent.transform.position - offset);
 	}
 
-	// TODO: use Character.Attack() instead?
-	protected void Retaliate() {
+	protected virtual void Retaliate() {
 		// need to face the correct direction otherwise attack will be missed
 		if (visibleByCamera) {
 			Vector3 displacement = opponent.transform.position - transform.position;
@@ -308,17 +299,19 @@ public class NPC : Character {
 		return fighting;
 	}
 
-	protected void Knockout() {
+	public override void Knockout() {
+		base.Knockout();
 		if (OnKnockout != null) {
 			OnKnockout(this);
 		}
+		fighting = false;
 		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
-		interactable.DestroyAllPopUps();
+		interactable.OnKnockout();
 	}
 
 	/// NAVIGATION ///
 
-	protected void NavStarted() {
+	protected virtual void NavStarted() {
 		if (debugNav) {
 			Debug.Log("nav started");
 		}
@@ -326,7 +319,7 @@ public class NPC : Character {
 		canSearchForDest = false;
 	}
 
-	protected void NavArrived() {
+	protected virtual void NavArrived() {
 		if (debugNav) {
 			Debug.Log("nav arrived");
 		}
@@ -337,7 +330,6 @@ public class NPC : Character {
 			StartCoroutine(ArriveDelay());
 		}
 		isMoving = false;
-		// if npc lands on stairs, it will enter trigger
 	}
 
 	protected void DestinationInvalid() {
@@ -356,7 +348,7 @@ public class NPC : Character {
 		}
 	}
 
-	protected void SetNewRandomDestination() {
+	protected virtual void SetNextDestination() {
 		Vector3 randomDest = agent.GetRandomValidDestination();
 
 		// TODO: move this check() and this set() into agent
@@ -404,10 +396,10 @@ public class NPC : Character {
 		
 		if (GetFloor() > GameManager.instance.GetVisibleFloor()) {
 			GetComponent<SpriteRenderer>().enabled = false;
-			GetComponent<Animator>().enabled = false;
+			animator.enabled = false;
 		} else {
 			GetComponent<SpriteRenderer>().enabled = true;
-			GetComponent<Animator>().enabled = true;
+			animator.enabled = true;
 		}
 	}
 
@@ -425,6 +417,7 @@ public class NPC : Character {
 
 	public void SetName(string newName) {
 		npcName = newName;
+		inventory.SetName(newName + "'s Inventory");
 	}
 
 	private void AdjustFriendliness(int delta) {

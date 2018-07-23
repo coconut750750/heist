@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	public Canvas canvas;
 
-	private GameObject groundFloor;
-	private GameObject floor2;
+	[SerializeField]
+	private Map map;
 
 	// in game clock
 	private int day = 1;
@@ -41,11 +41,8 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		Debug.Log("Game Started");
-
-		groundFloor = GameObject.Find("GroundFloor");
-		floor2 = GameObject.Find("SecondFloor");
-		timeText.text = "" + GetTimeString();	
+		print("Game Started");
+		timeText.text = GetTimeString();	
 	}
 
 	void Start() {
@@ -75,7 +72,7 @@ public class GameManager : MonoBehaviour {
 					// new day here!
 				}
 			}
-			timeText.text = "" + GetTimeString();
+			timeText.text = GetTimeString();
 			lastChange = Time.time;
     	}
 	}
@@ -121,30 +118,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ShowFloor2() {
-		SetSecondFloorActive(true);
-		SetGroundFloorActive(false);
+		map.SetGroundFloorActive(false);
+		map.SetSecondFloorActive(true);
 	}
 
 	public void HideFloor2() {
-		SetSecondFloorActive(false);
-		SetGroundFloorActive(true);
-	}
-
-	public void SetGroundFloorActive (bool active) {
-    	foreach (Collider2D c in groundFloor.GetComponentsInChildren<Collider2D>()) {
-			if (!c.CompareTag(Constants.STAIRS_TAG)) {
-				c.enabled = active;
-			}
-    	}
-	}
-
-	public void SetSecondFloorActive (bool active) {
-		foreach (Collider2D c in floor2.GetComponentsInChildren<Collider2D>()) {
-			if (!c.CompareTag(Constants.STAIRS_TAG)) {
-				c.enabled = active;
-			}
-    	}
-		floor2.SetActive(active);
+		map.SetGroundFloorActive(true);
+		map.SetSecondFloorActive(false);
 	}
 
 	public int GetVisibleFloor() {
@@ -153,7 +133,7 @@ public class GameManager : MonoBehaviour {
 
 	public Rect GetCurrentPlayerRange(int range) {
 		Rect rect = new Rect();
-		rect.position = mainPlayer.transform.position - new Vector3(range / 2, range / 2);
+		rect.position = mainPlayer.transform.position - new Vector3((float)range / 2f, (float)range / 2f);
 		rect.width = range;
 		rect.height = range;
 

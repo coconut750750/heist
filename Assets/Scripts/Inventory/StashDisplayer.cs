@@ -12,10 +12,13 @@ public class StashDisplayer : MonoBehaviour {
 
     public static StashDisplayer instance = null;
 
-    private static Inventory displayInventory;
-    private static ItemSlot[] itemSlots;
-    private static int capacity;
-    private static Text nameText;
+    public ItemSlot itemSlotPrefab;
+
+    private Inventory displayInventory;
+    private ItemSlot[] itemSlots;
+    private int capacity;
+    private Text nameText;
+    private Transform parentInventory;
 
     // set up the itemSlots
     void Awake() {
@@ -25,40 +28,39 @@ public class StashDisplayer : MonoBehaviour {
 			Destroy (gameObject);
 		}
         
-        Transform inventory = transform.Find("Inventory");
-        capacity = inventory.childCount;
-        itemSlots = new ItemSlot[capacity];
-        for (int i = 0; i < capacity; i++) {
-            itemSlots[i] = inventory.GetChild(i).gameObject.GetComponent<ItemSlot>();
-            itemSlots[i].SetIndex(i);
-        }
-
+        parentInventory = transform.Find("Inventory");
         nameText = transform.Find("InventoryName").GetComponent<Text>();
 
         gameObject.SetActive(false);
     }
 
     // injects an inventory into the item slots
-    public static void SetInventory(Inventory displayInventory) {
-        StashDisplayer.displayInventory = displayInventory;
-        displayInventory.SetDisplaying(true);
-
+    private void SetInventory(Inventory displayInventory) {
+        capacity = displayInventory.GetCapacity();
+        itemSlots = new ItemSlot[capacity];
         for (int i = 0; i < capacity; i++) {
-            itemSlots[i].ClearItem();
+            ItemSlot newItemSlow = Instantiate(itemSlotPrefab, parentInventory);
+            itemSlots[i] = newItemSlow;
+            itemSlots[i].SetIndex(i);
             itemSlots[i].SetItem(displayInventory.GetItem(i), displayInventory);
         }
+        
+        this.displayInventory = displayInventory;
+        displayInventory.SetDisplaying(true);
 
         nameText.text = displayInventory.GetName();
     }
 
     // removes the inventory data from item slots
-    public static void ClearInventory() {
-        for (int i = 0; i < displayInventory.GetCapacity(); i++) {
-            itemSlots[i].ClearItem();
+    private void ClearInventory() {
+        capacity = 0;
+        itemSlots = null;
+        foreach (Transform child in parentInventory) {
+            Destroy(child.gameObject);
         }
 
         displayInventory.SetDisplaying(false);
-        StashDisplayer.displayInventory = null;
+        this.displayInventory = null;
 
         nameText.text = "";
     }
@@ -72,11 +74,11 @@ public class StashDisplayer : MonoBehaviour {
 
     public void DisplayInventory(Inventory stash) {
 		gameObject.SetActive(true);
-		StashDisplayer.SetInventory(stash);
+		this.SetInventory(stash);
 	}
 
 	public void HideInventory() {
 		gameObject.SetActive(false);
-		StashDisplayer.ClearInventory();
+		this.ClearInventory();
 	}
 }
