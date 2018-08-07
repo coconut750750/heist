@@ -10,3 +10,7 @@ from a bank or a masterpiece from a museum. So far, this build supports PC and A
 used an A* algorithm to find the shortest path between points. The game's NPCs used this algorithm to simulate autonomous life
 in the game. 
 * The sprites, which are excluded from this repository, are all self made.
+
+<img src="readme_pics/readme1.jpg" width="50%" align="center">
+<img src="readme_pics/readme2.jpg" width="50%" align="center">
+<img src="readme_pics/readme3.jpg" width="50%" align="center">
