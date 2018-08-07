@@ -1,7 +1,12 @@
 Library/*
 Builds/*
 Temp/*
+Assets/*
+.vscode/*
+obj/*
+UnityPackageManager/*
+
+*.userprefs
 *.swp
 *.sln
-Assets/*
 *.csproj
