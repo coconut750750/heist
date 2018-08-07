@@ -5,6 +5,7 @@ Assets/*
 .vscode/*
 obj/*
 UnityPackageManager/*
+ProjectSettings/*
 
 *.userprefs
 *.swp
