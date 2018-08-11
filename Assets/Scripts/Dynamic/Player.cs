@@ -94,6 +94,7 @@ public class Player : Character {
 		}
 
 		base.Attack(Constants.NPC_ONLY_LAYER);
+		EventManager.instance.OnPunch();
 		StartCoroutine(AttackDelay());
 	}
 

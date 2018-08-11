@@ -14,6 +14,10 @@ public class EventManager : MonoBehaviour {
 			Destroy(gameObject);
 		}
 	}
+
+	public void OnPunch() {
+		
+	}
 	
 	public void OnStealItem(NPC npc, Item item) {
 		QuestEventHandler.instance.OnStealItemQuest(npc, item);
