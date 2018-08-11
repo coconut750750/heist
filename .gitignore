@@ -1,7 +1,7 @@
 Library/*
 Builds/*
 Temp/*
-Assets/*
+Assets/Sprites/*
 .vscode/*
 obj/*
 UnityPackageManager/*
@@ -11,3 +11,6 @@ ProjectSettings/*
 *.swp
 *.sln
 *.csproj
+*.meta
+*.asset
+
