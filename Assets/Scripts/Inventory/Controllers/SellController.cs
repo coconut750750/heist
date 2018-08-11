@@ -52,7 +52,7 @@ public class SellController : MonoBehaviour {
 		npc.GetInventory().AddItem(sellingItem);
 		sellingItem.ChangedHands();
 
-		bool fulfilledQuest = QuestEventHandler.instance.OnSellQuestSuccessful(npc, sellingItem);
+		QuestEventHandler.instance.OnSellQuestSuccessful(npc, sellingItem);
 		Reset();
 
 		return true;

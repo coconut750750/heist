@@ -44,49 +44,41 @@ public class QuestEventHandler {
 		activeQuests.Remove(quest);
 	}
 	
-	public bool OnStealItemQuestSuccessful(NPC npc, Item item) {
+	public void OnStealItemQuestSuccessful(NPC npc, Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnStealItem(npc, item);
 			if (iterationHadCompletedQuestStage) {
-				return true;
 			}
 		}
-		return false;
 	}
 
-	public bool OnCraftItemQuestSuccessful(Item item) {
+	public void OnCraftItemQuestSuccessful(Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnCraftItem(item);
 			if (iterationHadCompletedQuestStage) {
-				return true;
 			}
 		}
-		return false;
 	}
 
-	public bool OnDefeatNPCQuestSuccessful(NPC npc) {
+	public void OnDefeatNPCQuestSuccessful(NPC npc) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnDefeatedNPC(npc);
 			if (iterationHadCompletedQuestStage) {
-				return true;
 			}
 		}
-		return false;
 	}
 
-	public bool OnSellQuestSuccessful(NPC npc, Item item) {
+	public void OnSellQuestSuccessful(NPC npc, Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnSellItem(npc, item);
 			if (iterationHadCompletedQuestStage) {
 				npc.GetInventory().RemoveItem(item);
-				return true;
 			}
 		}
-		return false;
 	}
 
 	public Quest[] GetActiveQuests() {
