@@ -250,6 +250,7 @@ public class NPC : Character {
 		displacement.z = 0;
 
 		if (displacement.sqrMagnitude > squaredStopRetaliateDist) {
+			opponent = null; // if opponent too far, set null to terminate all fighting
 			StartCoroutine(EndFight());
 		}
 

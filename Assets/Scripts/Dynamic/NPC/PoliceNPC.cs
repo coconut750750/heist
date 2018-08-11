@@ -16,7 +16,8 @@ public class PoliceNPC : NPC {
 	private Vector3[] patrolPath;
 	private int patrolIndex = 0;
 
-	// TODO: make this variable based on attack speed
+	protected bool isSuspicious = false;
+
 	private const float ATTACK_DELAY_SECONDS = 0.5f;
 	private bool canAttack = true;
 
@@ -31,9 +32,10 @@ public class PoliceNPC : NPC {
 
 	protected override void Start() {
 		base.Start();
+		// TODO: remove
 		base.SetStrength(1);
 
-		squaredStopRetaliateDist = 1000;
+		squaredStopRetaliateDist = 400;
 		
 		switch (patrolType) {
 			case PatrolType.Inner:
@@ -61,7 +63,9 @@ public class PoliceNPC : NPC {
 
 	protected override void NavArrived() {
 		base.NavArrived();
-		patrolIndex = (patrolIndex + 1) % patrolPath.Length;
+		if (!fighting) {
+			patrolIndex = (patrolIndex + 1) % patrolPath.Length;
+		}
 	}
 
 	protected override void SetNextDestination() {

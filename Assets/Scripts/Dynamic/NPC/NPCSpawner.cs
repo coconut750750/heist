@@ -14,7 +14,7 @@ using System.Linq;
 ///		RECALLING:
 ///			Recalling an NPC is merely just disabling the NPC. The spawner should not keep spawning random
 ///		NPCs. NPCs that existed in the past should be able to be spawned again. When it is time to recall
-///		an NPC, a random npcs is chosen. If it is awake and not in the range of the camera, it is recalled.
+///		an NPC, a random npc is chosen. If it is awake and not in the range of the camera, it is recalled.
 ///
 ///		SAVING and LOADING:
 /// 		saving: this class saves everything, and the NPCs spawned do not save themselves
