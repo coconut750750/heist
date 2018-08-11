@@ -82,6 +82,7 @@ public class QuestEventHandler {
 		foreach (Quest quest in activeQuests) {
 			quest.OnSellItem(npc, item);
 			if (iterationHadCompletedQuestStage) {
+				npc.GetInventory().RemoveItem(item);
 				return true;
 			}
 		}

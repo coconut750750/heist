@@ -43,17 +43,16 @@ public class SellController : MonoBehaviour {
 		if (sellingItem == null || !npcWillBuy) {
 			return false;
 		}
-		bool fulfilledQuest = QuestEventHandler.instance.OnSellQuestSuccessful(npc, sellingItem);
 
 		int currentMoney = GameManager.instance.mainPlayer.GetMoney();
 		GameManager.instance.mainPlayer.SetMoney(currentMoney + sellingPrice);
 
 		npc.SetMoney(npc.GetMoney() - sellingPrice);
-		if (!fulfilledQuest) {
-			npc.GetInventory().AddItem(sellingItem);
-			sellingItem.ChangedHands();
-		}
 
+		npc.GetInventory().AddItem(sellingItem);
+		sellingItem.ChangedHands();
+
+		bool fulfilledQuest = QuestEventHandler.instance.OnSellQuestSuccessful(npc, sellingItem);
 		Reset();
 
 		return true;
