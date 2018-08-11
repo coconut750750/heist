@@ -305,7 +305,7 @@ public class NPC : Character {
 			OnKnockout(this);
 		}
 		fighting = false;
-		QuestEventHandler.instance.OnDefeatNPCQuestSuccessful(this);
+		EventManager.instance.OnDefeatNPC(this);
 		interactable.OnKnockout();
 	}
 

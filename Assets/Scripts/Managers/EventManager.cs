@@ -16,15 +16,19 @@ public class EventManager : MonoBehaviour {
 	}
 	
 	public void OnStealItem(NPC npc, Item item) {
+		QuestEventHandler.instance.OnStealItemQuest(npc, item);
 	}
 
 	public void OnCraftItem(Item item) {
+		QuestEventHandler.instance.OnCraftItemQuest(item);
 	}
 
 	public void OnDefeatNPC(NPC npc) {
+		QuestEventHandler.instance.OnDefeatNPCQuest(npc);
 	}
 
 	public void OnSellItem(NPC npc, Item item) {
+		QuestEventHandler.instance.OnSellItemQuest(npc, item);
 	}
 
 

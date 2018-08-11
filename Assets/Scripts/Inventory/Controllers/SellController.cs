@@ -48,11 +48,10 @@ public class SellController : MonoBehaviour {
 		GameManager.instance.mainPlayer.SetMoney(currentMoney + sellingPrice);
 
 		npc.SetMoney(npc.GetMoney() - sellingPrice);
-
 		npc.GetInventory().AddItem(sellingItem);
 		sellingItem.ChangedHands();
 
-		QuestEventHandler.instance.OnSellQuestSuccessful(npc, sellingItem);
+		EventManager.instance.OnSellItem(npc, sellingItem);
 		Reset();
 
 		return true;

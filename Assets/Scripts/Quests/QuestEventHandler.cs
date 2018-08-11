@@ -44,7 +44,7 @@ public class QuestEventHandler {
 		activeQuests.Remove(quest);
 	}
 	
-	public void OnStealItemQuestSuccessful(NPC npc, Item item) {
+	public void OnStealItemQuest(NPC npc, Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnStealItem(npc, item);
@@ -53,7 +53,7 @@ public class QuestEventHandler {
 		}
 	}
 
-	public void OnCraftItemQuestSuccessful(Item item) {
+	public void OnCraftItemQuest(Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnCraftItem(item);
@@ -62,7 +62,7 @@ public class QuestEventHandler {
 		}
 	}
 
-	public void OnDefeatNPCQuestSuccessful(NPC npc) {
+	public void OnDefeatNPCQuest(NPC npc) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnDefeatedNPC(npc);
@@ -71,7 +71,7 @@ public class QuestEventHandler {
 		}
 	}
 
-	public void OnSellQuestSuccessful(NPC npc, Item item) {
+	public void OnSellItemQuest(NPC npc, Item item) {
 		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
 			quest.OnSellItem(npc, item);
