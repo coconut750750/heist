@@ -35,7 +35,7 @@ public class PoliceNPC : NPC {
 		// TODO: remove
 		base.SetStrength(1);
 
-		squaredStopRetaliateDist = 400;
+		squaredVisionDist = 400;
 		
 		switch (patrolType) {
 			case PatrolType.Inner:
@@ -47,9 +47,23 @@ public class PoliceNPC : NPC {
 		}
 	}
 
+	protected override void FixedUpdate() {
+		base.FixedUpdate();
+		UpdateSuspicion();
+	}
+
 	protected override void Retaliate() {
 		if (canAttack) {
 			base.Retaliate();
+		}
+	}
+
+	// if police is suspicious then loses sight of player, still suspicious
+	protected void UpdateSuspicion() {
+		if (GameManager.instance.mainPlayer.suspicion == 0) {
+			isSuspicious = false;
+		} else if (GameManager.instance.CanSeePlayer(transform.position, squaredVisionDist)) {
+			isSuspicious = true;
 		}
 	}
 
@@ -69,7 +83,7 @@ public class PoliceNPC : NPC {
 	}
 
 	protected override void SetNextDestination() {
-		Vector3 randomDest = patrolPath[patrolIndex];
-		SetNewDestination(randomDest);
+		Vector3 patrolDest = patrolPath[patrolIndex];
+		SetNewDestination(patrolDest);
 	}
 }

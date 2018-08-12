@@ -83,7 +83,7 @@ public class NPC : Character {
 	}
 
 	// fighting member variables
-	protected float squaredStopRetaliateDist = 100;
+	protected float squaredVisionDist = 100;
 	protected bool fighting = false;
 	protected Character opponent = null;
 
@@ -249,7 +249,7 @@ public class NPC : Character {
 		Vector3 displacement = opponent.transform.position - transform.position;
 		displacement.z = 0;
 
-		if (displacement.sqrMagnitude > squaredStopRetaliateDist) {
+		if (displacement.sqrMagnitude > squaredVisionDist) {
 			opponent = null; // if opponent too far, set null to terminate all fighting
 			StartCoroutine(EndFight());
 		}

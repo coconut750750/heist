@@ -186,7 +186,7 @@ public class NPCSpawner : MonoBehaviour {
 
 	// returns a vector 2 position out of range 
 	private Vector2? GenerateRandomNPCPos() {
-		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
+		Rect range = GameManager.instance.GetCameraRange(spawnRange + 2 * npcSize);
 		int side = Random.Range(0, 4);
 		Vector2 pos;
 
@@ -217,7 +217,7 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	private bool NpcIsInRange(NPC npc) {
-		Rect range = GameManager.instance.GetCurrentPlayerRange(spawnRange + 2 * npcSize);
+		Rect range = GameManager.instance.GetCameraRange(spawnRange + 2 * npcSize);
 
 		return range.Contains((Vector2)(npc.transform.position));
 	}
