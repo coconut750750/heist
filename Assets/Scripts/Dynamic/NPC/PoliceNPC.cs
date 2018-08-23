@@ -6,7 +6,7 @@ public class PoliceNPC : NPC {
 
 	public Building patrolBuilding;
 	
-	enum PatrolType {
+	public enum PatrolType {
 		Outer, Inner
 	}
 
@@ -36,15 +36,8 @@ public class PoliceNPC : NPC {
 		base.SetStrength(1);
 
 		squaredVisionDist = 400;
-		
-		switch (patrolType) {
-			case PatrolType.Inner:
-				patrolPath = patrolBuilding.GetInnerPatrol(transform.position);
-				break;
-			default:
-				patrolPath = patrolBuilding.GetOuterPatrol(transform.position);
-				break;
-		}
+
+		SetPatrol(patrolBuilding, patrolType);
 	}
 
 	protected override void FixedUpdate() {
@@ -79,6 +72,18 @@ public class PoliceNPC : NPC {
 		base.NavArrived();
 		if (!fighting) {
 			patrolIndex = (patrolIndex + 1) % patrolPath.Length;
+		}
+	}
+
+	protected void SetPatrol(Building building, PatrolType patrolType) {
+		this.patrolBuilding = building;
+		switch (patrolType) {
+			case PatrolType.Inner:
+				patrolPath = building.GetInnerPatrol(transform.position);
+				return;
+			default:
+				patrolPath = building.GetOuterPatrol(transform.position);
+				return;
 		}
 	}
 

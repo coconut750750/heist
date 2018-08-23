@@ -29,7 +29,7 @@ public class Player : Character {
 	[SerializeField]
 	private Text expText;
 
-	public int suspicion = 0; // 0 (nothing wrong), 1 (chase after), 2 (beat down), 3 (reinforcements required)
+	public int suspicion = 0; // 0 (nothing wrong), 1 (chase after), 2 (beat down), 3 (all police suspicious unless signal jammed)
 
 	private bool canAttack = true;
 	IEnumerator AttackDelay() {
