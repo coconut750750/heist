@@ -20,6 +20,10 @@ public class SellingQuestStage : QuestStage
         return item.itemName == itemRequirement;
     }
 
+    public string ItemRequirement() {
+        return itemRequirement;
+    }
+
     public override string GetDetails() {
         return QUEST_DETAILS + itemRequirement;
     }

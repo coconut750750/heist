@@ -15,8 +15,6 @@ public class QuestEventHandler {
 
 	private List<Quest> activeQuests;
 
-	private bool iterationHadCompletedQuestStage;
-
 	public QuestEventHandler() {
 		activeQuests = new List<Quest>();
 		instance = this;
@@ -40,43 +38,41 @@ public class QuestEventHandler {
 	}
 
 	public void CompleteQuestStage(Quest quest) {
-		iterationHadCompletedQuestStage = true;
 		activeQuests.Remove(quest);
 	}
 	
 	public void OnStealItemQuest(NPC npc, Item item) {
-		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
-			quest.OnStealItem(npc, item);
-			if (iterationHadCompletedQuestStage) {
+			if (quest.FulfillSteal(npc, item)) {
+				quest.CompleteQuestStage();
+				break;
 			}
 		}
 	}
 
 	public void OnCraftItemQuest(Item item) {
-		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
-			quest.OnCraftItem(item);
-			if (iterationHadCompletedQuestStage) {
+			if (quest.FulfillCraft(item)) {
+				quest.CompleteQuestStage();
+				break;
 			}
 		}
 	}
 
 	public void OnDefeatNPCQuest(NPC npc) {
-		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
-			quest.OnDefeatedNPC(npc);
-			if (iterationHadCompletedQuestStage) {
+			if (quest.FulfillDefeat(npc)) {
+				quest.CompleteQuestStage();
+				break;
 			}
 		}
 	}
 
 	public void OnSellItemQuest(NPC npc, Item item) {
-		iterationHadCompletedQuestStage = false;
 		foreach (Quest quest in activeQuests) {
-			quest.OnSellItem(npc, item);
-			if (iterationHadCompletedQuestStage) {
-				npc.GetInventory().RemoveItem(item);
+			if (quest.FulfillSell(npc, item)) {
+				quest.CompleteQuestStage();
+				break;
 			}
 		}
 	}

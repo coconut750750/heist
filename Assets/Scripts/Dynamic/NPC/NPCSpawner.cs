@@ -41,7 +41,7 @@ public class NPCSpawner : MonoBehaviour {
 	public Nav2D polyNav;
 
 	private List<NPC> npcs;
-	private List<int> npcIndicies;
+	private List<int> npcAnimIndexes;
 	private List<bool> npcAwake;
 
 	private int numAwakeNpcs;
@@ -74,14 +74,14 @@ public class NPCSpawner : MonoBehaviour {
 		} else if (instance != this) {
 			Destroy(gameObject);
 		}
+
+		npcs = new List<NPC>();
+		npcAnimIndexes = new List<int>();
+		npcAwake = new List<bool>();
+		numAwakeNpcs = 0;
 	}
 
 	void Start () {
-		npcs = new List<NPC>();
-		npcIndicies = new List<int>();
-		npcAwake = new List<bool>();
-		numAwakeNpcs = 0;
-		
 		StartCoroutine(AlterDelay());
 	}
 	
@@ -126,14 +126,14 @@ public class NPCSpawner : MonoBehaviour {
 		instance.OnKnockout += OnNPCKnockOut;
 
 		npcs.Add(instance);
-		npcIndicies.Add(index);
+		npcAnimIndexes.Add(index);
 		npcAwake.Add(true);
 		numAwakeNpcs++;
 
 		return instance;
 	}
 
-	void Spawn() {
+	public void Spawn() {
 		if (!canAlterNpcCount) {
 			return;
 		}
@@ -144,8 +144,7 @@ public class NPCSpawner : MonoBehaviour {
 		}
 		
 		if (npcs.Count < PEAK_MAX) {
-			InstantiateNPC(Random.Range(0, NPCManager.instance.npcTypes), (Vector2)pos);
-			StartCoroutine(AlterDelay());
+			SpawnUnconditionally(pos);
 		} else {
 			int npcIndex = Random.Range(0, npcAwake.Count);
 			if (!npcAwake[npcIndex]) {
@@ -153,6 +152,11 @@ public class NPCSpawner : MonoBehaviour {
 				StartCoroutine(AlterDelay());
 			}
 		}
+	}
+
+	public void SpawnUnconditionally(Vector2? pos) {
+		InstantiateNPC(Random.Range(0, NPCManager.instance.npcTypes), (Vector2)pos);
+		StartCoroutine(AlterDelay());
 	}
 
 	// deactivates but doesn't delete
@@ -190,24 +194,25 @@ public class NPCSpawner : MonoBehaviour {
 		int side = Random.Range(0, 4);
 		Vector2 pos;
 
+		float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
+		float x = Mathf.Round(Random.Range(range.min.x, range.max.x));
+
 		switch (side) {
 			case 0: // left
-				float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-				pos = new Vector2(Mathf.Round(range.min.x - 1), y);
+				x = Mathf.Round(range.min.x - 1);
 				break;
 			case 1: // top
-				float x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-				pos = new Vector2(x, Mathf.Round(range.max.y + 1));
+				y = Mathf.Round(range.max.y + 1);
 				break;
 			case 2: // right
-				y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-				pos = new Vector2(Mathf.Round(range.max.x + 1), y);
+				x = Mathf.Round(range.max.x + 1);
 				break;
 			default: // down
-				x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-				pos = new Vector2(x, Mathf.Round(range.min.y - 1));
+				y = Mathf.Round(range.min.y - 1);
 				break;
 		}
+
+		pos = new Vector2(x, y);
 
 		if (polyNav.PointIsValid(pos)) {
 			return pos;
@@ -234,7 +239,7 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	public int[] GetNpcIndicies() {
-		return npcIndicies.ToArray();
+		return npcAnimIndexes.ToArray();
 	}
 
 	public bool[] GetNpcAwake() {
@@ -258,6 +263,10 @@ public class NPCSpawner : MonoBehaviour {
 			}
 		}
 		return null;
+	}
+
+	public NPC GetRandomNpc() {
+		return GetRandomNpcs(1, new string[]{})[0];
 	}
 
 	/// <summary> Gets { count } random NPCs excluing { exclude }</summary>
@@ -292,7 +301,7 @@ public class NPCSpawner : MonoBehaviour {
 			int count = data.numNpcs;
 
 			for (int i = 0; i < count; i++) {
-				NPC instance = InstantiateNPC(data.npcIndicies[i], Vector2.zero);
+				NPC instance = InstantiateNPC(data.npcAnimIndexes[i], Vector2.zero);
 				instance.LoadFromData(data.npcDatas[i]);
 
 				if (!data.npcAwake[i] || instance.IsKnockedOut()) {
@@ -305,7 +314,7 @@ public class NPCSpawner : MonoBehaviour {
 	[System.Serializable]
 	public class NPCSpawnerData : GameData {
 		public int numNpcs;
-		public int[] npcIndicies;
+		public int[] npcAnimIndexes;
 		public bool[] npcAwake;
 
 		public int numAwakeNpcs;
@@ -314,7 +323,7 @@ public class NPCSpawner : MonoBehaviour {
 
 		public NPCSpawnerData(NPCSpawner spawner) {
 			numNpcs = spawner.NumNpcs();
-			npcIndicies = spawner.GetNpcIndicies();
+			npcAnimIndexes = spawner.GetNpcIndicies();
 			npcAwake = spawner.GetNpcAwake();
 
 			numAwakeNpcs = spawner.GetNumAwakeNpcs();

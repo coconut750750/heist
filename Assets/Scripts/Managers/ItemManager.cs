@@ -90,7 +90,6 @@ public class ItemManager : MonoBehaviour {
 	private Item[] GetFilteredItems(List<Item> originalList, IEnumerable<Item> exclude) {
 		exclude = exclude.Where(item => item != null).ToArray();
 		string[] excludeNames = exclude.Select(item => item.itemName).ToArray();
-		Item[] excluded = originalList.Where(item => !excludeNames.Contains(item.itemName)).ToArray();
-		return excluded;
+		return originalList.Where(item => !excludeNames.Contains(item.itemName)).ToArray();
 	}
 }

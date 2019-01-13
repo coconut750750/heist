@@ -87,20 +87,20 @@ public abstract class Quest {
 		QuestManager.instance.OnCompleteEntireQuest(this);
 	}
 
-	public virtual void OnStealItem(NPC npc, Item item) {
-		return;
+	public virtual bool FulfillSteal(NPC npc, Item item) {
+		return false;
 	}
 
-	public virtual void OnCraftItem(Item item) {
-		return;
+	public virtual bool FulfillCraft(Item item) {
+		return false;
 	}
 
-	public virtual void OnDefeatedNPC(NPC npc) {
-		return;
+	public virtual bool FulfillDefeat(NPC npc) {
+		return false;
 	}
 
-	public virtual void OnSellItem(NPC npc, Item item) {
-		return;
+	public virtual bool FulfillSell(NPC npc, Item item) {
+		return false;
 	}
 
 	public bool IsActive() {

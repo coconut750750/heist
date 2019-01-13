@@ -250,8 +250,8 @@ public class NPC : Character {
 		displacement.z = 0;
 
 		if (displacement.sqrMagnitude > squaredVisionDist) {
-			opponent = null; // if opponent too far, set null to terminate all fighting
-			StartCoroutine(EndFight());
+			StartCoroutine(EndFight()); // if opponent too far, set null to terminate all fighting
+			return;
 		}
 
 		// this means npc far enough to update dest

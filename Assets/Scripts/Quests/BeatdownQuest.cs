@@ -49,11 +49,9 @@ public class BeatdownQuest : Quest {
         }
     }
 
-    public override void OnDefeatedNPC(NPC npc) {
+    public override bool FulfillDefeat(NPC npc) {
         BeatdownQuestStage stage = GetCurrentStage<BeatdownQuestStage>();
-        if (stage.FulfillsRequirement(npc)) {
-            CompleteQuestStage();
-        }
+        return stage.FulfillsRequirement(npc);
 	}
 
     public override QuestData SaveIntoData() {

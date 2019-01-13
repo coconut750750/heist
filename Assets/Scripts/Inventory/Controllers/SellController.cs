@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class SellController : MonoBehaviour {
 
+	public static SellController instance = null;
+
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	[SerializeField]
@@ -21,6 +23,11 @@ public class SellController : MonoBehaviour {
 	private bool npcWillBuy;
 
 	void Awake () {		
+		if (instance == null) {
+			instance = this;
+		} else {
+			Destroy(this);
+		}
 		sellingStash.OnAdded += SellItemEntered;
 		sellingStash.OnRemoved += SellItemRemoved;
 	}
@@ -73,7 +80,7 @@ public class SellController : MonoBehaviour {
 		}
 	}
 
-	private void SellItemEntered(Item item) {
+	public void SellItemEntered(Item item) {
 		sellingItem = item;
 		sellingPrice = Mathf.RoundToInt(sellingItem.GetValue() * NPC.BUY_PERC);
 		priceText.text = sellingPrice.ToString();
@@ -81,7 +88,7 @@ public class SellController : MonoBehaviour {
 		UpdateButtons();
 	}
 
-	private void SellItemRemoved() {
+	public void SellItemRemoved() {
 		sellingItem = null;
 		sellingPrice = -1;
 		priceText.text = EMPTY_PRICE_TEXT;

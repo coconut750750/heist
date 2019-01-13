@@ -32,15 +32,20 @@ public class SellingQuest : Quest {
 
         return stages;
     }
+
+    public override void CompleteQuestStage() {
+        string itemName = GetCurrentStage<SellingQuestStage>().ItemRequirement();
+        reporter.GetInventory().RemoveItemByName(itemName);
+        
+        base.CompleteQuestStage();
+    }
     
-    public override void OnSellItem(NPC npc, Item item)
+    public override bool FulfillSell(NPC npc, Item item)
     {
         if (npc != reporter) {
-            return;
+            return false;
         }
-        if (GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item)) {
-            CompleteQuestStage();
-        }
+        return GetCurrentStage<SellingQuestStage>().FulfillsRequirement(item);
     }
 
     public override QuestData SaveIntoData() {

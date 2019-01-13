@@ -77,7 +77,7 @@ public class NPCInteractable : Interactable {
 
     private void StartInteraction() {
         activeInstance = this;
-        player.DisableButtonB();
+        Interactable.buttonB.Disable();
 
         npc.Pause();
         player.Pause();
@@ -93,7 +93,7 @@ public class NPCInteractable : Interactable {
         if (activeInstance == this) {
             activeInstance = null;
         }
-        player.EnableButtonB();
+        Interactable.buttonB.Enable();
 
         DestroyInteractPopups();
 

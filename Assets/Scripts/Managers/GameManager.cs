@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private Map map;
 
+	public bool save = true;
+
 	// in game clock
 	private int day = 1;
 	private int hour;
@@ -159,6 +161,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void SaveAll() {
+		if (!save) {
+			return;
+		}
 		// item stashes
 		ItemStash[] itemStashes = FindObjectsOfType<ItemStash>();
 		foreach (ItemStash itemStash in itemStashes) {

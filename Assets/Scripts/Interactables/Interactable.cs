@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public abstract class Interactable : MonoBehaviour {
     public static ActionButton buttonA;
+    public static ButtonB buttonB;
+
     protected static Player player;
 
     private UnityAction call = null;
@@ -17,6 +19,12 @@ public abstract class Interactable : MonoBehaviour {
             buttonA = buttonObj.GetComponent<ActionButton>();
             buttonA.Disable();
         }
+
+        if (buttonB == null) {
+            GameObject buttonObj = GameObject.Find(Constants.BUTTON_B_TAG);
+            buttonB = buttonObj.GetComponent<ButtonB>();
+        }
+
         if (player == null) {
             player = GameObject.Find(Constants.PLAYER_TAG).GetComponent<Player>();
         }

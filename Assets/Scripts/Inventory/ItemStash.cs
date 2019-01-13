@@ -71,6 +71,19 @@ public abstract class ItemStash : MonoBehaviour {
 		return null;
 	}
 
+	public bool ContainsItem(Item item) {
+		if (item == null) {
+			return false;
+		}
+
+		for (int i = 0; i < capacity; i++) {
+			if (items[i] != null && items[i].name == item.name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public virtual bool RemoveItemAtIndex(int index) {
 		if (count != 0 && items[index] != null) {
 			count--;
@@ -82,12 +95,19 @@ public abstract class ItemStash : MonoBehaviour {
 	}
 
 	public void RemoveItem(Item itemToRemove) {
+		if (itemToRemove == null) {
+			return;
+		}
+		RemoveItemByName(itemToRemove.name);
+	}
+
+	public void RemoveItemByName(string itemName) {
 		if (count == 0) {
 			return;
 		}
 
 		for (int i = 0; i < capacity; i++) {
-			if (items[i] != null && items[i] == itemToRemove) {
+			if (items[i] != null && items[i].itemName == itemName) {
 				RemoveItemAtIndex(i);
 				return;
 			}

@@ -9,7 +9,7 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour {
 
 	public const int MAX_OUTSTANDING_QUESTS = 5;
-	public static string saveFile = "questmanager.dat";
+	public const string SAVE_FILE = "questmanager.dat";
 
 	public static QuestManager instance = null;
 
@@ -48,15 +48,23 @@ public class QuestManager : MonoBehaviour {
 		return quest;
 	}
 
+	public int NumOutstanding() {
+		return outstandingQuests.Count;
+	}
+
+	public int NumActive() {
+		return eventHandler.GetActiveQuests().Length;
+	}
+
 	void Update() {
 		if (outstandingQuests.Count < MAX_OUTSTANDING_QUESTS &&
 			NPCSpawner.instance.NumNpcs() > 0) {
-			NPC npc = NPCSpawner.instance.GetRandomNpcs(1, new string[]{})[0];
+			NPC npc = NPCSpawner.instance.GetRandomNpc();
 			if (!npc.hasQuest) {
 				Quest newQuest = GetRandomQuest(npc);
 				if (newQuest != null) {
 					npc.ReceiveQuest();
-					outstandingQuests.Add(newQuest);
+					AddOutstandingQuest(newQuest);
 				}
 			}
 		}
@@ -69,6 +77,10 @@ public class QuestManager : MonoBehaviour {
 			}
 		}
 		return null;
+	}
+
+	public void AddOutstandingQuest(Quest quest) {
+		outstandingQuests.Add(quest);
 	}
 
 	public void AddActiveQuest(Quest quest) {
@@ -97,12 +109,13 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	public void Save() {
+		string saveFile = Application.persistentDataPath + "/" + SAVE_FILE;
 		QuestManagerData data = new QuestManagerData(this);
 		GameManager.Save(data, saveFile);
 	}
 
 	public void Load() {
-		saveFile = Application.persistentDataPath + "/" + saveFile;
+		string saveFile = Application.persistentDataPath + "/" + SAVE_FILE;
 
 		QuestManagerData data = GameManager.Load<QuestManagerData>(saveFile);
 		if (data == null) {
