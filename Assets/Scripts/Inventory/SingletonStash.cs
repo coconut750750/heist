@@ -53,10 +53,4 @@ public abstract class SingletonStash : ItemStash {
 			
 		return success;
 	}
-
-	public override void DeselectAll() {
-		for (int i = 0; i < capacity; i++) {
-			itemSlots[i].Deselect();
-		}
-	}
 }

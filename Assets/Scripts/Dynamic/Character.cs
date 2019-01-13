@@ -107,7 +107,8 @@ public abstract class Character : MonoBehaviour {
 		return !paused && !GameManager.instance.IsPaused() && health > 0;
 	}
 
-	private void Face(AnimationDirection direction, int currentAnimStateHash) {
+	protected void Face(AnimationDirection direction) {
+		int currentAnimStateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
 		switch (direction) {
 			case AnimationDirection.Forward:
 				if (currentAnimStateHash != forwardStateHash) {
@@ -134,11 +135,6 @@ public abstract class Character : MonoBehaviour {
 				}
 				return;
 		}
-	}
-
-	protected void Face(AnimationDirection direction) {
-		int stateHash = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
-		Face(direction, stateHash);
 	}
 
 	protected void UpdateAnimator(Vector3 movement) {

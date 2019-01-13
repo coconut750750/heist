@@ -107,8 +107,4 @@ public class SellController : MonoBehaviour {
 	public void HideSellingStash() {
 		sellingStash.Hide();
 	}
-
-	public void DeselectAll() {
-		sellingStash.DeselectAll();
-	}
 }

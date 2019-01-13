@@ -99,36 +99,24 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		return this.itemImage;
 	}
 
-	// TODO: move this somewhere else
-	private void DeselectAllStashes() {
-		if (parentStash != StashDisplayer.instance) {
-			StashDisplayer.instance.DeselectAll();
-		}
-		if (parentStash != GameManager.instance.mainPlayer.GetPocket()) {
-			GameManager.instance.mainPlayer.GetPocket().DeselectAll();
-		}
-		if (GameManager.instance.IsPaused()) {
-			if (PauseMenu.instance.isActiveAndEnabled) {
-				PauseMenu.instance.GetActiveStash().DeselectAll();
-			} else if (NPCTrade.instance.isActiveAndEnabled) {
-				NPCTrade.instance.DeselectAll();
-			}
-		}
-
-		if (parentStash != null) {
-			parentStash.DeselectAll();
+	private void DeselectAllSlots() {
+		ItemSlot[] itemSlots = GameObject.FindObjectsOfType<ItemSlot>();
+		foreach (ItemSlot slot in itemSlots) {
+			slot.Deselect();
 		}
 	}
 
 	public void Select() {
-		DeselectAllStashes();
-		
-		selected = true;
-		SetSelectedItemInfo(item.itemName, item.quality + "%");
-		itemBack.color = SELECTED_COLOR;
+		if (!selected) {
+			DeselectAllSlots();
+			
+			selected = true;
+			SetSelectedItemInfo(item.itemName, item.quality + "%");
+			itemBack.color = SELECTED_COLOR;
 
-		if (OnSelected != null) {
-			OnSelected(this.item, index);
+			if (OnSelected != null) {
+				OnSelected(this.item, index);
+			}
 		}
 	}
 
@@ -142,7 +130,6 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 
 	public void Deselect() {
 		if (selected) {
-			
 			selected = false;
 			SetSelectedItemInfo("", "");
 			itemBack.color = DEFAULT_COLOR;

@@ -93,15 +93,6 @@ public class NPCTrade : MonoBehaviour {
 		sellController.Reset();
 	}
 
-	public void DeselectAll() {
-		tradeController.DeselectAll();
-		sellController.DeselectAll();
-		
-		for (int i = 0; i < itemSlots.Length; i++) {
-            itemSlots[i].Deselect();
-        }
-	}
-
 	public Inventory GetNPCInventory() {
 		return npcInventory;
 	}

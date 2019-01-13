@@ -59,21 +59,19 @@ public class Player : Character
         float moveHorizontal = 0;
         float moveVertical = 0;
 
-        Vector3 movement;
 #if UNITY_STANDALONE || UNITY_WEBPLAYER
 
         moveHorizontal = Input.GetAxis(Constants.HORIZONTAL);
         moveVertical = Input.GetAxis(Constants.VERTICAL);
-        movement = new Vector3(moveHorizontal, moveVertical, 0f);
 
 #elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
 
 		moveHorizontal = CrossPlatformInputManager.GetAxis(Constants.HORIZONTAL);
 		moveVertical = CrossPlatformInputManager.GetAxis(Constants.VERTICAL);
-		movement = new Vector3(moveHorizontal, moveVertical, 0f);
 
 #endif
 
+        Vector3 movement = new Vector3(moveHorizontal, moveVertical, 0f);
         Move(movement.normalized);
     }
 

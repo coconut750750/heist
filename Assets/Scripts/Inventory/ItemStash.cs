@@ -142,8 +142,6 @@ public abstract class ItemStash : MonoBehaviour {
 
 	public abstract bool IsDisplaying();
 
-	public abstract void DeselectAll();
-
 	public void Log() {
 		Debug.Log(ToString());
 	}

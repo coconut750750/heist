@@ -9,7 +9,6 @@ public class ButtonB : MonoBehaviour {
 
 	protected ActionButton action;
 
-	// Use this for initialization
 	void Start () {
 		action = GetComponent<ActionButton>();
 		action.AddAction(delegate {

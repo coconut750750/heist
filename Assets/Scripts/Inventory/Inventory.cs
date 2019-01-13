@@ -52,15 +52,7 @@ public class Inventory : ItemStash {
     public override bool IsDisplaying() {
         return isDisplaying;
     }
-
-    public override void DeselectAll() {
-        if (isDisplaying && StashDisplayer.instance.isActiveAndEnabled) {
-            StashDisplayer.instance.DeselectAll();
-		} else if (isDisplaying && NPCTrade.instance.isActiveAndEnabled) {
-            NPCTrade.instance.DeselectAll();
-        }
-    }
-
+    
     public override void Save() {
         if (independent) {
             ItemStashData data = new ItemStashData(this);

@@ -141,8 +141,4 @@ public class TradeController : MonoBehaviour {
 	public void HideTradingStash() {
 		tradingStash.Hide();
 	}
-
-	public void DeselectAll() {
-		tradingStash.DeselectAll();
-	}
 }
