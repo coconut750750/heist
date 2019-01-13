@@ -57,17 +57,19 @@ public class NPCQuest : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
+	// Used by the AcceptButton GameObject
 	public void AcceptedQuest() {
+		DisableButtons();
+		Hide();
+
 		try {
 			quest.OnAccept();
 		} catch (QuestOverflowException) {
 			return;
 		}
-		
-		DisableButtons();
-		Hide();
 	}
 
+	// Used by the RejectButton GameObject
 	public void RejectedQuest() {
 		quest.OnReject();
 		DisableButtons();

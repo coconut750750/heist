@@ -90,21 +90,28 @@ public class NPCSpawner : MonoBehaviour {
 			return;
 		}
 
+		if (!canAlterNpcCount) {
+			return;
+		}
+
 		int hour = GameManager.instance.GetHour();
 
+		int min = numAwakeNpcs;
+		int max = numAwakeNpcs;
+
 		if (END_BASE_HOUR <= hour && hour < END_PEAK_HOUR) {
-			if (numAwakeNpcs < PEAK_MIN) {
-				Spawn();
-			} else if (numAwakeNpcs > PEAK_MAX) {
-				Recall();
-			}
+			min = PEAK_MIN;
+			max = PEAK_MAX;
 		} else if (hour < END_BASE_HOUR || END_PEAK_HOUR <= hour) {
-			if (numAwakeNpcs < BASE_MIN) {
-				Spawn();
-			} else if (numAwakeNpcs > BASE_MAX) {
-				Recall();
-			}
+			min = BASE_MIN;
+			max = BASE_MAX;
 		} 
+
+		if (numAwakeNpcs < max) {
+			Spawn();
+		} else if (numAwakeNpcs > min) {
+			Recall();
+		}
 	}
 
 	private void ActivateNPC(int npcIndex) {
@@ -133,11 +140,7 @@ public class NPCSpawner : MonoBehaviour {
 		return instance;
 	}
 
-	public void Spawn() {
-		if (!canAlterNpcCount) {
-			return;
-		}
-
+	private void Spawn() {
 		Vector2? pos = GenerateRandomNPCPos();
 		if (pos == null) {
 			return;
@@ -146,25 +149,22 @@ public class NPCSpawner : MonoBehaviour {
 		if (npcs.Count < PEAK_MAX) {
 			SpawnUnconditionally(pos);
 		} else {
-			int npcIndex = Random.Range(0, npcAwake.Count);
-			if (!npcAwake[npcIndex]) {
-				ActivateNPC(npcIndex);
-				StartCoroutine(AlterDelay());
-			}
+			int[] unawakeIndexes = Enumerable.Range(0, npcAwake.Count).Where(i => !npcAwake[i]).ToArray();
+
+			int unawakeIndex = Random.Range(0, unawakeIndexes.Length);
+			int npcIndex = unawakeIndexes[unawakeIndex];
+
+			ActivateNPC(npcIndex);
 		}
+		StartCoroutine(AlterDelay());
 	}
 
 	public void SpawnUnconditionally(Vector2? pos) {
 		InstantiateNPC(Random.Range(0, NPCManager.instance.npcTypes), (Vector2)pos);
-		StartCoroutine(AlterDelay());
 	}
 
 	// deactivates but doesn't delete
 	private void Recall() {
-		if (!canAlterNpcCount) {
-			return;
-		}
-
 		int npcIndex = Random.Range(0, npcs.Count);
 		if (CanRecallNPC(npcIndex)) {
 			RecallUnconditionally(npcIndex);

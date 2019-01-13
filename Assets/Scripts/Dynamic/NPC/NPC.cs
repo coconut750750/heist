@@ -115,18 +115,17 @@ public class NPC : Character {
 		interactable = gameObject.GetComponent<NPCInteractable>();
 
 		UpdateSortingLayer();
-	}
 
-	protected override void Start() {
-		base.Start();
-		
 		// add callback functions for the agent
 		agent.OnDestinationReached += NavArrived;
 		agent.OnSetVelocity += Move;
 		agent.OnNavigationStarted += NavStarted;
 		agent.OnDestinationInvalid += DestinationInvalid;
-
 		agent.maxSpeed = moveSpeed;
+	}
+
+	protected override void Start() {
+		base.Start();
 
 		SetName(npcName);
 	}
@@ -394,14 +393,10 @@ public class NPC : Character {
 	private void UpdateVisibility() {
 		this.visibleByCamera = GetFloor() == GameManager.instance.GetVisibleFloor();
 		GetComponent<NPCInteractable>().SetEnabled(visibleByCamera);
-		
-		if (GetFloor() > GameManager.instance.GetVisibleFloor()) {
-			GetComponent<SpriteRenderer>().enabled = false;
-			animator.enabled = false;
-		} else {
-			GetComponent<SpriteRenderer>().enabled = true;
-			animator.enabled = true;
-		}
+
+		bool visible = GetFloor() <= GameManager.instance.GetVisibleFloor();
+		GetComponent<SpriteRenderer>().enabled = visible;
+		animator.enabled = visible;
 	}
 
 	public Inventory GetInventory() {

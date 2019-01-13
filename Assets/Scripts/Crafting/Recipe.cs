@@ -18,6 +18,7 @@ public class Recipe : ScriptableObject {
 		}
 	}
 
+	// Unused items are items that are required for crafting but are not exhausted
 	public int NumUnused() {
 		return unusedIndicies.Length;
 	}

@@ -64,7 +64,7 @@ public class PlayerTest {
 
 		yield return null;
 
-		player.RemoveItemAtIndex(0);
+		player.GetPocket().RemoveAll();
 	}
 
 	[UnityTest]
@@ -83,9 +83,7 @@ public class PlayerTest {
 
 		Assert.False(player.CanAddItem());
 
-		for (int i = 0; i < Pocket.NUM_ITEMS; i++) {
-			player.RemoveItemAtIndex(i);
-		}
+		player.GetPocket().RemoveAll();
 	}
 
 	[TearDown]
