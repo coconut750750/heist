@@ -29,6 +29,8 @@ public class Player : Character {
 	[SerializeField]
 	private Text expText;
 
+	public int suspicion = 0; // 0 (nothing wrong), 1 (chase after), 2 (beat down), 3 (all police suspicious unless signal jammed)
+
 	private bool canAttack = true;
 	IEnumerator AttackDelay() {
 		canAttack = false;
@@ -193,6 +195,7 @@ public class Player : Character {
 		
         if (data != null) {
 			base.LoadFromData(data);
+			this.suspicion = data.suspicion;
 			UpdateUIInfo();
 		}
     }
@@ -200,13 +203,15 @@ public class Player : Character {
 	[System.Serializable]
 	public class PlayerData : Character.CharacterData {
 
+		public int suspicion;
+
 		public PlayerData() {
 			base.SetPositionalData(Player.START_POS);
 			base.SetStats(0, 0, 0, 0);
 		}
 
 		public PlayerData(Player player) : base(player) {
-
+			this.suspicion = player.suspicion;
 		}
 	}
 }

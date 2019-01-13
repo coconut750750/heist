@@ -6,7 +6,7 @@ public class PoliceNPC : NPC {
 
 	public Building patrolBuilding;
 	
-	enum PatrolType {
+	public enum PatrolType {
 		Outer, Inner
 	}
 
@@ -16,7 +16,8 @@ public class PoliceNPC : NPC {
 	private Vector3[] patrolPath;
 	private int patrolIndex = 0;
 
-	// TODO: make this variable based on attack speed
+	protected bool isSuspicious = false;
+
 	private const float ATTACK_DELAY_SECONDS = 0.5f;
 	private bool canAttack = true;
 
@@ -31,23 +32,31 @@ public class PoliceNPC : NPC {
 
 	protected override void Start() {
 		base.Start();
+		// TODO: remove
 		base.SetStrength(1);
 
-		squaredStopRetaliateDist = 1000;
-		
-		switch (patrolType) {
-			case PatrolType.Inner:
-				patrolPath = patrolBuilding.GetInnerPatrol(transform.position);
-				break;
-			default:
-				patrolPath = patrolBuilding.GetOuterPatrol(transform.position);
-				break;
-		}
+		squaredVisionDist = 400;
+
+		SetPatrol(patrolBuilding, patrolType);
+	}
+
+	protected override void FixedUpdate() {
+		base.FixedUpdate();
+		UpdateSuspicion();
 	}
 
 	protected override void Retaliate() {
 		if (canAttack) {
 			base.Retaliate();
+		}
+	}
+
+	// if police is suspicious then loses sight of player, still suspicious
+	protected void UpdateSuspicion() {
+		if (GameManager.instance.mainPlayer.suspicion == 0) {
+			isSuspicious = false;
+		} else if (GameManager.instance.CanSeePlayer(transform.position, squaredVisionDist)) {
+			isSuspicious = true;
 		}
 	}
 
@@ -61,11 +70,25 @@ public class PoliceNPC : NPC {
 
 	protected override void NavArrived() {
 		base.NavArrived();
-		patrolIndex = (patrolIndex + 1) % patrolPath.Length;
+		if (!fighting) {
+			patrolIndex = (patrolIndex + 1) % patrolPath.Length;
+		}
+	}
+
+	protected void SetPatrol(Building building, PatrolType patrolType) {
+		this.patrolBuilding = building;
+		switch (patrolType) {
+			case PatrolType.Inner:
+				patrolPath = building.GetInnerPatrol(transform.position);
+				return;
+			default:
+				patrolPath = building.GetOuterPatrol(transform.position);
+				return;
+		}
 	}
 
 	protected override void SetNextDestination() {
-		Vector3 randomDest = patrolPath[patrolIndex];
-		SetNewDestination(randomDest);
+		Vector3 patrolDest = patrolPath[patrolIndex];
+		SetNewDestination(patrolDest);
 	}
 }

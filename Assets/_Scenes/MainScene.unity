@@ -58714,7 +58714,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 140.51282
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -58864,7 +58864,7 @@ Prefab:
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -60.25641
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -58889,7 +58889,7 @@ Prefab:
     - target: {fileID: 224946468684004354, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -105.51282
+      value: -105
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -128124,7 +128124,7 @@ Prefab:
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 140.51282
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 224300438830390580, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -128249,7 +128249,7 @@ Prefab:
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -60.25641
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -128294,7 +128294,7 @@ Prefab:
     - target: {fileID: 224946468684004354, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -105.51282
+      value: -105
       objectReference: {fileID: 0}
     - target: {fileID: 224066443230796526, guid: 2681a6355490342d1a865072f01101bb,
         type: 2}
@@ -130669,7 +130669,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 90.38461, y: 0}
+  m_AnchoredPosition: {x: 90.3125, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1346591969
@@ -142425,6 +142425,8 @@ MonoBehaviour:
     type: 2}
   npcAnimators:
   - {fileID: 9100000, guid: b98b92f45ea684a31b4d4e246bbcdeb7, type: 2}
+  - {fileID: 9100000, guid: 2a9a486b7a18a4408b067b6e701a9f18, type: 2}
+  - {fileID: 9100000, guid: 0ead9443baf20488da54edf2228dea2a, type: 2}
   npcTypes: 0
   namesAsset: {fileID: 4900000, guid: 695762e8752cb4da4a8227154bc5e9a4, type: 3}
 --- !u!114 &1610415461
@@ -146688,7 +146690,7 @@ Prefab:
         type: 2}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 39526bcce19004d02b9db0285e9120e6, type: 2}
+      objectReference: {fileID: 9100000, guid: 0ead9443baf20488da54edf2228dea2a, type: 2}
     - target: {fileID: 1202737420108178, guid: 713106729ff70498881b148df9f4cf4c, type: 2}
       propertyPath: m_Layer
       value: 11
@@ -146737,6 +146739,7 @@ MonoBehaviour:
   moneyText: {fileID: 1884037457}
   healthText: {fileID: 1946776567}
   expText: {fileID: 167766736}
+  suspicion: 0
 --- !u!1 &1933945139
 GameObject:
   m_ObjectHideFlags: 0

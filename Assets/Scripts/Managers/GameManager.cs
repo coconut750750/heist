@@ -131,13 +131,22 @@ public class GameManager : MonoBehaviour {
 		return mainPlayer.GetFloor();
 	}
 
-	public Rect GetCurrentPlayerRange(int range) {
+	public Rect GetCameraRange(int range) {
 		Rect rect = new Rect();
 		rect.position = mainPlayer.transform.position - new Vector3((float)range / 2f, (float)range / 2f);
 		rect.width = range;
 		rect.height = range;
 
 		return rect;
+	}
+
+	public bool CanSeePlayer(Vector3 pos, float squaredVisionDist) {
+		if (pos.z != mainPlayer.transform.position.z) {
+			return false;
+		}
+
+		Vector2 displacement = mainPlayer.transform.position - pos;
+		return displacement.sqrMagnitude <= squaredVisionDist;
 	}
 
 	public void QuitToStartMenu() {
