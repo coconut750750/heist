@@ -10,27 +10,26 @@ using StairNode = Nav2D.StairNode;
 public static class AStar {
 	// calculates path between start and end assuming they are on same floor
 	private static bool CalculateFlatPath(PathNode startNode, PathNode endNode, PathNode[] allNodes) {
-		var openList = new Heap<PathNode>(allNodes.Length);
-		var closedList = new HashSet<PathNode>();
-		var success = false;
+		Heap<PathNode> openList = new Heap<PathNode>(allNodes.Length);
+		HashSet<PathNode> closedList = new HashSet<PathNode>();
 
 		openList.Add(startNode);
 
 		while (openList.Count > 0){
-			var currentNode = openList.RemoveFirst();
+			PathNode currentNode = openList.RemoveFirst();
 			closedList.Add(currentNode);
 
 			if (currentNode == endNode){
-				success = true;
-				break;
+				return true;
 			}
 
 			foreach (PathNode neighbour in currentNode.links){
 
-				if (closedList.Contains(neighbour))
+				if (closedList.Contains(neighbour)) {
 					continue;
+				}
 
-				var costToNeighbour = currentNode.gCost + GetDistance( currentNode, neighbour );
+				float costToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
 				if (costToNeighbour < neighbour.gCost || !openList.Contains(neighbour) ){
 					neighbour.gCost = costToNeighbour;
 					neighbour.hCost = GetDistance(neighbour, endNode);
@@ -44,30 +43,30 @@ public static class AStar {
 			}
 		}
 
-		return success;
+		return false;
 	}
 
-	public static IEnumerator CalculatePath(PathNode startNode, PathNode endNode, PathNode[] allNodes, StairNode[] stairNodes, Action<Vector3[], bool> callback){
+	public static IEnumerator CalculatePath(PathNode startNode, PathNode endNode, PathNode[] allNodes, StairNode[] stairNodes,
+											Action<Vector3[], bool> callback){
 		bool success = false;
 		bool reverse = true;
+
 		// if start and end are on different floors, find nearest stair to the node on top floor
 		if (startNode.pos.z != endNode.pos.z) {
 			// floors are going down in z, so its inverted
 			bool topToDown = startNode.pos.z < endNode.pos.z;
-			if (!topToDown) {
-				reverse = false;
-			}
 			PathNode topNode = topToDown ? startNode : endNode;
 			PathNode botNode = !topToDown ? startNode : endNode;
+			reverse = topToDown;
 
 			foreach (StairNode stairNode in stairNodes) {
 				// for each stair node, find if there is a path between start/end node (which ever is on top floor)
 				// if stair Node not on same floor as topNode, continue
 				if (stairNode.pos.z != topNode.pos.z) {
 					continue;
-				} else {
-					success = CalculateFlatPath(topNode, stairNode, allNodes);
 				}
+				
+				success = CalculateFlatPath(topNode, stairNode, allNodes);
 				if (success) {
 					stairNode.neighborStair.parent = stairNode;
 					success = CalculateFlatPath(stairNode.neighborStair, botNode, allNodes);
@@ -81,11 +80,9 @@ public static class AStar {
 		}
 
 		yield return null;
-		if (success) {
-			callback( RetracePath(startNode, endNode, reverse), true );
-		} else {
-			callback( new Vector3[0], false );
-		}
+
+		Vector3[] path = success ? RetracePath(startNode, endNode, reverse) : new Vector3[0];
+		callback(path, success);
 	}
 
 	private static Vector3[] RetracePath(PathNode startNode, PathNode endNode, bool reverse){
@@ -95,11 +92,10 @@ public static class AStar {
 		
 		while (currentNode != retraceEndNode){
 			path.Add(currentNode.pos);
-			
 			currentNode = currentNode.parent;
 		}
-
 		path.Add(retraceEndNode.pos);
+		
 		if (reverse) {
 			path.Reverse();
 		}

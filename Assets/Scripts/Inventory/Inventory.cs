@@ -45,14 +45,6 @@ public class Inventory : ItemStash {
         this.independent = independent;
     }
 
-    public override void SetDisplaying(bool isDisplaying) {
-        this.isDisplaying = isDisplaying;
-    }
-
-    public override bool IsDisplaying() {
-        return isDisplaying;
-    }
-    
     public override void Save() {
         if (independent) {
             ItemStashData data = new ItemStashData(this);

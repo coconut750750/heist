@@ -138,10 +138,6 @@ public abstract class ItemStash : MonoBehaviour {
 		return count == capacity;
 	}
 
-	public abstract void SetDisplaying(bool isDisplaying);
-
-	public abstract bool IsDisplaying();
-
 	public void Log() {
 		Debug.Log(ToString());
 	}

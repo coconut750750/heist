@@ -41,7 +41,8 @@ public class CraftingManager : MonoBehaviour {
 		return null;
 	}
 
-	public Item Craft(Item[] inputs) {
+	// attempts to craft an items but ignores the unused items (discards them)
+	public Item CraftIgnoreUnused(Item[] inputs) {
 		Item[] withUnused = CraftWithUnused(inputs);
 		if (withUnused == null) {
 			return null;
@@ -49,9 +50,10 @@ public class CraftingManager : MonoBehaviour {
 		return withUnused.Last();
 	}
 
+	// attempts to craft an item using the inputs
+	// allows if one of the inputs are not used during the craft (such as using a lighter to melt)
 	public Item[] CraftWithUnused(Item[] inputs) {
-		inputs = inputs.Where(item => item != null).ToArray();
-		inputs = inputs.OrderByDescending(item => item.itemName).ToArray();
+		inputs = inputs.Where(item => item != null).OrderByDescending(item => item.itemName).ToArray();
 		Recipe recipe = GetRecipeByInput(inputs);
 
 		if (recipe == null) {
@@ -60,14 +62,13 @@ public class CraftingManager : MonoBehaviour {
 
 		Item resultItem = ItemManager.instance.GetItem(recipe.result.itemName);
 
-		float totalQuality = 0;
-		foreach (Item item in inputs) {
-			totalQuality += item.quality;
-		}
+		float totalQuality = inputs.Select(item => item.quality).ToArray().Sum();
 		int averageQuality = Mathf.RoundToInt(totalQuality / (float)(inputs.Length));
 		resultItem.quality = averageQuality;
 
-		Item[] resultItems = new Item[recipe.NumUnused() + 1];
+		int itemsToReturn = recipe.NumUnused() + 1;
+		Item[] resultItems = new Item[itemsToReturn];
+
 		for (int i = 0; i < recipe.NumUnused(); i++) {
 			Item unused = inputs[recipe.unusedIndicies[i]];
 			unused.quality -= UNUSED_ITEM_DECREASE;
@@ -76,8 +77,8 @@ public class CraftingManager : MonoBehaviour {
 			}
 			resultItems[i] = unused;
 		}
-		resultItems[recipe.NumUnused()] = resultItem;
-		
+
+		resultItems[itemsToReturn - 1] = resultItem;
 		return resultItems;
 	}
 
@@ -87,11 +88,11 @@ public class CraftingManager : MonoBehaviour {
 			return null;
 		}
 
-		Item[] inputs = recipe.requirements;
+		Item[] recipeInputs = recipe.requirements;
 
-		Item[] instantiatedItems = new Item[inputs.Length];
-		for (int i = 0; i < inputs.Length; i++) {
-			instantiatedItems[i] = ItemManager.instance.GetItem(inputs[i].itemName);
+		Item[] instantiatedItems = new Item[recipeInputs.Length];
+		for (int i = 0; i < recipeInputs.Length; i++) {
+			instantiatedItems[i] = ItemManager.instance.GetItem(recipeInputs[i].itemName);
 			instantiatedItems[i].quality = Mathf.RoundToInt((float)(input.quality) * DISMANTLE_PERCENT);
 		}
 

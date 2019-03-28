@@ -7,7 +7,7 @@ using System.Linq;
 public class DismantleContent : MonoBehaviour {
 
 	private DismantleStash dismantleStash;
-	private Item undoSafety;
+	private Item undoSafety; // used to save the item in case user wants to undo
 
 	public Button dismantleButton;
 	public Button undoButton;
@@ -18,7 +18,6 @@ public class DismantleContent : MonoBehaviour {
 	}
 	
 	void OnEnable() {
-		dismantleStash.Display();
 		EnableDismantle();
 	}
 
@@ -28,9 +27,7 @@ public class DismantleContent : MonoBehaviour {
 	}
 
 	void EnableDismantle() {
-		if (dismantleStash.ReadyForDismantle()) {
-			dismantleButton.interactable = true;
-		}
+		dismantleButton.interactable = dismantleStash.ReadyForDismantle();
 		undoButton.interactable = false;
 	}
 
@@ -56,15 +53,16 @@ public class DismantleContent : MonoBehaviour {
 		}
 	}
 
+	// STATE: 3 outputs, 1 empty input
+	// if user decides to under, we first try to craft whats in the output
+	// if the result is the same as undoSafety, we return the item to the user and clear the output
 	public void Undo() {
 		if (undoSafety == null) {
 			return;
 		}
-		Item reverse = CraftingManager.instance.Craft(dismantleStash.GetOutput());
-		if (reverse == null) {
-			return;
-		}
-		if (reverse.name == undoSafety.name) {
+
+		Item reverse = CraftingManager.instance.CraftIgnoreUnused(dismantleStash.GetOutput());
+		if (reverse != null && reverse.name == undoSafety.name) {
 			dismantleStash.RemoveAll();
 			dismantleStash.AddItem(undoSafety);
 			EnableDismantle();

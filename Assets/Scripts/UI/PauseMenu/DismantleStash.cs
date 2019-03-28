@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public class DismantleStash : PauseStash {
 
@@ -40,11 +41,7 @@ public class DismantleStash : PauseStash {
     }
 
     public Item[] GetOutput() {
-		List<Item> output = new List<Item>();
-		foreach (int i in outputIndices) {
-			output.Add(GetItem(i));
-		}
-        return output.ToArray();
+        return (from i in outputIndices select GetItem(i)).ToArray();
     }
 
 	public bool ReadyForDismantle() {

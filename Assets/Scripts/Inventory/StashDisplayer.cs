@@ -46,7 +46,6 @@ public class StashDisplayer : MonoBehaviour {
         }
         
         this.displayInventory = displayInventory;
-        displayInventory.SetDisplaying(true);
 
         nameText.text = displayInventory.GetName();
     }
@@ -59,7 +58,6 @@ public class StashDisplayer : MonoBehaviour {
             Destroy(child.gameObject);
         }
 
-        displayInventory.SetDisplaying(false);
         this.displayInventory = null;
 
         nameText.text = "";

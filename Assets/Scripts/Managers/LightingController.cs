@@ -20,9 +20,9 @@ public class LightingController : MonoBehaviour {
 		if (hour >= 20 || hour <= 6) {
 			lightComponent.intensity = min;
 		} else if (hour == 7) {
-			lightComponent.intensity = 0.1f + minute / 60f * diff;
+			lightComponent.intensity = min + minute / 60f * diff;
 		} else if (hour == 19) {
-			lightComponent.intensity = 0.9f - minute / 60f * diff;
+			lightComponent.intensity = max - minute / 60f * diff;
 		} else {
 			lightComponent.intensity = max;
 		}

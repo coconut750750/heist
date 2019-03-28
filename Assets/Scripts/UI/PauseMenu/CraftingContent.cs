@@ -18,7 +18,6 @@ public class CraftingContent : MonoBehaviour {
 	}
 
 	void OnEnable() {
-		craftingStash.Display();
 		undoButton.interactable = false;
 	}
 

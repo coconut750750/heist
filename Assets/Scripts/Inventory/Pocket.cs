@@ -28,14 +28,6 @@ public class Pocket : SingletonStash {
 			slot.OnDeselected += OnDeselectedItem;
 		}
 	}
-	
-	public override void SetDisplaying(bool isDisplaying) {
-		// do nothing, its always displaying
-	}
-
-	public override bool IsDisplaying() {
-		return true;
-	}
 
 	public void SetSelectedConsumeCallback(UnityAction<Item, int> selectedConsume) {
 		this.selectedConsume = selectedConsume;

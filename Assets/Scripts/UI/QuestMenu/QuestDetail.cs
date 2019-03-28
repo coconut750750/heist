@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class QuestDetail : MonoBehaviour {
 
+	private const string NO_QUEST = "No quests at this time right now.";
+	private const string NO_QUEST_PRICE = "--";
+
 	[SerializeField]
 	private Text npcNameText;
 	[SerializeField]
@@ -33,8 +36,8 @@ public class QuestDetail : MonoBehaviour {
 	public void DisplayEmptyQuest(NPC npc) {
 		InitDisplay(null);
 		npcNameText.text = npc.GetName();
-		questDetailsText.text = "No quests at this time right now.";
-		rewardText.text = "--";
+		questDetailsText.text = NO_QUEST;
+		rewardText.text = NO_QUEST_PRICE;
 	}
 
 	public Quest GetDisplayingQuest() {

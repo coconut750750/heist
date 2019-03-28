@@ -51,7 +51,6 @@ public class NPCTrade : MonoBehaviour {
 
 		this.npc = npc;
 		npcInventory = npc.GetInventory();
-		npcInventory.SetDisplaying(true);
 
 		nameText.text = npc.GetName();
 
@@ -63,7 +62,6 @@ public class NPCTrade : MonoBehaviour {
             itemSlots[i].ClearItem();
         }
 
-		npcInventory.SetDisplaying(false);
 		npcInventory = null;
 		npc = null;
 

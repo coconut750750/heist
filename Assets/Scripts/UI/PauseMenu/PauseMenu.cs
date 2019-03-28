@@ -82,14 +82,4 @@ public class PauseMenu : MonoBehaviour {
 		menuContents[index].SetActive(true);
 		openedMenu = index;
 	}
-
-	public ItemStash GetActiveStash() {
-		if (openedMenu == craftingIndex) {
-			return menuContents[openedMenu].GetComponent<CraftingContent>().GetStash();
-		} else if (openedMenu == dismantleIndex) {
-			return menuContents[openedMenu].GetComponent<DismantleContent>().GetStash();
-		} else {
-			return null;
-		}
-	}
 }

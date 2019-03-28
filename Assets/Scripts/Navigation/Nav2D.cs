@@ -42,16 +42,6 @@ public class Nav2D : MonoBehaviour {
 	[NonSerialized]
 	public Bounds masterBounds;
 
-	///The total nodes count of the map
-	public int nodesCount{
-		get {return nodes.Count;}
-	}
-
-	///is the pathfinder currently processing a pathfinding request?
-	public bool pendingRequest {
-		get {return isProcessingPath;}
-	}
-
 	//some initializing
 	void Awake() {
 		navObstacles.AddRange(gameMap.GetComponentsInChildren<Nav2DObstacle>().ToList());
@@ -63,32 +53,6 @@ public class Nav2D : MonoBehaviour {
 		masterCollider.enabled = false;
 
 		GenerateMap(true);
-	}
-
-	///Adds a Nav2DObstacle to the map.
-	public void AddObstacle(Nav2DObstacle navObstacle) {
-		if (!navObstacles.Contains(navObstacle)) {
-			navObstacles.Add(navObstacle);
-			regenerateFlag = true;
-		}
-	}
-
-	public void AddObstacle(Nav2DCompObstacle navObstacle) {
-		if (!navCompObstacles.Contains(navObstacle)) {
-			navCompObstacles.Add(navObstacle);
-			regenerateFlag = true;
-		}
-	}
-
-	///Removes a Nav2DObstacle to the map.
-	public void RemoveObstacle(Nav2DObstacle navObstacle) {
-		navObstacles.Remove(navObstacle);
-		regenerateFlag = true;
-	}
-
-	public void RemoveObstacle(Nav2DCompObstacle navObstacle) {
-		navCompObstacles.Remove(navObstacle);
-		regenerateFlag = true;
 	}
 
 	void LateUpdate() {
@@ -105,7 +69,7 @@ public class Nav2D : MonoBehaviour {
 			return;
 		}
 
-		pathRequests.Enqueue( new PathRequest(start, end, callback) );
+		pathRequests.Enqueue(new PathRequest(start, end, callback));
 		TryNextFindPath();
 	}
 

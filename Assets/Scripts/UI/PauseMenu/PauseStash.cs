@@ -16,26 +16,11 @@ public abstract class PauseStash : SingletonStash {
         isDisplaying = false;
     }
 
-    public void Display() {
-        SetDisplaying(true);
-    }
-
     public void Hide() {
-        SetDisplaying(false);
         foreach (Item item in items) {
             GameManager.instance.mainPlayer.AddItem(item);
             RemoveItem(item);
         }
-    }
-
-    public override bool IsDisplaying() 
-    {
-        return isDisplaying;
-    }
-
-    public override void SetDisplaying(bool isDisplaying)
-    {
-        this.isDisplaying = isDisplaying;
     }
 
     public override void Load() {
