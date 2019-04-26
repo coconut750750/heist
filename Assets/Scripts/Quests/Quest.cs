@@ -65,6 +65,10 @@ public abstract class Quest {
 		return stages[currentStage].GetReward();
 	}
 
+	public int GetCurrentStage() {
+		return currentStage;
+	}
+
 	public bool HasCompletedAll() {
 		return currentStage >= stages.Length;
 	}

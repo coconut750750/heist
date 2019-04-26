@@ -14,13 +14,13 @@ public class NPCTrade : MonoBehaviour {
 	private Text moneyText;
 
 	[SerializeField]
-	private BuyController buyController;
+	public BuyController buyController;
 
 	[SerializeField]
-	private TradeController tradeController;
+	public TradeController tradeController;
 
 	[SerializeField]
-	private SellController sellController;
+	public SellController sellController;
 	
 	private NPC npc;
 	private Inventory npcInventory;

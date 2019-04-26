@@ -13,7 +13,7 @@ public class QuestManager : MonoBehaviour {
 
 	public static QuestManager instance = null;
 
-	private List<Quest> outstandingQuests;
+	public List<Quest> outstandingQuests;
 
 	private QuestEventHandler eventHandler;
 

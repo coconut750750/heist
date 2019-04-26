@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class SellController : MonoBehaviour {
 
-	public static SellController instance = null;
-
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	[SerializeField]
@@ -23,11 +21,6 @@ public class SellController : MonoBehaviour {
 	private bool npcWillBuy;
 
 	void Awake () {		
-		if (instance == null) {
-			instance = this;
-		} else {
-			Destroy(this);
-		}
 		sellingStash.OnAdded += SellItemEntered;
 		sellingStash.OnRemoved += SellItemRemoved;
 	}

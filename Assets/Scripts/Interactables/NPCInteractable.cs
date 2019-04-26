@@ -65,6 +65,10 @@ public class NPCInteractable : Interactable {
             return;
         }
 
+        if (npc == null) {
+            npc = gameObject.GetComponent<NPC>();
+        }
+
         InitHoverText();
     }
 

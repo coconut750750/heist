@@ -89,6 +89,5 @@ public class PlayerTest {
 	[TearDown]
 	public void UnloadMainScene() {
 		GameManager.instance.save = false;
-		SceneManager.UnloadSceneAsync("MainScene");
 	}
 }
