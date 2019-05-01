@@ -8,4 +8,10 @@ public static class NPCUtils {
 		NPC[] npcs = NPCSpawner.instance.GetNpcs();
 		return npcs[npcs.Length - 1];
 	}
+
+	public static Item AddRandomItem(NPC npc, int index) {
+		Item randomItem = ItemManager.instance.GetRandomItem();
+		npc.GetInventory().SetItemAtIndex(randomItem, index);
+		return randomItem;
+	}
 }

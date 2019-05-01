@@ -107,7 +107,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	}
 
 	public void Select() {
-		if (!selected) {
+		if (!selected && item != null) {
 			DeselectAllSlots();
 			
 			selected = true;

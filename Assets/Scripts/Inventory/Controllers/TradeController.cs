@@ -103,7 +103,7 @@ public class TradeController : MonoBehaviour {
 		tradingSlider.colors = cb;
 	}
 
-	private void TradeItemEntered(Item item) {
+	public void TradeItemEntered(Item item) {
 		tradingItem = item;
 
 		UpdateButtons();
@@ -134,11 +134,15 @@ public class TradeController : MonoBehaviour {
 		selectedIndex = index;
 	}
 
-	public bool IsEmpty() {
-		return tradingItem == null;
+	public bool ContainsItem() {
+		return tradingItem != null;
 	}
 
 	public void HideTradingStash() {
 		tradingStash.Hide();
+	}
+
+	public TradingStash GetTradingStash() {
+		return tradingStash;
 	}
 }

@@ -14,7 +14,6 @@ public class StashDisplayer : MonoBehaviour {
 
     public ItemSlot itemSlotPrefab;
 
-    private Inventory displayInventory;
     private ItemSlot[] itemSlots;
     private int capacity;
     private Text nameText;
@@ -45,8 +44,6 @@ public class StashDisplayer : MonoBehaviour {
             itemSlots[i].SetItem(displayInventory.GetItem(i), displayInventory);
         }
         
-        this.displayInventory = displayInventory;
-
         nameText.text = displayInventory.GetName();
     }
 
@@ -54,20 +51,12 @@ public class StashDisplayer : MonoBehaviour {
     private void ClearInventory() {
         capacity = 0;
         itemSlots = null;
+
         foreach (Transform child in parentInventory) {
             Destroy(child.gameObject);
         }
 
-        this.displayInventory = null;
-
         nameText.text = "";
-    }
-
-    // deselects all the item slots
-    public void DeselectAll() {
-        for (int i = 0; i < capacity; i++) {
-            itemSlots[i].Deselect();
-        }
     }
 
     public void DisplayInventory(Inventory stash) {

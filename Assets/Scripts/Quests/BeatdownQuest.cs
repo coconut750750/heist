@@ -6,7 +6,7 @@ using System.Linq;
 public class BeatdownQuest : Quest {
 
     public const int NUM_STAGES = 2;
-    public const int TARGETS_PER_STAGE = 4;
+    public const int TARGETS_PER_QUEST = 4;
     public static List<string> takenNpcNames = new List<string>();
 
     public BeatdownQuest() {

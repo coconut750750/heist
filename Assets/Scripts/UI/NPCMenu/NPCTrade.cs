@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class NPCTrade : MonoBehaviour {
 
@@ -27,6 +28,8 @@ public class NPCTrade : MonoBehaviour {
 
 	[SerializeField]
 	private ItemSlot[] itemSlots;
+
+	public ItemSlot[] ItemSlots { get { return itemSlots; } private set {} }
 
 	void Awake() {
 		if (instance == null) {
@@ -57,6 +60,7 @@ public class NPCTrade : MonoBehaviour {
 		UpdateInventoryUI();
 	}
 
+	// invoked by Canvases > NPCAndQuestCanvas > NPCTrade > TradeCover > Event Trigger 
 	public void Hide() {
 		for (int i = 0; i < npcInventory.GetCapacity(); i++) {
             itemSlots[i].ClearItem();
@@ -141,8 +145,9 @@ public class NPCTrade : MonoBehaviour {
 		UpdateTradingSlider();
 	}
 
-	private void UpdateButtons() {
-		buyController.UpdateButtons(!tradeController.IsEmpty());
+	public void UpdateButtons() {
+		int externalItems = new bool[] { tradeController.ContainsItem(), sellController.ContainsItem() }.Count(t => t);
+		buyController.UpdateButtons(externalItems);
 		tradeController.UpdateButtons();
 		sellController.UpdateButtons();
 	}

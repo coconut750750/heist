@@ -15,13 +15,10 @@ public class Inventory : ItemStash {
     [SerializeField]
     private string inventoryName;
 
-	private bool isDisplaying;
-
     // independent if inventory not attached to an npc
     private bool independent;
 
 	public Inventory() {
-		isDisplaying = false;
         independent = true;
 	}
 
@@ -64,7 +61,6 @@ public class Inventory : ItemStash {
     public void LoadFromInventoryData(ItemStashData data) {
         if (data != null) {
 			base.LoadFromData(data);
-            this.isDisplaying = false;
 		}
     }
 }

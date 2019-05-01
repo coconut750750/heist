@@ -15,7 +15,7 @@ public class SellingStash : PauseStash {
     }
 
     protected override void SetItemSlots() {
-		base.SetItemSlots();
+		    base.SetItemSlots();
         itemSlots[0].OnDropped += OnAdded;
         itemSlots[0].OnRemoved += OnRemoved;
 	}

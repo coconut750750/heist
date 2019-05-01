@@ -53,4 +53,9 @@ public abstract class SingletonStash : ItemStash {
 			
 		return success;
 	}
+
+	public override void SetItemAtIndex(Item itemToSet, int index) {
+		base.SetItemAtIndex(itemToSet, index);
+		itemSlots[index].SetItem(itemToSet);
+	}
 }

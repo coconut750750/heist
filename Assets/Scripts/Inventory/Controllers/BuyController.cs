@@ -8,7 +8,7 @@ public class BuyController : MonoBehaviour {
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	[SerializeField]
-	private Button buyButton;
+	public Button buyButton;
 
 	[SerializeField]
 	private Text priceText;
@@ -47,7 +47,7 @@ public class BuyController : MonoBehaviour {
 		return false;
 	}
 
-	public void UpdateButtons(bool hasTradingItem) {
+	public void UpdateButtons(int externalItems) {
 		Disable();
 
 		if (!GameManager.instance.mainPlayer.CanAddItem()) {
@@ -55,10 +55,9 @@ public class BuyController : MonoBehaviour {
 		}
 
 		if (selectedItem != null) {
-			if (GameManager.instance.mainPlayer.NumItems() == 
-						GameManager.instance.mainPlayer.GetPocket().GetCapacity() - 1 &&
-						hasTradingItem) {
-				// player has open slot but trading item isnt empty
+			if (GameManager.instance.mainPlayer.NumItems() + externalItems == 
+						GameManager.instance.mainPlayer.GetPocket().GetCapacity()) {
+				// player has open slots but has trading and/or selling item
 				Disable();
 			} else if (GameManager.instance.mainPlayer.GetMoney() >= selectedItem.price) {
 				Enable();
@@ -90,7 +89,7 @@ public class BuyController : MonoBehaviour {
 		selectedItem = item;
 		selectedIndex = index;
 		if (item != null) {
-			price = Mathf.RoundToInt(selectedItem.GetValue() * NPC.SELL_PERC);
+			price = item.cost();
 			SetPriceText();
 		} else {
 			ResetPriceText();

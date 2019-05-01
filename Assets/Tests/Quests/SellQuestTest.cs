@@ -52,9 +52,9 @@ public class SellQuestTest {
 			Assert.AreEqual(1, QuestManager.instance.NumActive());
 			yield return null;
 
-			// Item item = QuestUtils.GetQuestItem(quest);
-			// NPCInteractUtils.Sell(npc, item);
-			quest.CompleteQuestStage();
+			Item item = QuestUtils.GetQuestItem((SellingQuest) quest);
+			NPCInteractUtils.Sell(npc, item);
+			// quest.CompleteQuestStage();
 			yield return null;
 
 			Assert.AreEqual(i + 1, quest.GetCurrentStage());

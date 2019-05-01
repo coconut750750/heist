@@ -26,6 +26,10 @@ public class Item : ScriptableObject {
 	public void ChangedHands() {
 		quality = Mathf.RoundToInt(quality * CHANGE_HANDS_DECAY);
 	}
+
+	public int cost() {
+		return Mathf.RoundToInt(GetValue() * NPC.SELL_PERC); 
+	}
 }
 
 [Serializable]

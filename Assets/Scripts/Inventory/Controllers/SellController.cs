@@ -8,7 +8,7 @@ public class SellController : MonoBehaviour {
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	[SerializeField]
-	private Button sellButton;
+	public Button sellButton;
 
 	[SerializeField]
 	private Text priceText;
@@ -20,7 +20,7 @@ public class SellController : MonoBehaviour {
 	private int sellingPrice;
 	private bool npcWillBuy;
 
-	void Awake () {		
+	void Awake () {
 		sellingStash.OnAdded += SellItemEntered;
 		sellingStash.OnRemoved += SellItemRemoved;
 	}
@@ -89,6 +89,10 @@ public class SellController : MonoBehaviour {
 		UpdateButtons();
 	}
 
+	public bool ContainsItem() {
+		return sellingItem != null;
+	}
+
 	public void Enable() {
 		sellButton.interactable = true;
 	}
@@ -99,5 +103,9 @@ public class SellController : MonoBehaviour {
 
 	public void HideSellingStash() {
 		sellingStash.Hide();
+	}
+
+	public SellingStash GetSellingStash() {
+		return sellingStash;
 	}
 }

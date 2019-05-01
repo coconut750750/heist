@@ -39,7 +39,7 @@ public class QuestManager : MonoBehaviour {
 			quest = new SellingQuest(npc);
 		} else {
 			if (NPCSpawner.instance.NumNpcs() > 
-				BeatdownQuest.TARGETS_PER_STAGE + BeatdownQuest.takenNpcNames.Count) {
+				BeatdownQuest.TARGETS_PER_QUEST + BeatdownQuest.takenNpcNames.Count) {
 				quest = new BeatdownQuest(npc);
 			} else {
 				return null;
