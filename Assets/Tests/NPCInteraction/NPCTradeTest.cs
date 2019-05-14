@@ -3,6 +3,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System;
 
 public class NPCTradeTest {
 
@@ -24,10 +25,9 @@ public class NPCTradeTest {
 		yield return null;
 
 		NPC npc = NPCUtils.SpawnNPC();
+		npc.GetInventory().RemoveAll();
 		NPCInteractUtils.ShowNPC(npc);
 		yield return null;
-
-		npc.GetInventory().RemoveAll();
 
 		Assert.False(NPCInteractUtils.Buy(npc, 0));
 	}
@@ -37,10 +37,9 @@ public class NPCTradeTest {
 		yield return null;
 
 		NPC npc = NPCUtils.SpawnNPC();
+		Item randomItem = NPCUtils.AddRandomItem(npc, 0);
 		NPCInteractUtils.ShowNPC(npc);
 		yield return null;
-
-		Item randomItem = NPCUtils.AddRandomItem(npc, 0);
 
 		Assert.True(NPCInteractUtils.Buy(npc, 0));
 		Assert.True(GetPlayer().GetPocket().ContainsItem(randomItem));
@@ -51,18 +50,35 @@ public class NPCTradeTest {
 		yield return null;
 
 		NPC npc = NPCUtils.SpawnNPC();
+		Item randomItem = NPCUtils.AddRandomItem(npc, 0);
 		NPCInteractUtils.ShowNPC(npc);
 		yield return null;
 
 		Player player = GetPlayer();
 		int before = player.GetMoney();
 
-		Item randomItem = NPCUtils.AddRandomItem(npc, 0);
 		int cost = randomItem.cost();
 		Assert.True(NPCInteractUtils.Buy(npc, 0));
 
 		int after = player.GetMoney();
 		Assert.AreEqual(before, after + cost);
+	}
+
+	[UnityTest]
+	public IEnumerator NPCBuyNotEnoughMoney() {
+		yield return null;
+
+		NPC npc = NPCUtils.SpawnNPC();
+		Item randomItem = NPCUtils.AddRandomItem(npc, 0);
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
+
+		Player player = GetPlayer();
+		player.SetMoney(0);
+
+		Assert.False(NPCInteractUtils.Buy(npc, 0));
+
+		Assert.True(npc.GetInventory().ContainsItem(randomItem));
 	}
 
 	[UnityTest]
@@ -132,9 +148,10 @@ public class NPCTradeTest {
 		yield return null;
 
 		NPC npc = NPCUtils.SpawnNPC();
-		NPCTrade npcTrade = NPCTrade.instance;
-		npcTrade.Display(npc);
-		Assert.False(npcTrade.sellController.Sell(npc));
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
+
+		Assert.False(NPCTrade.instance.sellController.Sell(npc));
 	}
 
 	[UnityTest]
@@ -170,6 +187,49 @@ public class NPCTradeTest {
 		Assert.AreEqual(randomItem, GetPlayer().GetPocket().GetItem(0));
 		Assert.AreEqual(randomItem, GetPlayer().GetPocket().GetItem(1));
 		Assert.AreEqual(GetPlayer().GetPocket().GetNumItems(), 2);
+	}
+
+	[UnityTest]
+	public IEnumerator NPCTradeSimple() {
+		yield return null;
+
+		NPC npc = NPCUtils.SpawnNPC();
+		npc.GetInventory().RemoveAll();
+		Item npcItem = NPCUtils.AddRandomItem(npc, 0);
+		float npcValue = npcItem.GetValue();
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
+
+		Player player = GetPlayer();
+		player.GetPocket().RemoveAll();
+
+		Item playerItem = ItemManager.instance.GetRandomItem();
+		playerItem.quality = (int)Math.Ceiling(npcValue * NPC.LOWER_BOUND_TRADING_PERC * 100 / playerItem.price);
+
+		Assert.True(NPCInteractUtils.Trade(npc, playerItem, 0));
+		Assert.True(player.GetPocket().ContainsItem(npcItem));
+		Assert.True(npc.GetInventory().ContainsItem(playerItem));
+	}
+
+	[UnityTest]
+	public IEnumerator NPCTradeUnsuccessful() {
+		yield return null;
+
+		NPC npc = NPCUtils.SpawnNPC();
+		npc.GetInventory().RemoveAll();
+		Item npcItem = NPCUtils.AddRandomItem(npc, 0);
+		float npcValue = npcItem.GetValue();
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
+
+		Player player = GetPlayer();
+		player.GetPocket().RemoveAll();
+
+		Item playerItem = ItemManager.instance.GetRandomItem();
+		playerItem.quality = (int)Math.Ceiling(npcValue * 100 / playerItem.price);
+
+		Assert.False(NPCInteractUtils.Trade(npc, playerItem, 0));
+		Assert.True(npc.GetInventory().ContainsItem(npcItem));
 	}
 
 	[TearDown]

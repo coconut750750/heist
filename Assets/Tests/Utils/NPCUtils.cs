@@ -5,7 +5,7 @@ using UnityEngine;
 public static class NPCUtils {
 	public static NPC SpawnNPC() {
 		NPCSpawner.instance.SpawnUnconditionally(new Vector2(0, 0));
-		NPC[] npcs = NPCSpawner.instance.GetNpcs();
+		NPC[] npcs = NPCSpawner.instance.GetNPCs();
 		return npcs[npcs.Length - 1];
 	}
 

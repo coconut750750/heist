@@ -138,6 +138,10 @@ public class TradeController : MonoBehaviour {
 		return tradingItem != null;
 	}
 
+	public bool CanTrade() {
+		return tradeButton.interactable;
+	}
+
 	public void HideTradingStash() {
 		tradingStash.Hide();
 	}

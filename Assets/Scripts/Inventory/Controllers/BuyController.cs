@@ -8,7 +8,7 @@ public class BuyController : MonoBehaviour {
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	[SerializeField]
-	public Button buyButton;
+	private Button buyButton;
 
 	[SerializeField]
 	private Text priceText;
@@ -79,6 +79,10 @@ public class BuyController : MonoBehaviour {
 
 	private void ResetPriceText() {
 		priceText.text = EMPTY_PRICE_TEXT;
+	}
+
+	public bool CanBuy() {
+		return buyButton.interactable;
 	}
 
 	public Item GetSelectedItem() {

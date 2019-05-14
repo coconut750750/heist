@@ -19,6 +19,8 @@ public class QuestManager : MonoBehaviour {
 
 	[SerializeField]
 	private GameObject questOverflowAlert;
+
+	public bool autogenerate = true;
 	
 	void Awake () {
 		if (instance == null) {
@@ -38,7 +40,7 @@ public class QuestManager : MonoBehaviour {
 		if (i == 0) {
 			quest = new SellingQuest(npc);
 		} else {
-			if (NPCSpawner.instance.NumNpcs() > 
+			if (NPCSpawner.instance.NumNPCs() > 
 				BeatdownQuest.TARGETS_PER_QUEST + BeatdownQuest.takenNpcNames.Count) {
 				quest = new BeatdownQuest(npc);
 			} else {
@@ -57,9 +59,13 @@ public class QuestManager : MonoBehaviour {
 	}
 
 	void Update() {
+		if (!autogenerate) {
+			return;
+		}
+
 		if (outstandingQuests.Count < MAX_OUTSTANDING_QUESTS &&
-			NPCSpawner.instance.NumNpcs() > 0) {
-			NPC npc = NPCSpawner.instance.GetRandomNpc();
+			NPCSpawner.instance.NumNPCs() > 0) {
+			NPC npc = NPCSpawner.instance.GetRandomNPC();
 			if (!npc.hasQuest) {
 				Quest newQuest = GetRandomQuest(npc);
 				if (newQuest != null) {

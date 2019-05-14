@@ -33,7 +33,7 @@ public class NPCManager : MonoBehaviour {
 	public NPC InstantiateNPC(int index, Vector2 pos) {		
 		NPC instance = Instantiate (npcPrefab, (Vector2)pos, Quaternion.identity) as NPC;
 		instance.GetComponent<Animator>().runtimeAnimatorController = npcAnimators[index];
-		instance.SetName(GetRandomName());
+		instance.SetName(GetFreshName());
 		instance.Spawn();
 
 		return instance;
@@ -44,7 +44,7 @@ public class NPCManager : MonoBehaviour {
 		names = new List<string>(namesArr);
 	}
 
-	private string GetRandomName() {
+	private string GetFreshName() {
 		int index = Random.Range(0, names.Count - 1);
 		string name = names[index];
 		names.RemoveAt(index);

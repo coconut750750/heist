@@ -20,6 +20,10 @@ public class Nav2D : MonoBehaviour {
 	private List<Nav2DCompObstacle> navCompObstacles = new List<Nav2DCompObstacle>();
 	private List<Nav2DStairs> navStairs = new List<Nav2DStairs>();
 
+	public int numFloors = 2;
+
+	public float maxFloorOffset {get {return (numFloors - 1) * -0.1f;} }
+
 	///The radius from the edges to offset the agents.
 	public float inflateRadius = 0.5f;
 
@@ -30,7 +34,7 @@ public class Nav2D : MonoBehaviour {
 	private List<PathNode> nodes = new List<PathNode>();
 	private List<StairNode> stairNodes = new List<StairNode>();
 	
-	private List<Vector3> validDestinations = new List<Vector3>();
+	public List<Vector3> validPoints = new List<Vector3>();
 
 	private Queue<PathRequest> pathRequests = new Queue<PathRequest>();
 	private PathRequest currentRequest;
@@ -39,8 +43,6 @@ public class Nav2D : MonoBehaviour {
 	private PathNode endNode;
 
 	private Collider2D masterCollider;
-	[NonSerialized]
-	public Bounds masterBounds;
 
 	//some initializing
 	void Awake() {
@@ -49,7 +51,6 @@ public class Nav2D : MonoBehaviour {
 		navStairs.AddRange(gameMap.GetComponentsInChildren<Nav2DStairs>().ToList());
 
 		masterCollider = GetComponent<Collider2D>();
-		masterBounds = masterCollider.bounds;
 		masterCollider.enabled = false;
 
 		GenerateMap(true);
@@ -152,9 +153,6 @@ public class Nav2D : MonoBehaviour {
 			}
 		}		
 
-		// TODO: assign max and min when master collider is polygon collider
-		Vector2 max = Vector2.zero;
-		Vector2 min = Vector2.zero;
 		if (generateMaster) {
 			if (masterCollider is PolygonCollider2D) {
 				PolygonCollider2D polyCollider = (PolygonCollider2D)masterCollider;
@@ -163,9 +161,9 @@ public class Nav2D : MonoBehaviour {
 				
 				for (int i = 0; i < polyCollider.pathCount; ++i) {
 
-					for (int p = 0; p < polyCollider.GetPath(i).Length; ++p)
-						reversed.Add( polyCollider.GetPath(i)[p] );
-					
+					for (int p = 0; p < polyCollider.GetPath(i).Length; ++p) {
+						reversed.Add(polyCollider.GetPath(i)[p]);
+					}
 					reversed.Reverse();
 
 					Vector3[] transformed = TransformPoints(reversed.ToArray(), polyCollider.transform);
@@ -184,9 +182,6 @@ public class Nav2D : MonoBehaviour {
 				Vector3[] transformed = TransformPoints(new Vector3[]{tl, bl, br, tr}, masterCollider.transform);
 				Vector3[] inflated = InflatePolygon(transformed, Mathf.Max(0.01f, inflateRadius));
 				masterPolys.Add(new Polygon(inflated));
-
-				max = new Vector2(Mathf.Round(tr.x), Mathf.Round(tr.y));
-				min = new Vector2(Mathf.Round(bl.x), Mathf.Round(bl.y));
 			}
 		
 		} else {
@@ -196,18 +191,32 @@ public class Nav2D : MonoBehaviour {
 		//create the main polygon map (based on inverted) also containing the obstacle polygons
 		map = new PolyMap(masterPolys.ToArray(), obstaclePolys.ToArray());
 
-		GenerateValidDestinationsInRange(max, min, -0.1f);
-
-		//The colliders are never used again after this point. They are simply a drawing method.
+		GenerateValidPointsInRange(maxFloorOffset);
 	}
 
-	private void GenerateValidDestinationsInRange(Vector2 max, Vector2 min, float minFloor) {
+	private void CalculateBoundaryCorners(out Vector2 max, out Vector2 min) {
+		max = min = map.masterPolygons[0].points[0];
+
+		foreach (Polygon poly in map.masterPolygons) {
+			foreach (Vector3 p in poly.points) {
+				min.x = (float)Math.Floor(Math.Min(min.x, p.x));
+				min.y = (float)Math.Floor(Math.Min(min.y, p.y));
+				max.x = (float)Math.Ceiling(Math.Max(max.x, p.x));
+				max.y = (float)Math.Ceiling(Math.Max(max.y, p.y));
+			}
+		}
+	}
+
+	private void GenerateValidPointsInRange(float minFloor) {
+		Vector2 max = new Vector2(), min = new Vector2();
+		CalculateBoundaryCorners(out max, out min);
+
 		for (float x = min.x; x <= max.x; x++) {
 			for (float y = min.y; y <= max.y; y++) {
 				for (float z = 0; z >= minFloor; z -= 0.1f) {
 					Vector3 point = new Vector3(x, y, z);
 					if (PointIsValid(point)) {
-						validDestinations.Add(point);
+						validPoints.Add(point);
 					}
 				}
 			}
@@ -366,8 +375,8 @@ public class Nav2D : MonoBehaviour {
 		nodes = nonLoneNodes; 
 	}
 
-	public Vector3 GetRandomValidDestination() {
-		return validDestinations[UnityEngine.Random.Range(0, validDestinations.Count - 1)];
+	public Vector3 GetRandomValidPoint() {
+		return validPoints[UnityEngine.Random.Range(0, validPoints.Count - 1)];
 	}
 
 	///Determine if 2 points see each other.
@@ -426,7 +435,6 @@ public class Nav2D : MonoBehaviour {
 
 	///Kind of scales a polygon based on it's vertices average normal.
 	public static Vector3[] InflatePolygon(Vector3[] points, float dist) {
-
 		Vector3[] inflatedPoints = new Vector3[points.Length];
 
 		for (int i = 0; i < points.Length; i++) {
@@ -444,7 +452,6 @@ public class Nav2D : MonoBehaviour {
 
 	///Check if or not a point is concave to the polygon points provided
 	public static bool PointIsConcave(Vector3[] points, int point) {
-
 		Vector2 current = points[point];
 		Vector2 next = points[(point + 1) % points.Length];
 		Vector2 previous =  points[point == 0? points.Length - 1 : point - 1];
@@ -480,7 +487,6 @@ public class Nav2D : MonoBehaviour {
 
 	///Is a point inside a polygon?
 	public static bool PointInsidePolygon(Vector3[] polyPoints, Vector3 point) {
-
 		float xMin = 0;
 		for (int i = 0; i < polyPoints.Length; i++) {
 			xMin = Mathf.Min(xMin, polyPoints[i].x);
@@ -503,7 +509,6 @@ public class Nav2D : MonoBehaviour {
 
 	///Finds the closer edge point to the navigation valid area
 	public Vector3 GetCloserEdgePoint (Vector3 point) {
-
 		List<Vector3> possiblePoints = new List<Vector3>();
 		Vector3 closerVertex = Vector3.zero;
 		float closerVertexDist = Mathf.Infinity;
@@ -641,14 +646,7 @@ public class Nav2D : MonoBehaviour {
 		}
 
 		//the original drawn polygons
-		if (masterCollider is PolygonCollider2D) {
-			// PolygonCollider2D polyCollider = masterCollider as PolygonCollider2D;
-			// for (int i = 0; i < polyCollider.pathCount; ++i ) {
-	        //     for (int p = 0; p < polyCollider.GetPath(i).Length; ++p )
-	        //         DebugDrawPolygon(TransformPoints( (Vector3[])(polyCollider.GetPath(i)), polyCollider.transform ), Color.green );
-	        // }
-        
-        } else if (masterCollider is BoxCollider2D) {
+		if (masterCollider is BoxCollider2D) {
         	BoxCollider2D box = masterCollider as BoxCollider2D;
 			Vector2 tl = box.offset + new Vector2(-box.size.x, box.size.y)/2;
 			Vector2 tr = box.offset + new Vector2(box.size.x, box.size.y)/2;
@@ -660,15 +658,15 @@ public class Nav2D : MonoBehaviour {
 		float nodeSize = 0.15f;
 		Color white = new Color(1, 1f, 1f, 1f);
 
-		// foreach (Vector3 v in validDestinations) {
-		// 	Vector3[] square = new Vector3[4];
-		// 	square[0] = v + new Vector3(-nodeSize, 0);
-		// 	square[1] = v + new Vector3(0, nodeSize);
-		// 	square[2] = v + new Vector3(nodeSize, 0);
-		// 	square[3] = v + new Vector3(0, -nodeSize);
+		foreach (Vector3 v in validPoints) {
+			Vector3[] square = new Vector3[4];
+			square[0] = v + new Vector3(-nodeSize, 0);
+			square[1] = v + new Vector3(0, nodeSize);
+			square[2] = v + new Vector3(nodeSize, 0);
+			square[3] = v + new Vector3(0, -nodeSize);
 
-		// 	DebugDrawPolygon(square, white);
-		// }
+			DebugDrawPolygon(square, white);
+		}
 
 		foreach (PathNode p in nodes) {
 			Vector3[] square = new Vector3[4];

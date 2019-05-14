@@ -145,7 +145,7 @@ public class Nav2DAgent : MonoBehaviour{
 	}
 
 	public Vector3 GetRandomValidDestination() {
-		return polyNav.GetRandomValidDestination();
+		return polyNav.GetRandomValidPoint();
 	}
 
 	///Set the destination for the agent. As a result the agent starts moving

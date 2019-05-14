@@ -15,9 +15,12 @@ public class SellQuestTest {
 	[UnityTest]
 	public IEnumerator SimpleSellQuest() {
 		yield return null;
+		QuestManager.instance.autogenerate = false;
 
 		NPC npc = NPCUtils.SpawnNPC();
 		npc.GetInventory().RemoveAll();
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
 
 		QuestUtils.CreateNewSellingQuest(npc);
 		SellingQuest sellingQuest = (SellingQuest) QuestManager.instance.outstandingQuests[0];
@@ -26,7 +29,6 @@ public class SellQuestTest {
 		Assert.AreEqual(1, QuestManager.instance.NumOutstanding());
 		Assert.AreEqual(1, QuestManager.instance.NumActive());
 		Item item = QuestUtils.GetQuestItem(sellingQuest);
-
 		NPCInteractUtils.Sell(npc, item);
 
 		yield return null;
@@ -40,9 +42,12 @@ public class SellQuestTest {
 	[UnityTest]
 	public IEnumerator CompleteSellQuest() {
 		yield return null;
+		QuestManager.instance.autogenerate = false;
 
 		NPC npc = NPCUtils.SpawnNPC();
 		npc.GetInventory().RemoveAll();
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
 
 		QuestUtils.CreateNewSellingQuest(npc);
 
@@ -61,14 +66,18 @@ public class SellQuestTest {
 		}
 
 		Assert.AreEqual(0, QuestManager.instance.NumActive());
+		Assert.AreEqual(0, QuestManager.instance.NumOutstanding());
 	}
 
 	[UnityTest]
 	public IEnumerator UnsuccessfulSellQuestWrongItem() {
 		yield return null;
+		QuestManager.instance.autogenerate = false;
 
 		NPC npc = NPCUtils.SpawnNPC();
 		npc.GetInventory().RemoveAll();
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
 
 		QuestUtils.CreateNewSellingQuest(npc);
 		SellingQuest sellingQuest = (SellingQuest) QuestManager.instance.outstandingQuests[0];
@@ -90,9 +99,12 @@ public class SellQuestTest {
 	[UnityTest]
 	public IEnumerator UnsuccessfulSellQuestWrongNpc() {
 		yield return null;
-
+		QuestManager.instance.autogenerate = false;
+		
 		NPC npc = NPCUtils.SpawnNPC();
 		npc.GetInventory().RemoveAll();
+		NPCInteractUtils.ShowNPC(npc);
+		yield return null;
 
 		NPC npc2 = NPCUtils.SpawnNPC();
 		npc2.GetInventory().RemoveAll();

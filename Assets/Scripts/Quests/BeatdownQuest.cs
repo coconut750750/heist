@@ -26,11 +26,11 @@ public class BeatdownQuest : Quest {
         List<string> exclude = new List<string>() {base.reporter.GetName()};
         exclude.AddRange(takenNpcNames);
 
-        NPC[] targetNpcs1 = NPCSpawner.instance.GetRandomNpcs(1, exclude);
+        NPC[] targetNpcs1 = NPCSpawner.instance.GetRandomNPCs(1, exclude);
         stages[0] = new BeatdownQuestStage(targetNpcs1, 15);
         exclude.AddRange(targetNpcs1.Select(npc => npc.GetName()));
 
-        NPC[] targetNpcs2 = NPCSpawner.instance.GetRandomNpcs(3, exclude);
+        NPC[] targetNpcs2 = NPCSpawner.instance.GetRandomNPCs(3, exclude);
         stages[1] = new BeatdownQuestStage(targetNpcs2, 25);
 
         takenNpcNames.AddRange(targetNpcs1.Select(npc => npc.GetName()));

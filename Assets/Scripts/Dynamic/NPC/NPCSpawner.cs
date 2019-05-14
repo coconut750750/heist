@@ -61,7 +61,7 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	IEnumerator WaitForRecall(NPC npc) {
-		while (NpcIsInRange(npc)) {
+		while (NPCIsInRange(npc)) {
 			yield return null;
 		}
 
@@ -83,14 +83,19 @@ public class NPCSpawner : MonoBehaviour {
 
 	void Start () {
 		StartCoroutine(AlterDelay());
+        InitNPCs();
 	}
+
+    void InitNPCs() {
+        for (int i = npcs.Count; i < PEAK_MAX; i++) {
+		    Vector2 pos = polyNav.GetRandomValidPoint();
+            SpawnUnconditionally(pos);
+            RecallUnconditionally(i);
+        }
+    }
 	
 	void Update () {
-		if (GameManager.instance.IsPaused()) {
-			return;
-		}
-
-		if (!canAlterNpcCount) {
+		if (GameManager.instance.IsPaused() || !canAlterNpcCount) {
 			return;
 		}
 
@@ -117,7 +122,7 @@ public class NPCSpawner : MonoBehaviour {
 	private void ActivateNPC(int npcIndex) {
 		NPC npc = npcs[npcIndex];
 
-		if (NpcIsInRange(npc)) {
+		if (NPCIsInRange(npc)) {
 			return;
 		}
 
@@ -141,25 +146,16 @@ public class NPCSpawner : MonoBehaviour {
 	}
 
 	private void Spawn() {
-		Vector2? pos = GenerateRandomNPCPos();
-		if (pos == null) {
-			return;
-		}
-		
-		if (npcs.Count < PEAK_MAX) {
-			SpawnUnconditionally(pos);
-		} else {
-			int[] unawakeIndexes = Enumerable.Range(0, npcAwake.Count).Where(i => !npcAwake[i]).ToArray();
+		int[] unawakeIndexes = Enumerable.Range(0, npcAwake.Count).Where(i => !npcAwake[i]).ToArray();
 
-			int unawakeIndex = Random.Range(0, unawakeIndexes.Length);
-			int npcIndex = unawakeIndexes[unawakeIndex];
+        int unawakeIndex = Random.Range(0, unawakeIndexes.Length);
+        int npcIndex = unawakeIndexes[unawakeIndex];
 
-			ActivateNPC(npcIndex);
-		}
+        ActivateNPC(npcIndex);
 		StartCoroutine(AlterDelay());
 	}
 
-	public void SpawnUnconditionally(Vector2? pos) {
+	public void SpawnUnconditionally(Vector2 pos) {
 		InstantiateNPC(Random.Range(0, NPCManager.instance.npcTypes), (Vector2)pos);
 	}
 
@@ -188,41 +184,20 @@ public class NPCSpawner : MonoBehaviour {
 		StartCoroutine(WaitForRecall(npc));
 	}
 
-	// returns a vector 2 position out of range 
-	private Vector2? GenerateRandomNPCPos() {
-		Rect range = GameManager.instance.GetCameraRange(spawnRange + 2 * npcSize);
-
-		float x = Mathf.Round(Random.Range(range.min.x, range.max.x));
-		float y = Mathf.Round(Random.Range(range.min.y, range.max.y));
-
-        Vector2[] perim = {new Vector2(Mathf.Round(range.min.x - 1), y),
-                           new Vector2(Mathf.Round(range.max.x + 1), y),
-                           new Vector2(x, Mathf.Round(range.min.y - 1)),
-                           new Vector2(x, Mathf.Round(range.max.y + 1))};
-
-		Vector2 pos = perim[Random.Range(0, 4)];
-
-		if (polyNav.PointIsValid(pos)) {
-			return pos;
-		} else {
-			return null;
-		}
-	}
-
-	private bool NpcIsInRange(NPC npc) {
+	private bool NPCIsInRange(NPC npc) {
 		Rect range = GameManager.instance.GetCameraRange(spawnRange + 2 * npcSize);
 
 		return range.Contains((Vector2)(npc.transform.position));
 	}
 
 	private bool CanRecallNPC(int npcIndex) {
-		return !NpcIsInRange(npcs[npcIndex]) && 
+		return !NPCIsInRange(npcs[npcIndex]) && 
 			   npcAwake[npcIndex] &&
 			   !npcs[npcIndex].IsFighting() &&
 			   !npcs[npcIndex].questActive;
 	}
 
-	public int NumNpcs() {
+	public int NumNPCs() {
 		return npcs.Count;
 	}
 
@@ -230,7 +205,7 @@ public class NPCSpawner : MonoBehaviour {
 		return npcAnimIndexes.ToArray();
 	}
 
-	public NPC[] GetNpcs() {
+	public NPC[] GetNPCs() {
 		return npcs.ToArray();
 	}
 
@@ -245,12 +220,12 @@ public class NPCSpawner : MonoBehaviour {
 		return null;
 	}
 
-	public NPC GetRandomNpc() {
-		return GetRandomNpcs(1, new string[]{})[0];
+	public NPC GetRandomNPC() {
+		return GetRandomNPCs(1, new string[]{})[0];
 	}
 
 	/// <summary> Gets { count } random NPCs excluing { exclude }</summary>
-	public NPC[] GetRandomNpcs(int count, IEnumerable<string> excludeNames) {
+	public NPC[] GetRandomNPCs(int count, IEnumerable<string> excludeNames) {
 		if (count > npcs.Count - excludeNames.Count()) {
 			return null;
 		}
@@ -303,14 +278,14 @@ public class NPCSpawner : MonoBehaviour {
 		public NPC.NPCData[] npcDatas;
 
 		public NPCSpawnerData(NPCSpawner spawner) {
-			numNpcs = spawner.NumNpcs();
+			numNpcs = spawner.NumNPCs();
 			npcAnimIndexes = spawner.GetNpcIndicies();
 			npcAwake = spawner.npcAwake.ToArray();
 
 			numAwakeNpcs = spawner.numAwakeNpcs;
 
 			npcDatas = new NPC.NPCData[numNpcs];
-			NPC[] npcs = spawner.GetNpcs();
+			NPC[] npcs = spawner.GetNPCs();
 			for (int i = 0; i < numNpcs; i++) {
 				npcDatas[i] = new NPC.NPCData(npcs[i]);
 			}

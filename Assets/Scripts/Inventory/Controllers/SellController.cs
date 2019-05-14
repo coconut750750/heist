@@ -8,7 +8,7 @@ public class SellController : MonoBehaviour {
 	private const string EMPTY_PRICE_TEXT = "---";
 
 	[SerializeField]
-	public Button sellButton;
+	private Button sellButton;
 
 	[SerializeField]
 	private Text priceText;
@@ -99,6 +99,10 @@ public class SellController : MonoBehaviour {
 
 	public void Disable() {
 		sellButton.interactable = false;
+	}
+
+	public bool CanSell() {
+		return sellButton.interactable;
 	}
 
 	public void HideSellingStash() {
