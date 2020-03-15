@@ -12,6 +12,8 @@ public abstract class Character : MonoBehaviour {
 	public const float ATTACK_DISTANCE = 0.5f;
 
 	protected Rigidbody2D rb2D;
+	protected new Collider2D collider2D;
+
 	private bool paused = false;
 
 	public float moveSpeed;
@@ -84,6 +86,8 @@ public abstract class Character : MonoBehaviour {
 		rb2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 		rb2D.interpolation = RigidbodyInterpolation2D.Extrapolate;
 		rb2D.freezeRotation = true;
+
+		collider2D = GetComponent<Collider2D>();
 
 		animator = GetComponent<Animator> ();
 	}
@@ -235,20 +239,39 @@ public abstract class Character : MonoBehaviour {
 		animator.SetTrigger(knockedoutHash);
 	}
 
+	private GameObject currentStairs = null;
+	private float currentStairsZ = 0;
+
 	protected virtual void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.CompareTag (Constants.STAIRS_TAG)) {
-			float currentZ = transform.position.z;
-			float nextZ = -0.1f - currentZ;
-			transform.position = new Vector3 (transform.position.x, transform.position.y, nextZ);
-			OnEnterStairs();
+		if (other.gameObject.CompareTag(Constants.STAIRS_TAG)) {
+			if (currentStairs == null) {
+				currentStairs = other.gameObject;
+				currentStairsZ = transform.position.z;
+			}
 		}
 	}
 
+	protected virtual void OnTriggerStay2D(Collider2D other)
+    {           
+		if (other.gameObject == currentStairs) {
+			Bounds otherBounds = other.bounds;
+			otherBounds.center = new Vector3(otherBounds.center.x, otherBounds.center.y, transform.position.z);
+			if (otherBounds.Contains(collider2D.bounds.min) && otherBounds.Contains(collider2D.bounds.max)) {
+				OnEnterStairs();
+			}
+		}
+    }
+
 	protected virtual void OnTriggerExit2D(Collider2D other) {
+		if (other.gameObject == currentStairs) {
+			currentStairs = null;
+			currentStairsZ = 0;
+		}
 	}
 
 	protected virtual void OnEnterStairs() {
-
+		float newZ = -0.1f - currentStairsZ;
+		transform.position = new Vector3 (transform.position.x, transform.position.y, newZ);
 	}
 
 	public void StartDoorDelay() {

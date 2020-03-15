@@ -173,6 +173,7 @@ public class NPC : Character {
 	}
 
 	protected override void OnEnterStairs() {
+		base.OnEnterStairs();
 		UpdateSortingLayer();
 	}
 

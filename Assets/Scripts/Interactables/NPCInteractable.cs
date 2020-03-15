@@ -262,4 +262,24 @@ public class NPCInteractable : Interactable {
     public virtual void ShowInfo() {
         NPCInfo.instance.Display(npc);
     }
+
+    public bool HoverTextActive() {
+        return hoverTextInstance != null;
+    }
+
+    public bool SpeechBubbleActive() {
+        return speechBubbleInstance != null;
+    }
+
+    public bool NPCOptionsActive() {
+        return npcOptionsInstance != null;
+    }
+
+    public bool ExclaimIconActive() {
+        return exclaimInstance != null;
+    }
+
+    public bool QuestIconActive() {
+        return questInstance != null;
+    }
 }

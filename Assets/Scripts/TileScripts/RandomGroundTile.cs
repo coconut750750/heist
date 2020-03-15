@@ -8,8 +8,6 @@ using UnityEditor;
 
 public class RandomGroundTile : Tile {
 
-	public const int MAX_TILES = 4;
-	
 	[SerializeField]
 	private Sprite[] sprites;
 

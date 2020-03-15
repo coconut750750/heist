@@ -127,6 +127,7 @@ public class Player : Character
 
     protected override void OnEnterStairs()
     {
+        base.OnEnterStairs();
         UpdateVisibleFloorWithGameManager();
     }
 

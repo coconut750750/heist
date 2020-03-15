@@ -34,11 +34,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 	private const string INVENTORY_ITEM_QUALITY = "SelectedInventoryItemQuality";
 
 	public UnityAction<Item, int> OnSelected;
-
 	public UnityAction OnDeselected;
-
 	public UnityAction<Item> OnDropped;
-
 	public UnityAction OnRemoved;
 
 	void Awake() {
@@ -49,6 +46,11 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		itemImage = transform.Find(ITEM_IMAGE).gameObject.GetComponent<Image>();
 		itemBack = transform.Find(BACKGROUND_IMAGE).gameObject.GetComponent<Image>();
 		ClearItem();
+	}
+
+	void OnDestroy() {
+		nameText.text = "";
+        qualityText.text = "";
 	}
 
 	public void SetIndex(int i) {
@@ -177,6 +179,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler {
 		SwapParentStashPositions(itemSlotOther);
 		SwapSlotSelection(itemSlotOther);
 
+		// trigger callbacks
 		if (OnDropped != null) {
 			OnDropped(this.item);
 		}
